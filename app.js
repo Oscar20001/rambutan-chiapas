@@ -9,7 +9,7 @@ const WHATSAPP = ['529622699611', '529621707553'];
 
 // Dirección del script de Google que guarda las citas en tu Google Calendar (ver agenda/LEEME.md).
 // Mientras esté vacía, la agenda funciona igual pero la cita se pide por WhatsApp.
-const AGENDA_URL = '';
+const AGENDA_URL = 'https://script.google.com/macros/s/AKfycbztSLxlmv_WAln5U7EQABAqDwkOVE1SdVj75fD98BIzX7AyP5DPxHDgXbqXqsDtnGyC/exec';
 
 // Horario de atención en hora de Chiapas: primera y última hora en que puede empezar una cita.
 const AGENDA = { desde: 7, hasta: 22.5, minutos: 30, dias: 14, anticipacion: 60 };
