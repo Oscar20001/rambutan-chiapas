@@ -1,4 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url><loc>https://oscar20001.github.io/rambutan-chiapas/</loc><changefreq>weekly</changefreq></url>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  <url>
+    <loc>https://oscar20001.github.io/rambutan-chiapas/</loc>
+    <xhtml:link rel="alternate" hreflang="es-MX" href="https://oscar20001.github.io/rambutan-chiapas/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://oscar20001.github.io/rambutan-chiapas/en/"/>
+    <changefreq>weekly</changefreq>
+  </url>
+  <url>
+    <loc>https://oscar20001.github.io/rambutan-chiapas/en/</loc>
+    <xhtml:link rel="alternate" hreflang="es-MX" href="https://oscar20001.github.io/rambutan-chiapas/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://oscar20001.github.io/rambutan-chiapas/en/"/>
+    <changefreq>weekly</changefreq>
+  </url>
 </urlset>

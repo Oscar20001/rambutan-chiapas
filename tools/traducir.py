@@ -1,0 +1,262 @@
+# Genera en/index.html a partir de index.html con las frases traducidas al inglés.
+# Uso: python3 tools/traducir.py   (avisa si alguna frase ya no está en la página en español)
+import pathlib, sys
+
+raiz = pathlib.Path(__file__).resolve().parent.parent
+s = (raiz / 'index.html').read_text(encoding='utf-8')
+
+PARES = [
+    # rutas: la página inglesa vive en /en/
+    ('<html lang="es-MX">', '<html lang="en">'),
+    ('href="site.webmanifest"', 'href="../site.webmanifest"'),
+    ('href="img/logo.svg"', 'href="../img/logo.svg"'),
+    ('href="styles.css"', 'href="../styles.css"'),
+    ('src="app.js"', 'src="../app.js"'),
+    ('<link rel="canonical" href="https://oscar20001.github.io/rambutan-chiapas/">', '<link rel="canonical" href="https://oscar20001.github.io/rambutan-chiapas/en/">'),
+    ('<meta property="og:url" content="https://oscar20001.github.io/rambutan-chiapas/">', '<meta property="og:url" content="https://oscar20001.github.io/rambutan-chiapas/en/">'),
+    ('<meta property="og:locale" content="es_MX">', '<meta property="og:locale" content="en_US">\n<meta property="og:locale:alternate" content="es_MX">'),
+    ('<a class="lang" href="en/" hreflang="en" lang="en" aria-label="English version">EN</a>', '<a class="lang" href="../" hreflang="es" lang="es" aria-label="Versión en español">ES</a>'),
+    ('<p><a class="link-plain" href="en/" hreflang="en" lang="en">English version</a></p>', '<p><a class="link-plain" href="../" hreflang="es" lang="es">Versión en español</a></p>'),
+
+    # cabecera
+    ('<title>Ixchel · Rambután por tonelada desde Chiapas</title>', '<title>Ixchel · Wholesale rambutan from Chiapas, Mexico</title>'),
+    ('content="Rambután rojo del Soconusco para mayoristas: cosecha a mano en Tuxtla Chico, Chiapas, selección por calibre y envío refrigerado a Monterrey, CDMX, Guadalajara y todo México."',
+     'content="Fresh red rambutan from Soconusco, Chiapas, sold by the ton: hand harvested in Tuxtla Chico, sorted by size and shipped refrigerated across Mexico. Quotes for U.S. and Canadian buyers."'),
+    ('content="Ixchel, Frutas del Soconusco · Rambután por tonelada"', 'content="Ixchel, Soconusco Fruit · Rambutan by the ton"'),
+    ('content="Cosecha a mano, selección por calibre y envío refrigerado a todo México. Cotiza por WhatsApp."', 'content="Hand harvested, sorted by size and shipped refrigerated. Get a quote on WhatsApp."'),
+    ('"description": "Productores de rambután en Tuxtla Chico, Chiapas. Venta por tonelada con envío refrigerado a todo México."', '"description": "Rambutan growers in Tuxtla Chico, Chiapas, Mexico. Sold by the ton with refrigerated shipping."'),
+    ('"name": "Rambután rojo por tonelada"', '"name": "Red rambutan by the ton"'),
+
+    # carga
+    ('<p class="loader__tag">Frutas del Soconusco</p>', '<p class="loader__tag">Soconusco Fruit</p>'),
+
+    # portada
+    ('aria-label="Ixchel, Frutas del Soconusco, inicio"', 'aria-label="Ixchel, Soconusco Fruit, home"'),
+    ('<nav class="card__nav" aria-label="Secciones">', '<nav class="card__nav" aria-label="Sections">'),
+    ('<a class="link" href="#fruta">La fruta</a>\n      <a class="link" href="#envio">Envío</a>\n      <a class="link" href="#precio">Pedido</a>\n      <a class="link" href="#agenda">Agenda</a>\n      <a class="link" href="#preguntas">Preguntas</a>',
+     '<a class="link" href="#fruta">The fruit</a>\n      <a class="link" href="#envio">Shipping</a>\n      <a class="link" href="#precio">Orders</a>\n      <a class="link" href="#agenda">Book a call</a>\n      <a class="link" href="#preguntas">FAQ</a>'),
+    ('<h1 class="card__title"><span>Rambután</span> <span>por</span> <span>tonelada</span></h1>', '<h1 class="card__title"><span>Rambutan</span> <span>by the</span> <span>ton</span></h1>'),
+    ('<p class="card__facts">Desde Tuxtla Chico, Chiapas<br>Cosecha de julio a octubre<br>Envío refrigerado a todo México</p>', '<p class="card__facts">From Tuxtla Chico, Chiapas<br>Harvest July to October<br>Refrigerated shipping</p>'),
+    ('<p class="card__lead">Cortado a mano, parejo por calibre y en caja refrigerada hasta tu bodega.</p>', '<p class="card__lead">Picked by hand, sorted by size and kept cold all the way to your warehouse.</p>'),
+    ('<p class="small">Ixchel, Frutas del Soconusco</p>', '<p class="small">Ixchel, Soconusco Fruit</p>'),
+    ('data-wa="hero">Cotizar por WhatsApp</a>', 'data-wa="hero">Get a quote on WhatsApp</a>'),
+    ('<a class="link-plain" href="#envio">Calcular envío</a>\n    </div>\n  </div>\n</header>', '<a class="link-plain" href="#envio">Estimate shipping</a>\n    </div>\n  </div>\n</header>'),
+
+    # carta
+    ('<h2 id="t-origen" class="sheet__title">Carta desde la huerta</h2>', '<h2 id="t-origen" class="sheet__title">A letter from the orchard</h2>'),
+    ('<p>A quien compra fruta por tonelada:</p>', '<p>To everyone who buys fruit by the ton:</p>'),
+    ('<p>Somos productores de rambután en Tuxtla Chico, en el Soconusco de Chiapas, a unos minutos de Tapachula y a la vista del volcán Tacaná. Aquí el calor y la lluvia hacen lo que ningún otro lugar de México: la mayor parte del rambután del país se cosecha en esta región.</p>',
+     '<p>We grow rambutan in Tuxtla Chico, in the Soconusco region of Chiapas, a few minutes from Tapachula and in sight of the Tacaná volcano. The heat and rain here do what no other place in Mexico can: most of the country\'s rambutan is harvested in this region.</p>'),
+    ('<p>Cortamos los racimos a mano, temprano, cuando la fruta está firme. Ese mismo día la <mark>seleccionamos por calibre y la empacamos</mark>, para que cada caja que llega a tu bodega vaya pareja.</p>',
+     '<p>We cut the clusters by hand, early in the morning, while the fruit is firm. The same day we <mark>sort it by size and pack it</mark>, so every box that reaches your warehouse is uniform.</p>'),
+    ('<p>Sabemos que el reto es la distancia. Por eso trabajamos con transporte refrigerado y te decimos desde el principio cuántos kilómetros, cuántas horas y en qué vehículo viaja tu pedido.</p>',
+     '<p>We know distance is the challenge. That is why we ship in refrigerated trucks and tell you from the start how many kilometers, how many hours and in which vehicle your order travels.</p>'),
+    ('<p>Si compras para central de abasto, cadena, frutería o industria, escríbenos. Te mandamos el precio de la semana y la fruta disponible.</p>',
+     '<p>If you buy for a wholesale market, a retail chain, a produce store or for processing, write to us. We will send you this week\'s price and what fruit is available.</p>'),
+    ('<p class="sheet__sign" data-reveal style="--i:1">La familia productora</p>', '<p class="sheet__sign" data-reveal style="--i:1">The grower family</p>'),
+    ('<p>Atendemos todos los días, de 7 de la mañana a 11 de la noche.</p>', '<p>We answer every day, from 7 a.m. to 11 p.m. Central Mexico time.</p>'),
+    ('data-wa="carta">Escribir por WhatsApp</a>', 'data-wa="carta">Message us on WhatsApp</a>'),
+
+    # la fruta
+    ('<title id="pic-fruta">Dibujo de un racimo de rambután sobre una caja de cosecha</title>', '<title id="pic-fruta">Drawing of a rambutan cluster over a harvest crate</title>'),
+    ('aria-label="Tipo de fruta"', 'aria-label="Fruit type"'),
+    ('data-tab="rojo">Rojo</button>', 'data-tab="rojo">Red</button>'),
+    ('data-tab="amarillo" tabindex="-1">Amarillo</button>', 'data-tab="amarillo" tabindex="-1">Yellow</button>'),
+    ('data-tab="calibre" tabindex="-1">Calibres</button>', 'data-tab="calibre" tabindex="-1">Sizes</button>'),
+    ('<h2 id="t-fruta" class="head">Rambután rojo</h2>', '<h2 id="t-fruta" class="head">Red rambutan</h2>'),
+    ('<p data-copy>El que más pide el mercado: cáscara roja intensa y pulpa blanca, jugosa y dulce.</p>', '<p data-copy>The one the market asks for most: deep red skin and white flesh, juicy and sweet.</p>'),
+    ('data-wa="fruta">Cotizar esta fruta</a>', 'data-wa="fruta">Quote this fruit</a>'),
+    ('<a class="cell" href="#preguntas">Ver temporada</a>', '<a class="cell" href="#ficha">See the season</a>'),
+
+    # ficha técnica
+    ('<h2 id="t-ficha" class="head" data-reveal>Ficha técnica</h2>', '<h2 id="t-ficha" class="head" data-reveal>Spec sheet</h2>'),
+    ('<p data-reveal style="--i:1">Lo que tu comprador o tu área de calidad necesita saber antes del primer pedido.</p>', '<p data-reveal style="--i:1">What your buyer or quality team needs to know before the first order.</p>'),
+    ('<h3 class="season__title">Calendario de cosecha</h3>', '<h3 class="season__title">Harvest calendar</h3>'),
+    ('<li data-mes="1">E</li>', '<li data-mes="1">J</li>'),
+    ('<li data-mes="12">D</li>', '<li data-mes="12">D</li>'),
+    ('<span class="season__sw season__sw--on"></span>Temporada <span class="season__sw season__sw--peak"></span>Pico <span class="season__sw season__sw--now"></span>Hoy', '<span class="season__sw season__sw--on"></span>Season <span class="season__sw season__sw--peak"></span>Peak <span class="season__sw season__sw--now"></span>Today'),
+    ('<p class="season__now" data-cosecha-hoy aria-live="polite">Cosecha de julio a octubre, con pico en agosto y septiembre.</p>', '<p class="season__now" data-cosecha-hoy aria-live="polite">Harvest from July to October, peaking in August and September.</p>'),
+    ('<p><b>Ixchel, Frutas del Soconusco</b><br>Rambután fresco · Tuxtla Chico, Chiapas, México</p>', '<p><b>Ixchel, Soconusco Fruit</b><br>Fresh rambutan · Tuxtla Chico, Chiapas, Mexico</p>'),
+    ('<div><dt>Producto</dt><dd>Rambután fresco (<i>Nephelium lappaceum</i>), rojo y amarillo</dd></div>', '<div><dt>Product</dt><dd>Fresh rambutan (<i>Nephelium lappaceum</i>), red and yellow</dd></div>'),
+    ('<div><dt>Origen</dt><dd>Soconusco, Chiapas, México</dd></div>', '<div><dt>Origin</dt><dd>Soconusco, Chiapas, Mexico</dd></div>'),
+    ('<div><dt>Calibres</dt><dd>Grande, mediano y chico, separados en el empaque</dd></div>', '<div><dt>Sizes</dt><dd>Large, medium and small, sorted at packing</dd></div>'),
+    ('<div><dt>Presentación</dt><dd>Caja de 10 kg. Otras presentaciones bajo pedido</dd></div>', '<div><dt>Pack</dt><dd>10 kg box. Other packs on request</dd></div>'),
+    ('<div><dt>Cajas por tráiler</dt><dd>Hasta 2,200 cajas de 10 kg (22 t) en caja de 53 pies</dd></div>', '<div><dt>Boxes per trailer</dt><dd>Up to 2,200 boxes of 10 kg (22 t) in a 53-foot reefer</dd></div>'),
+    ('<div><dt>Temperatura</dt><dd>10 a 12 °C, humedad relativa de 90 a 95 %</dd></div>', '<div><dt>Temperature</dt><dd>10 to 12 °C (50 to 54 °F), 90 to 95 % relative humidity</dd></div>'),
+    ('<div><dt>Vida de anaquel</dt><dd>Alrededor de dos semanas en frío; de tres a cinco días a temperatura ambiente</dd></div>', '<div><dt>Shelf life</dt><dd>About two weeks refrigerated; three to five days at room temperature</dd></div>'),
+    ('<div><dt>Pedido mínimo</dt><dd>1 tonelada</dd></div>', '<div><dt>Minimum order</dt><dd>1 metric ton</dd></div>'),
+    ('<div><dt>Temporada</dt><dd>Julio a octubre, pico en agosto y septiembre</dd></div>', '<div><dt>Season</dt><dd>July to October, peak in August and September</dd></div>'),
+    ('<div><dt>Contacto</dt><dd>WhatsApp +52 962 269 9611 · +52 962 170 7553</dd></div>', '<div><dt>Contact</dt><dd>WhatsApp +52 962 269 9611 · +52 962 170 7553</dd></div>'),
+    ('data-imprimir>Guardar ficha en PDF</button>', 'data-imprimir>Save spec sheet as PDF</button>'),
+    ('data-wa="ficha">Cotizar con esta ficha</a>', 'data-wa="ficha">Get a quote with this sheet</a>'),
+
+    # volumen
+    ('<h2 id="t-volumen" class="head" data-reveal>Pedidos por volumen</h2>', '<h2 id="t-volumen" class="head" data-reveal>Orders by volume</h2>'),
+    ('<p data-reveal style="--i:1">Desde una camioneta de prueba hasta un tráiler completo cada semana de la temporada.</p>', '<p data-reveal style="--i:1">From a trial van load to a full trailer every week of the season.</p>'),
+    ('<h3 class="tier__name">Prueba</h3>', '<h3 class="tier__name">Trial</h3>'),
+    ('<p class="tier__range nums">1 a 3 toneladas</p>', '<p class="tier__range nums">1 to 3 tons</p>'),
+    ('<p>Camioneta refrigerada. Para probar calibre, color y vida de anaquel en tu bodega.</p>', '<p>Refrigerated van. To test size, color and shelf life in your warehouse.</p>'),
+    ('<h3 class="tier__name">Mayoreo</h3>', '<h3 class="tier__name">Wholesale</h3>'),
+    ('<p class="tier__range nums">4 a 10 toneladas</p>', '<p class="tier__range nums">4 to 10 tons</p>'),
+    ('<p>Torton refrigerado. El pedido de central de abasto, cadena o distribuidor.</p>', '<p>Refrigerated straight truck. The usual order for wholesale markets, chains and distributors.</p>'),
+    ('<h3 class="tier__name">Tráiler completo</h3>', '<h3 class="tier__name">Full trailer</h3>'),
+    ('<p class="tier__range nums">11 a 22 toneladas</p>', '<p class="tier__range nums">11 to 22 tons</p>'),
+    ('<p>Caja refrigerada de 53 pies. Programa semanal en temporada, con fruta apartada.</p>', '<p>53-foot reefer trailer. A weekly program during the season, with fruit set aside for you.</p>'),
+
+    # guía de embarque
+    ('<h2 id="t-envio" class="head" data-reveal>Del corte a tu bodega</h2>', '<h2 id="t-envio" class="head" data-reveal>From harvest to your dock</h2>'),
+    ('<p data-reveal style="--i:1">Elige tu ciudad y las toneladas. La guía calcula cajas, vehículo y días de camino.</p>', '<p data-reveal style="--i:1">Choose your city and the tons. The slip works out boxes, vehicle and days on the road.</p>'),
+    ('<legend>Cómo quieres pedir</legend>', '<legend>How you want to order</legend>'),
+    ('<span>Toneladas</span>', '<span>Tons</span>'),
+    ('<span>Kilos</span>', '<span>Kilograms</span>'),
+    ('<span>Cajas</span>', '<span>Boxes</span>'),
+    ('<label for="ciudad">Ciudad de entrega</label>', '<label for="ciudad">Delivery city</label>'),
+    ('<label for="toneladas" data-unit-label>Toneladas por pedido</label>', '<label for="toneladas" data-unit-label>Metric tons per order</label>'),
+    ('aria-label="Menos">', 'aria-label="Less">'),
+    ('aria-label="Más">', 'aria-label="More">'),
+    ('<title id="truck-cap">Camión refrigerado con la carga del pedido</title>', '<title id="truck-cap">Refrigerated truck with the order\'s load</title>'),
+    ('data-out="camion">5 de 10 toneladas en un torton refrigerado</figcaption>', 'data-out="camion">5 of 10 tons in a refrigerated straight truck</figcaption>'),
+    ('<h3 id="slip-title" class="slip__title">Guía de embarque</h3>', '<h3 id="slip-title" class="slip__title">Shipping slip</h3>'),
+    ('<h4>En la huerta</h4>', '<h4>At the orchard</h4>'),
+    ('<li><span>Corte a mano de racimos</span><i></i><span>madrugada</span></li>', '<li><span>Clusters cut by hand</span><i></i><span>dawn</span></li>'),
+    ('<li><span>Selección por calibre</span><i></i><span>mañana</span></li>', '<li><span>Sorting by size</span><i></i><span>morning</span></li>'),
+    ('<li><span>Empaque en caja de 10 kg</span><i></i><span data-out="cajas">500 cajas</span></li>', '<li><span>Packed in 10 kg boxes</span><i></i><span data-out="cajas">500 boxes</span></li>'),
+    ('<h4>Esa misma tarde</h4>', '<h4>That same afternoon</h4>'),
+    ('<li><span>Pre-enfriado a 10–12 °C</span><i></i><span>4 a 6 h</span></li>', '<li><span>Pre-cooling to 10–12 °C</span><i></i><span>4 to 6 h</span></li>'),
+    ('<li><span>Carga en <b data-out="vehiculo">torton refrigerado</b></span><i></i><span data-out="unidades">1 unidad</span></li>', '<li><span>Loaded on a <b data-out="vehiculo">refrigerated straight truck</b></span><i></i><span data-out="unidades">1 unit</span></li>'),
+    ('<h4>En carretera</h4>', '<h4>On the road</h4>'),
+    ('<li><span>Distancia aproximada</span><i></i><span data-out="km">1,900 km</span></li>', '<li><span>Approximate distance</span><i></i><span data-out="km">1,900 km</span></li>'),
+    ('<li><span>Tiempo de manejo</span><i></i><span data-out="horas">35 h</span></li>', '<li><span>Driving time</span><i></i><span data-out="horas">35 h</span></li>'),
+    ('<li><span>Temperatura en la caja</span><i></i><span>10–12 °C</span></li>', '<li><span>Trailer temperature</span><i></i><span>10–12 °C</span></li>'),
+    ('<li data-precio hidden><span>Fruta, precio de referencia</span><i></i><span data-out="precio"></span></li>', '<li data-precio hidden><span>Fruit, reference price</span><i></i><span data-out="precio"></span></li>'),
+    ('<p class="slip__total nums"><span>En <b data-out="ciudad-corta">Monterrey</b></span><span data-out="dias">en 2 a 3 días</span></p>', '<p class="slip__total nums"><span>In <b data-out="ciudad-corta">Monterrey</b></span><span data-out="dias">in 2 to 3 days</span></p>'),
+    ('data-wa="guia">Mandar esta guía por WhatsApp</a>', 'data-wa="guia">Send this slip on WhatsApp</a>'),
+    ('<p class="slip__note small">Distancias y tiempos aproximados por carretera. El flete se cotiza aparte según la semana.</p>', '<p class="slip__note small">Approximate road distances and times. Freight is quoted separately each week. For the U.S. or Canada, tell us your port of entry.</p>'),
+
+    # mapa
+    ('<h2 id="t-ruta" class="head" data-reveal>De Chiapas a todo el país</h2>', '<h2 id="t-ruta" class="head" data-reveal>From Chiapas to the border</h2>'),
+    ('<p data-reveal style="--i:1">La ruta se dibuja hacia la ciudad que elegiste en la guía. Cambia la ciudad y mira el camino de tu fruta.</p>', '<p data-reveal style="--i:1">The route is drawn to the city you chose on the slip. Change the city and watch your fruit\'s journey.</p>'),
+    ('<span data-out="dias">en 2 a 3 días</span></p>\n      <a class="button" href="#envio" data-reveal style="--i:3">Cambiar ciudad</a>', '<span data-out="dias">in 2 to 3 days</span></p>\n      <a class="button" href="#envio" data-reveal style="--i:3">Change city</a>'),
+    ('<title id="map-cap">Mapa de ciudades de México con la ruta desde Tuxtla Chico</title>', '<title id="map-cap">Map of Mexican cities with the route from Tuxtla Chico</title>'),
+    ('<figcaption class="small">Puntos en su posición real de latitud y longitud. Ruta ilustrativa.</figcaption>', '<figcaption class="small">Cities at their real latitude and longitude. Route for illustration.</figcaption>'),
+
+    # compromisos
+    ('<textPath href="#seal-arc">CADA CARGA REVISADA · TUXTLA CHICO, CHIAPAS · IXCHEL, FRUTAS DEL SOCONUSCO · </textPath>', '<textPath href="#seal-arc">EVERY LOAD CHECKED · TUXTLA CHICO, CHIAPAS · IXCHEL, SOCONUSCO FRUIT · </textPath>'),
+    ('<h2 id="t-confianza" class="head" data-reveal>Compromisos con tu carga</h2>', '<h2 id="t-confianza" class="head" data-reveal>Our promise for your load</h2>'),
+    ('<li data-reveal style="--i:1"><b>Origen que puedes visitar.</b> La huerta está en Tuxtla Chico, Chiapas, y es bienvenido quien quiera conocerla.</li>', '<li data-reveal style="--i:1"><b>An origin you can visit.</b> The orchard is in Tuxtla Chico, Chiapas, and anyone who wants to see it is welcome.</li>'),
+    ('<li data-reveal style="--i:2"><b>Fotos y video antes de salir.</b> Te mandamos tu carga empacada y estibada antes de cerrar la caja.</li>', '<li data-reveal style="--i:2"><b>Photos and video before departure.</b> We send you your load packed and stacked before the trailer is closed.</li>'),
+    ('<li data-reveal style="--i:3"><b>Cadena de frío.</b> Entre 10 y 12 °C desde el empaque hasta tu andén.</li>', '<li data-reveal style="--i:3"><b>Cold chain.</b> 10 to 12 °C from the packing shed to your dock.</li>'),
+    ('<li data-reveal style="--i:4"><b>Calibre parejo.</b> Cada caja se revisa al empacar, sin fruta chica escondida abajo.</li>', '<li data-reveal style="--i:4"><b>Uniform size.</b> Every box is checked at packing, with no small fruit hidden underneath.</li>'),
+    ('<li data-reveal style="--i:5"><b>Muestra primero.</b> Una caja por paquetería antes de tu primer pedido grande.</li>', '<li data-reveal style="--i:5"><b>Sample first.</b> One box by courier before your first large order.</li>'),
+
+    # boleto
+    ('<h2 id="t-precio" class="ticket__title">Pedido mayorista</h2>', '<h2 id="t-precio" class="ticket__title">Wholesale order</h2>'),
+    ('<li>Desde 1 tonelada por pedido</li>', '<li>From 1 metric ton per order</li>'),
+    ('<li>Caja de 10 kg, calibre parejo</li>', '<li>10 kg box, uniform size</li>'),
+    ('<li>Precio por kilo según calibre y semana</li>', '<li>Price per kilo by size and week</li>'),
+    ('<li>Flete refrigerado cotizado a tu ciudad</li>', '<li>Refrigerated freight quoted to your city</li>'),
+    ('<p class="ticket__unit">pedido mínimo</p>', '<p class="ticket__unit">minimum order</p>'),
+    ('data-wa="precio">Pedir precio de la semana</a>', 'data-wa="precio">Ask for this week\'s price</a>'),
+
+    # agenda
+    ('<h2 id="t-agenda" class="head" data-reveal>Agenda una llamada</h2>', '<h2 id="t-agenda" class="head" data-reveal>Book a call</h2>'),
+    ('<p data-reveal style="--i:1">Elige día y hora, y te llamamos o te escribimos para cotizar, resolver dudas o armar tu programa de la temporada.</p>', '<p data-reveal style="--i:1">Pick a day and time, and we will call or message you to quote, answer questions or plan your season program.</p>'),
+    ('<li><b>Lunes a domingo</b> de 7 de la mañana a 11 de la noche</li>', '<li><b>Monday to Sunday</b> from 7 a.m. to 11 p.m.</li>'),
+    ('<li><b>Hora de Chiapas</b>, la misma de la Ciudad de México</li>', '<li><b>Chiapas time</b>, the same as Mexico City (UTC−6)</li>'),
+    ('<li><b>Citas de 30 minutos</b> por llamada, WhatsApp o videollamada</li>', '<li><b>30-minute meetings</b> by phone, WhatsApp or video call</li>'),
+    ('<span class="agenda__sw"></span>Libre <span class="agenda__sw agenda__sw--busy"></span>Ocupado', '<span class="agenda__sw"></span>Open <span class="agenda__sw agenda__sw--busy"></span>Taken'),
+    ('<legend>Cómo quieres que te contactemos</legend>', '<legend>How should we contact you?</legend>'),
+    ('<span>Llamada</span>', '<span>Phone call</span>'),
+    ('<span>Videollamada</span>', '<span>Video call</span>'),
+    ('<p class="agenda__label">Día</p>', '<p class="agenda__label">Day</p>'),
+    ('<p class="agenda__pick" data-pick aria-live="polite">Elige un día y una hora.</p>', '<p class="agenda__pick" data-pick aria-live="polite">Choose a day and a time.</p>'),
+    ('<label class="sr-only" for="a-nombre">Nombre</label>', '<label class="sr-only" for="a-nombre">Name</label>'),
+    ('placeholder="Nombre" required>', 'placeholder="Name" required>'),
+    ('<label class="sr-only" for="a-tel">Teléfono o WhatsApp</label>', '<label class="sr-only" for="a-tel">Phone or WhatsApp</label>'),
+    ('placeholder="Teléfono o WhatsApp" required>', 'placeholder="Phone or WhatsApp, with country code" required>'),
+    ('<label class="sr-only" for="a-empresa">Empresa y ciudad</label>', '<label class="sr-only" for="a-empresa">Company and city</label>'),
+    ('placeholder="Empresa y ciudad">', 'placeholder="Company and city">'),
+    ('<label class="sr-only" for="a-notas">¿De qué quieres hablar?</label>', '<label class="sr-only" for="a-notas">What would you like to talk about?</label>'),
+    ('placeholder="¿De qué quieres hablar?">', 'placeholder="What would you like to talk about?">'),
+    ('<label class="agenda__trap" aria-hidden="true">Sitio web', '<label class="agenda__trap" aria-hidden="true">Website'),
+    ('type="submit">Apartar cita</button>', 'type="submit">Book appointment</button>'),
+    ('<span data-sello>APARTADO</span>', '<span data-sello>BOOKED</span>'),
+    ('<p class="send__title" data-done-title>Cita apartada</p>', '<p class="send__title" data-done-title>You are booked</p>'),
+    ('download="cita-ixchel.ics">Agregar a mi calendario</a>', 'download="ixchel-meeting.ics">Add to my calendar</a>'),
+    ('rel="noopener">Escribir por WhatsApp</a>\n          <button type="button" class="link-plain" data-otra>Agendar otra</button>', 'rel="noopener">Message us on WhatsApp</a>\n          <button type="button" class="link-plain" data-otra>Book another</button>'),
+
+    # preguntas
+    ('<h2 id="t-faq" class="head" data-reveal>Preguntas de compradores</h2>', '<h2 id="t-faq" class="head" data-reveal>Buyer questions</h2>'),
+    ('<div><dt>Origen</dt><dd>Tuxtla Chico, Soconusco, Chiapas</dd></div>', '<div><dt>Origin</dt><dd>Tuxtla Chico, Soconusco, Chiapas</dd></div>'),
+    ('<div><dt>Temporada</dt><dd>Julio a octubre, con pico en agosto y septiembre</dd></div>', '<div><dt>Season</dt><dd>July to October, peaking in August and September</dd></div>'),
+    ('<div><dt>Atención</dt><dd>Todos los días, de 7:00 a 23:00</dd></div>', '<div><dt>Hours</dt><dd>Every day, 7 a.m. to 11 p.m. (UTC−6)</dd></div>'),
+    ('<summary>¿Cuánto aguanta el rambután después del corte?</summary>\n          <p>Refrigerado entre 10 y 12 °C con buena humedad, alrededor de dos semanas. A temperatura ambiente se oscurece en tres a cinco días, por eso viaja siempre en caja refrigerada.</p>',
+     '<summary>How long does rambutan last after harvest?</summary>\n          <p>About two weeks refrigerated at 10 to 12 °C with good humidity. At room temperature the skin darkens in three to five days, which is why it always travels in a reefer.</p>'),
+    ('<summary>¿Envían a mi ciudad?</summary>\n          <p>Sí. Mandamos a cualquier ciudad con acceso por carretera: Monterrey, Saltillo, Chihuahua, Hermosillo, Tijuana, Guadalajara, la Ciudad de México y más. Usa la guía de embarque para ver la distancia y el tiempo.</p>',
+     '<summary>Do you ship to my city?</summary>\n          <p>We ship to any city in Mexico with road access: Monterrey, Saltillo, Chihuahua, Hermosillo, Tijuana, Guadalajara, Mexico City and more. Use the shipping slip to see the distance and time.</p>'),
+    ('<summary>¿Cuál es el pedido mínimo?</summary>\n          <p>Trabajamos desde una tonelada por pedido. Para volúmenes semanales durante toda la temporada armamos un programa de cortes y te apartamos fruta.</p>',
+     '<summary>What is the minimum order?</summary>\n          <p>One metric ton per order. For weekly volumes through the season we plan a harvest program and set fruit aside for you.</p>'),
+    ('<summary>¿Cómo viene empacado?</summary>\n          <p>En caja de 10 kg con fruta del mismo calibre. Si tu cliente necesita otra presentación, dinos cuál y la cotizamos.</p>',
+     '<summary>How is it packed?</summary>\n          <p>In 10 kg boxes of fruit of the same size. If your customers need another pack, tell us which one and we will quote it.</p>'),
+    ('<summary>¿Puedo pedir una muestra?</summary>\n          <p>Sí. Antes del primer pedido grande podemos mandarte una caja de muestra por paquetería para que revises calibre, color y sabor.</p>',
+     '<summary>Can I get a sample?</summary>\n          <p>Yes. Before your first large order we can send a sample box by courier so you can check size, color and flavor.</p>'),
+    ('<summary>¿Venden a Estados Unidos o Canadá?</summary>\n          <p>Escríbenos con tu ciudad y tu puerto de entrada. Revisamos contigo los requisitos sanitarios y los documentos de exportación, y te cotizamos el flete hasta la frontera o hasta tu bodega.</p>',
+     '<summary>Do you sell to the United States or Canada?</summary>\n          <p>Write to us with your city and port of entry. We will go over the phytosanitary requirements and export paperwork with you, and quote freight to the border or to your warehouse.</p>'),
+    ('<summary>¿Puedo hablar con ustedes antes de pedir?</summary>\n          <p>Sí. En la agenda eliges día y hora para una llamada, un WhatsApp o una videollamada, de lunes a domingo de 7 de la mañana a 11 de la noche.</p>',
+     '<summary>Can I talk to you before ordering?</summary>\n          <p>Yes. Use the booking calendar to pick a day and time for a phone call, a WhatsApp chat or a video call, Monday to Sunday from 7 a.m. to 11 p.m. We speak Spanish and English.</p>'),
+    ('<summary>¿Cómo se paga?</summary>\n          <p>Lo acordamos al cotizar: normalmente anticipo para apartar el corte y el resto al recibir la fruta.</p>',
+     '<summary>How do I pay?</summary>\n          <p>We agree on it when quoting: usually a deposit to reserve the harvest and the balance when you receive the fruit.</p>'),
+    ('data-wa="faq">Preguntar por WhatsApp</a>\n        <a class="link-plain" href="#envio">Calcular envío</a>', 'data-wa="faq">Ask on WhatsApp</a>\n        <a class="link-plain" href="#envio">Estimate shipping</a>'),
+
+    # cupón
+    ('<h2 id="t-cotizar" class="coupon__title">Pide tu<br>cotización</h2>', '<h2 id="t-cotizar" class="coupon__title">Request<br>a quote</h2>'),
+    ('<p>Llena estos datos y se abre WhatsApp con tu mensaje listo para enviar. Te respondemos con el precio de la semana.</p>', '<p>Fill this in and WhatsApp opens with your message ready to send. We reply with this week\'s price.</p>'),
+    ('<label class="sr-only" for="f-nombre">Nombre y empresa</label>', '<label class="sr-only" for="f-nombre">Name and company</label>'),
+    ('placeholder="Nombre y empresa" required>', 'placeholder="Name and company" required>'),
+    ('<label class="sr-only" for="f-ciudad">Ciudad de entrega</label>', '<label class="sr-only" for="f-ciudad">Delivery city</label>'),
+    ('placeholder="Ciudad de entrega" required>', 'placeholder="Delivery city" required>'),
+    ('<label class="sr-only" for="f-ton">Toneladas por semana</label>', '<label class="sr-only" for="f-ton">Tons per week</label>'),
+    ('placeholder="Toneladas por semana">', 'placeholder="Tons per week">'),
+    ('<label class="sr-only" for="f-calibre">Calibre</label>', '<label class="sr-only" for="f-calibre">Size</label>'),
+    ('<option value="">Calibre</option>\n            <option value="grande">Grande</option>\n            <option value="mediano">Mediano</option>\n            <option value="chico">Chico</option>\n            <option value="mixto">Mixto</option>',
+     '<option value="">Size</option>\n            <option value="grande">Large</option>\n            <option value="mediano">Medium</option>\n            <option value="chico">Small</option>\n            <option value="mixto">Mixed</option>'),
+    ('<label class="sr-only" for="f-frecuencia">Frecuencia</label>', '<label class="sr-only" for="f-frecuencia">Frequency</label>'),
+    ('<option value="">Frecuencia</option>\n            <option value="una">Una sola vez</option>\n            <option value="semanal">Cada semana</option>\n            <option value="quincenal">Cada quince días</option>\n            <option value="temporada">Toda la temporada</option>',
+     '<option value="">Frequency</option>\n            <option value="una">One time</option>\n            <option value="semanal">Every week</option>\n            <option value="quincenal">Every two weeks</option>\n            <option value="temporada">All season</option>'),
+    ('<label class="sr-only" for="f-tel">Teléfono</label>', '<label class="sr-only" for="f-tel">Phone</label>'),
+    ('placeholder="Teléfono">', 'placeholder="Phone">'),
+    ('<p class="coupon__error small" id="coupon-error" role="alert" hidden>Escribe tu nombre y la ciudad de entrega.</p>', '<p class="coupon__error small" id="coupon-error" role="alert" hidden>Enter your name and the delivery city.</p>'),
+    ('<button class="coupon__submit" type="submit">Enviar por WhatsApp</button>', '<button class="coupon__submit" type="submit">Send on WhatsApp</button>'),
+    ('<p class="send__title">Abrimos WhatsApp con tu mensaje</p>\n        <p>Revisa el mensaje y toca enviar en WhatsApp. Te contestamos con el precio de la semana.</p>',
+     '<p class="send__title">WhatsApp is open with your message</p>\n        <p>Check the message and tap send in WhatsApp. We will reply with this week\'s price.</p>'),
+    ('rel="noopener">¿No se abrió? Ábrelo aquí</a><button type="button" class="button button--ink" id="send-again">Hacer otra cotización</button>', 'rel="noopener">Didn\'t open? Open it here</a><button type="button" class="button button--ink" id="send-again">Request another quote</button>'),
+
+    # más frutas
+    ('<h2 id="t-mas" class="head" data-reveal>Más frutas del Soconusco, pronto</h2>', '<h2 id="t-mas" class="head" data-reveal>More Soconusco fruit, soon</h2>'),
+    ('<span>Zapote mamey</span>', '<span>Mamey sapote</span>'),
+    ('<p class="more__note" data-reveal style="--i:4">Hoy vendemos rambután. Si buscas otra fruta de la región, pregúntanos y te avisamos cuando la tengamos.</p>', '<p class="more__note" data-reveal style="--i:4">Today we sell rambutan. If you are looking for another fruit from the region, ask us and we will let you know when we have it.</p>'),
+
+    # pie
+    ('aria-label="Logo de Ixchel: luna con conejo, pirámide y perfil maya"', 'aria-label="Ixchel logo: the moon with a rabbit, a pyramid and a Maya profile"'),
+    ('<li><a class="link" href="#origen">Origen</a></li>\n        <li><a class="link" href="#fruta">La fruta</a></li>\n        <li><a class="link" href="#volumen">Por volumen</a></li>\n        <li><a class="link" href="#envio">Guía de embarque</a></li>\n        <li><a class="link" href="#confianza">Compromisos</a></li>\n        <li><a class="link" href="#ficha">Ficha técnica</a></li>\n        <li><a class="link" href="#precio">Pedido mayorista</a></li>\n        <li><a class="link" href="#agenda">Agenda</a></li>\n        <li><a class="link" href="#preguntas">Preguntas</a></li>\n        <li><a class="link" href="#cotizar">Cotizar</a></li>',
+     '<li><a class="link" href="#origen">Origin</a></li>\n        <li><a class="link" href="#fruta">The fruit</a></li>\n        <li><a class="link" href="#volumen">By volume</a></li>\n        <li><a class="link" href="#envio">Shipping slip</a></li>\n        <li><a class="link" href="#confianza">Our promise</a></li>\n        <li><a class="link" href="#ficha">Spec sheet</a></li>\n        <li><a class="link" href="#precio">Wholesale order</a></li>\n        <li><a class="link" href="#agenda">Book a call</a></li>\n        <li><a class="link" href="#preguntas">FAQ</a></li>\n        <li><a class="link" href="#cotizar">Get a quote</a></li>'),
+    ('<p><b>Ixchel, Frutas del Soconusco</b></p>\n        <p>Tuxtla Chico, Soconusco, Chiapas, México</p>\n        <p>Envíos refrigerados a toda la República</p>', '<p><b>Ixchel, Soconusco Fruit</b></p>\n        <p>Tuxtla Chico, Soconusco, Chiapas, Mexico</p>\n        <p>Refrigerated shipping across Mexico</p>'),
+    ('>Llamar al 962 269 9611</a>', '>Call +52 962 269 9611</a>'),
+    ('<p class="small">Todos los días, de 7:00 a 23:00 (hora de Chiapas)</p>', '<p class="small">Every day, 7 a.m. to 11 p.m. Chiapas time (UTC−6)</p>'),
+    ('<p class="small">© <span data-year>2026</span> Ixchel, Frutas del Soconusco. Ilustraciones hechas para este sitio.</p>', '<p class="small">© <span data-year>2026</span> Ixchel, Soconusco Fruit. Illustrations made for this site.</p>'),
+    ('<a class="button button--small" href="#inicio">Volver arriba</a>', '<a class="button button--small" href="#inicio">Back to top</a>'),
+    ('aria-label="Escribir por WhatsApp">', 'aria-label="Message us on WhatsApp">'),
+]
+
+faltan = []
+for es, en in PARES:
+    if es not in s:
+        faltan.append(es[:90])
+        continue
+    s = s.replace(es, en)
+(raiz / 'en' / 'index.html').write_text(s, encoding='utf-8')
+if faltan:
+    print('Frases que ya no están en index.html (revisa su traducción):')
+    for f in faltan: print('  -', f)
+    sys.exit(1)
+print('en/index.html listo')

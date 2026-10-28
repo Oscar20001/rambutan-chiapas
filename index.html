@@ -16,6 +16,9 @@
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="canonical" href="https://oscar20001.github.io/rambutan-chiapas/">
+<link rel="alternate" hreflang="es-MX" href="https://oscar20001.github.io/rambutan-chiapas/">
+<link rel="alternate" hreflang="en" href="https://oscar20001.github.io/rambutan-chiapas/en/">
+<link rel="alternate" hreflang="x-default" href="https://oscar20001.github.io/rambutan-chiapas/">
 <link rel="manifest" href="site.webmanifest">
 <script type="application/ld+json">
 {
@@ -26,7 +29,11 @@
   "logo": "https://oscar20001.github.io/rambutan-chiapas/img/logo.svg",
   "description": "Productores de rambután en Tuxtla Chico, Chiapas. Venta por tonelada con envío refrigerado a todo México.",
   "address": { "@type": "PostalAddress", "addressLocality": "Tuxtla Chico", "addressRegion": "Chiapas", "addressCountry": "MX" },
-  "areaServed": "MX",
+  "areaServed": ["MX", "US", "CA"],
+  "contactPoint": [
+    { "@type": "ContactPoint", "telephone": "+52-962-269-9611", "contactType": "sales", "availableLanguage": ["es", "en"] },
+    { "@type": "ContactPoint", "telephone": "+52-962-170-7553", "contactType": "sales", "availableLanguage": ["es"] }
+  ],
   "makesOffer": { "@type": "Offer", "itemOffered": { "@type": "Product", "name": "Rambután rojo por tonelada" } }
 }
 </script>
@@ -156,7 +163,9 @@
       <a class="link" href="#fruta">La fruta</a>
       <a class="link" href="#envio">Envío</a>
       <a class="link" href="#precio">Pedido</a>
+      <a class="link" href="#agenda">Agenda</a>
       <a class="link" href="#preguntas">Preguntas</a>
+      <a class="lang" href="en/" hreflang="en" lang="en" aria-label="English version">EN</a>
     </nav>
     </div>
     <h1 class="card__title"><span>Rambután</span> <span>por</span> <span>tonelada</span></h1>
@@ -188,7 +197,7 @@
     <p class="sheet__sign" data-reveal style="--i:1">La familia productora</p>
     <p class="sheet__place small">Tuxtla Chico, Chiapas</p>
     <div class="sheet__strip">
-      <p>Atendemos por WhatsApp, de lunes a sábado.</p>
+      <p>Atendemos todos los días, de 7 de la mañana a 11 de la noche.</p>
       <a class="button button--ink" href="#cotizar" data-wa="carta">Escribir por WhatsApp</a>
     </div>
   </article>
@@ -230,6 +239,45 @@
   </div>
 </section>
 
+
+<section class="spec section" id="ficha" aria-labelledby="t-ficha">
+  <div class="spec__grid frame">
+    <div class="spec__intro">
+      <h2 id="t-ficha" class="head" data-reveal>Ficha técnica</h2>
+      <p data-reveal style="--i:1">Lo que tu comprador o tu área de calidad necesita saber antes del primer pedido.</p>
+      <div class="season" data-reveal style="--i:2">
+        <h3 class="season__title">Calendario de cosecha</h3>
+        <ol class="season__months" data-cosecha>
+          <li data-mes="1">E</li><li data-mes="2">F</li><li data-mes="3">M</li><li data-mes="4">A</li><li data-mes="5">M</li><li data-mes="6">J</li><li data-mes="7">J</li><li data-mes="8">A</li><li data-mes="9">S</li><li data-mes="10">O</li><li data-mes="11">N</li><li data-mes="12">D</li>
+        </ol>
+        <p class="season__key small"><span class="season__sw season__sw--on"></span>Temporada <span class="season__sw season__sw--peak"></span>Pico <span class="season__sw season__sw--now"></span>Hoy</p>
+        <p class="season__now" data-cosecha-hoy aria-live="polite">Cosecha de julio a octubre, con pico en agosto y septiembre.</p>
+      </div>
+    </div>
+    <div class="spec__sheet" data-reveal style="--i:1">
+      <div class="spec__head">
+        <svg class="spec__logo" viewBox="0 0 120 120" aria-hidden="true"><use href="#logo"/></svg>
+        <p><b>Ixchel, Frutas del Soconusco</b><br>Rambután fresco · Tuxtla Chico, Chiapas, México</p>
+      </div>
+      <dl class="spec__rows nums">
+        <div><dt>Producto</dt><dd>Rambután fresco (<i>Nephelium lappaceum</i>), rojo y amarillo</dd></div>
+        <div><dt>Origen</dt><dd>Soconusco, Chiapas, México</dd></div>
+        <div><dt>Calibres</dt><dd>Grande, mediano y chico, separados en el empaque</dd></div>
+        <div><dt>Presentación</dt><dd>Caja de 10 kg. Otras presentaciones bajo pedido</dd></div>
+        <div><dt>Cajas por tráiler</dt><dd>Hasta 2,200 cajas de 10 kg (22 t) en caja de 53 pies</dd></div>
+        <div><dt>Temperatura</dt><dd>10 a 12 °C, humedad relativa de 90 a 95 %</dd></div>
+        <div><dt>Vida de anaquel</dt><dd>Alrededor de dos semanas en frío; de tres a cinco días a temperatura ambiente</dd></div>
+        <div><dt>Pedido mínimo</dt><dd>1 tonelada</dd></div>
+        <div><dt>Temporada</dt><dd>Julio a octubre, pico en agosto y septiembre</dd></div>
+        <div><dt>Contacto</dt><dd>WhatsApp +52 962 269 9611 · +52 962 170 7553</dd></div>
+      </dl>
+      <div class="spec__actions">
+        <button type="button" class="button button--ink" data-imprimir>Guardar ficha en PDF</button>
+        <a class="link-plain" href="#cotizar" data-wa="ficha">Cotizar con esta ficha</a>
+      </div>
+    </div>
+  </div>
+</section>
 
 <section class="volume section" id="volumen" aria-labelledby="t-volumen">
   <div class="frame">
@@ -309,6 +357,7 @@
         <li><span>Distancia aproximada</span><i></i><span data-out="km">1,900 km</span></li>
         <li><span>Tiempo de manejo</span><i></i><span data-out="horas">35 h</span></li>
         <li><span>Temperatura en la caja</span><i></i><span>10–12 °C</span></li>
+        <li data-precio hidden><span>Fruta, precio de referencia</span><i></i><span data-out="precio"></span></li>
       </ul>
 
       <p class="slip__total nums"><span>En <b data-out="ciudad-corta">Monterrey</b></span><span data-out="dias">en 2 a 3 días</span></p>
@@ -381,6 +430,57 @@
   </div>
 </section>
 
+<section class="agenda section" id="agenda" aria-labelledby="t-agenda">
+  <div class="agenda__grid frame">
+    <div class="agenda__text">
+      <h2 id="t-agenda" class="head" data-reveal>Agenda una llamada</h2>
+      <p data-reveal style="--i:1">Elige día y hora, y te llamamos o te escribimos para cotizar, resolver dudas o armar tu programa de la temporada.</p>
+      <ul class="agenda__facts" data-reveal style="--i:2">
+        <li><b>Lunes a domingo</b> de 7 de la mañana a 11 de la noche</li>
+        <li><b>Hora de Chiapas</b>, la misma de la Ciudad de México</li>
+        <li><b>Citas de 30 minutos</b> por llamada, WhatsApp o videollamada</li>
+      </ul>
+      <p class="agenda__legend small" data-reveal style="--i:3"><span class="agenda__sw"></span>Libre <span class="agenda__sw agenda__sw--busy"></span>Ocupado</p>
+    </div>
+    <form class="agenda__sheet" id="agenda-form" novalidate data-reveal style="--i:1">
+      <fieldset class="units agenda__kind">
+        <legend>Cómo quieres que te contactemos</legend>
+        <label><input type="radio" name="tipo" value="llamada" checked><span>Llamada</span></label>
+        <label><input type="radio" name="tipo" value="whatsapp"><span>WhatsApp</span></label>
+        <label><input type="radio" name="tipo" value="video"><span>Videollamada</span></label>
+      </fieldset>
+      <p class="agenda__label">Día</p>
+      <div class="agenda__days" data-days></div>
+      <p class="agenda__state small" data-agenda-estado aria-live="polite"></p>
+      <div class="agenda__slots" data-slots></div>
+      <p class="agenda__pick" data-pick aria-live="polite">Elige un día y una hora.</p>
+      <div class="agenda__fields">
+        <label class="sr-only" for="a-nombre">Nombre</label>
+        <input class="field field--paper" id="a-nombre" name="nombre" autocomplete="name" placeholder="Nombre" required>
+        <label class="sr-only" for="a-tel">Teléfono o WhatsApp</label>
+        <input class="field field--paper" id="a-tel" name="telefono" type="tel" autocomplete="tel" placeholder="Teléfono o WhatsApp" required>
+        <label class="sr-only" for="a-empresa">Empresa y ciudad</label>
+        <input class="field field--paper" id="a-empresa" name="empresa" autocomplete="organization" placeholder="Empresa y ciudad">
+        <label class="sr-only" for="a-notas">¿De qué quieres hablar?</label>
+        <input class="field field--paper" id="a-notas" name="notas" placeholder="¿De qué quieres hablar?">
+        <label class="agenda__trap" aria-hidden="true">Sitio web <input id="a-web" name="web" tabindex="-1" autocomplete="off"></label>
+      </div>
+      <p class="agenda__error small" id="agenda-error" role="alert" hidden></p>
+      <button class="coupon__submit agenda__submit" type="submit">Apartar cita</button>
+      <div class="agenda__done" hidden>
+        <p class="agenda__stamp" aria-hidden="true"><span data-sello>APARTADO</span></p>
+        <p class="send__title" data-done-title>Cita apartada</p>
+        <p data-done-text></p>
+        <p class="send__actions">
+          <a class="button" data-ics href="#" download="cita-ixchel.ics">Agregar a mi calendario</a>
+          <a class="link-plain" data-done-wa href="#" target="_blank" rel="noopener">Escribir por WhatsApp</a>
+          <button type="button" class="link-plain" data-otra>Agendar otra</button>
+        </p>
+      </div>
+    </form>
+  </div>
+</section>
+
 <section class="faq section" id="preguntas" aria-labelledby="t-faq">
   <div class="faq__grid frame">
     <div class="faq__text">
@@ -388,7 +488,7 @@
       <dl class="faq__facts" data-reveal style="--i:1">
         <div><dt>Origen</dt><dd>Tuxtla Chico, Soconusco, Chiapas</dd></div>
         <div><dt>Temporada</dt><dd>Julio a octubre, con pico en agosto y septiembre</dd></div>
-        <div><dt>Atención</dt><dd>WhatsApp, lunes a sábado</dd></div>
+        <div><dt>Atención</dt><dd>Todos los días, de 7:00 a 23:00</dd></div>
       </dl>
       <div class="faq__list" data-reveal style="--i:2">
         <details open>
@@ -410,6 +510,14 @@
         <details>
           <summary>¿Puedo pedir una muestra?</summary>
           <p>Sí. Antes del primer pedido grande podemos mandarte una caja de muestra por paquetería para que revises calibre, color y sabor.</p>
+        </details>
+        <details>
+          <summary>¿Venden a Estados Unidos o Canadá?</summary>
+          <p>Escríbenos con tu ciudad y tu puerto de entrada. Revisamos contigo los requisitos sanitarios y los documentos de exportación, y te cotizamos el flete hasta la frontera o hasta tu bodega.</p>
+        </details>
+        <details>
+          <summary>¿Puedo hablar con ustedes antes de pedir?</summary>
+          <p>Sí. En la agenda eliges día y hora para una llamada, un WhatsApp o una videollamada, de lunes a domingo de 7 de la mañana a 11 de la noche.</p>
         </details>
         <details>
           <summary>¿Cómo se paga?</summary>
@@ -459,6 +567,24 @@
         <input class="field" id="f-ciudad" name="ciudad" autocomplete="address-level2" placeholder="Ciudad de entrega" required>
         <label class="sr-only" for="f-ton">Toneladas por semana</label>
         <input class="field" id="f-ton" name="toneladas" inputmode="decimal" placeholder="Toneladas por semana">
+        <div class="coupon__pair">
+          <label class="sr-only" for="f-calibre">Calibre</label>
+          <select class="field" id="f-calibre" name="calibre">
+            <option value="">Calibre</option>
+            <option value="grande">Grande</option>
+            <option value="mediano">Mediano</option>
+            <option value="chico">Chico</option>
+            <option value="mixto">Mixto</option>
+          </select>
+          <label class="sr-only" for="f-frecuencia">Frecuencia</label>
+          <select class="field" id="f-frecuencia" name="frecuencia">
+            <option value="">Frecuencia</option>
+            <option value="una">Una sola vez</option>
+            <option value="semanal">Cada semana</option>
+            <option value="quincenal">Cada quince días</option>
+            <option value="temporada">Toda la temporada</option>
+          </select>
+        </div>
         <label class="sr-only" for="f-tel">Teléfono</label>
         <input class="field" id="f-tel" name="telefono" type="tel" autocomplete="tel" placeholder="Teléfono">
         <p class="coupon__error small" id="coupon-error" role="alert" hidden>Escribe tu nombre y la ciudad de entrega.</p>
@@ -515,7 +641,9 @@
         <li><a class="link" href="#volumen">Por volumen</a></li>
         <li><a class="link" href="#envio">Guía de embarque</a></li>
         <li><a class="link" href="#confianza">Compromisos</a></li>
+        <li><a class="link" href="#ficha">Ficha técnica</a></li>
         <li><a class="link" href="#precio">Pedido mayorista</a></li>
+        <li><a class="link" href="#agenda">Agenda</a></li>
         <li><a class="link" href="#preguntas">Preguntas</a></li>
         <li><a class="link" href="#cotizar">Cotizar</a></li>
       </ul>
@@ -523,6 +651,13 @@
         <p><b>Ixchel, Frutas del Soconusco</b></p>
         <p>Tuxtla Chico, Soconusco, Chiapas, México</p>
         <p>Envíos refrigerados a toda la República</p>
+        <p class="foot__phones nums">
+          <a class="link-plain" href="https://wa.me/529622699611" data-wa="flotante" data-fijo target="_blank" rel="noopener">WhatsApp 962 269 9611</a>
+          <a class="link-plain" href="https://wa.me/529621707553" data-wa="flotante" data-numero="529621707553" data-fijo target="_blank" rel="noopener">WhatsApp 962 170 7553</a>
+          <a class="link-plain" href="tel:+529622699611">Llamar al 962 269 9611</a>
+        </p>
+        <p class="small">Todos los días, de 7:00 a 23:00 (hora de Chiapas)</p>
+        <p><a class="link-plain" href="en/" hreflang="en" lang="en">English version</a></p>
       </div>
     </div>
     <div class="foot__last">
@@ -531,6 +666,11 @@
     </div>
   </div>
 </footer>
+
+<a class="fab" href="https://wa.me/529622699611" data-wa="flotante" data-fijo target="_blank" rel="noopener" aria-label="Escribir por WhatsApp">
+  <svg viewBox="0 0 32 32" aria-hidden="true"><path d="M16 3C8.8 3 3 8.5 3 15.3c0 2.6.9 5 2.4 7L4 29l6.9-2.2c1.6.7 3.3 1 5.1 1 7.2 0 13-5.5 13-12.3S23.2 3 16 3z" fill="currentColor"/><path d="M11.5 10.5c.4-.4 1.2-.5 1.6 0l1.4 2.4c.2.4.1.9-.2 1.2l-.8.8c.8 1.7 2.1 3 3.8 3.8l.8-.8c.3-.3.8-.4 1.2-.2l2.4 1.4c.5.3.5 1.1 0 1.6l-1 1c-1 1-2.6 1.1-4.4.2-2.6-1.3-4.7-3.4-6-6-.9-1.8-.8-3.4.2-4.4z" fill="var(--fab-ink)"/></svg>
+  <span>WhatsApp</span>
+</a>
 
 <script src="app.js" defer></script>
 </body>
