@@ -1,0 +1,10 @@
+{
+  "name": "Ixchel, Frutas del Soconusco",
+  "short_name": "Ixchel",
+  "lang": "es-MX",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#133621",
+  "theme_color": "#133621",
+  "icons": [{ "src": "img/logo.svg", "sizes": "any", "type": "image/svg+xml" }]
+}

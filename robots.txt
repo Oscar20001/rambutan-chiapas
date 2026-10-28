@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://oscar20001.github.io/rambutan-chiapas/sitemap.xml
