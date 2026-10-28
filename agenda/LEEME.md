@@ -5,7 +5,7 @@ solicitud. Al conectar Google Calendar, además:
 
 - La cita se aparta sola y aparece en tu Google Calendar, con aviso 30 y 5 minutos antes.
 - Te llega un correo y se anota en la hoja "Citas Ixchel" de tu Google Drive.
-- El sitio marca como ocupadas las horas que ya tienes en tu calendario, también tus pendientes personales.
+- El sitio marca como ocupadas solo las horas que ya apartó un comprador. Tus eventos personales no cuentan.
 - **Solo tú ves nombres y teléfonos.** Los visitantes solo ven qué horas están libres u ocupadas.
 
 Toma unos 10 minutos y es gratis. Necesitas la cuenta de Google donde quieres recibir las citas.
@@ -38,5 +38,12 @@ El horario está en dos lugares y deben coincidir:
 - `agenda/Codigo.gs`: `DESDE` y `HASTA`. Después de cambiarlo, en Apps Script toca
   **Implementar → Administrar implementaciones → editar → Versión: nueva** para publicarlo.
 
-Para bloquear un día (por ejemplo, un domingo de descanso), crea un evento en tu Google Calendar
-que cubra esas horas: el sitio las mostrará ocupadas.
+Para bloquear un rato o un día (por ejemplo, un domingo de descanso), crea en tu Google Calendar un
+evento cuyo título empiece con **Ocupado** (por ejemplo "Ocupado: viaje a Tapachula"). El sitio mostrará
+esas horas ocupadas. Si es un evento de todo el día, bloquea el día completo.
+
+## Actualizar el script cuando cambie `Codigo.gs`
+
+1. En script.google.com abre **Agenda Ixchel**, borra todo el código y pega el nuevo `agenda/Codigo.gs`. Guarda (Ctrl + S).
+2. Toca **Implementar → Administrar implementaciones**, luego el **lápiz** (editar).
+3. En **Versión** elige **Nueva versión** y toca **Implementar**. La URL no cambia.
