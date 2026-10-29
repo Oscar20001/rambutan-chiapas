@@ -5,14 +5,16 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Página no encontrada · Ixchel</title>
 <link rel="icon" href="/rambutan-chiapas/img/logo.svg" type="image/svg+xml">
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=EB+Garamond&display=swap" rel="stylesheet">
 <style>
+  @font-face { font-family: "Bebas Neue"; font-display: swap; src: url(/rambutan-chiapas/fonts/bebas-neue.woff2) format("woff2"); }
+  @font-face { font-family: "EB Garamond"; font-display: swap; src: url(/rambutan-chiapas/fonts/eb-garamond-normal.woff2) format("woff2"); }
   body { margin: 0; min-height: 100svh; display: grid; place-items: center; padding: 1rem; background: #133621; color: #f4d96c; font-family: "EB Garamond", Georgia, serif; font-size: 1.15rem; text-align: center; }
   main { display: grid; justify-items: center; gap: 1rem; max-width: 30rem; }
   img { width: 9rem; height: 9rem; }
   h1 { margin: 0; font-family: "Bebas Neue", "Arial Narrow", sans-serif; font-weight: 400; font-size: clamp(2.75rem, 10vw, 4.5rem); line-height: 0.9; }
   p { margin: 0; }
   a { display: inline-flex; align-items: center; min-height: 3.25rem; padding: 0 1.5rem; background: #f4d96c; color: #133621; font-family: "Bebas Neue", "Arial Narrow", sans-serif; font-size: 1.5rem; text-decoration: none; }
+  a.en { display: inline; min-height: 0; padding: 0; background: none; color: inherit; font-family: inherit; font-size: inherit; text-decoration: underline; }
   a:focus-visible { outline: 3px solid #f4d96c; outline-offset: 3px; }
 </style>
 </head>
@@ -22,6 +24,7 @@
   <h1>Esta página no existe</h1>
   <p>El conejo de la luna no la encontró. Vuelve al inicio para cotizar rambután por tonelada.</p>
   <a href="/rambutan-chiapas/">Ir al inicio</a>
+  <p lang="en">Page not found. <a class="en" href="/rambutan-chiapas/en/">English site</a></p>
 </main>
 </body>
 </html>

@@ -37,10 +37,83 @@
   "makesOffer": { "@type": "Offer", "itemOffered": { "@type": "Product", "name": "Rambután rojo por tonelada" } }
 }
 </script>
+<script type="application/ld+json" id="faq-ld">
+{
+ "@context": "https://schema.org",
+ "@type": "FAQPage",
+ "mainEntity": [
+  {
+   "@type": "Question",
+   "name": "¿Cuánto aguanta el rambután después del corte?",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "Refrigerado entre 10 y 12 °C con buena humedad, alrededor de dos semanas. A temperatura ambiente se oscurece en tres a cinco días, por eso viaja siempre en caja refrigerada."
+   }
+  },
+  {
+   "@type": "Question",
+   "name": "¿Envían a mi ciudad?",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "Sí. Mandamos a cualquier ciudad con acceso por carretera: Monterrey, Saltillo, Chihuahua, Hermosillo, Tijuana, Guadalajara, la Ciudad de México y más. Usa la guía de embarque para ver la distancia y el tiempo."
+   }
+  },
+  {
+   "@type": "Question",
+   "name": "¿Cuál es el pedido mínimo?",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "Trabajamos desde una tonelada por pedido. Para volúmenes semanales durante toda la temporada armamos un programa de cortes y te apartamos fruta."
+   }
+  },
+  {
+   "@type": "Question",
+   "name": "¿Cómo viene empacado?",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "En caja de 10 kg con fruta del mismo calibre. Si tu cliente necesita otra presentación, dinos cuál y la cotizamos."
+   }
+  },
+  {
+   "@type": "Question",
+   "name": "¿Puedo pedir una muestra?",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "Sí. Antes del primer pedido grande podemos mandarte una caja de muestra por paquetería para que revises calibre, color y sabor."
+   }
+  },
+  {
+   "@type": "Question",
+   "name": "¿Venden a Estados Unidos o Canadá?",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "Escríbenos con tu ciudad y tu puerto de entrada. Revisamos contigo los requisitos sanitarios y los documentos de exportación, y te cotizamos el flete hasta la frontera o hasta tu bodega."
+   }
+  },
+  {
+   "@type": "Question",
+   "name": "¿Puedo hablar con ustedes antes de pedir?",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "Sí. En la agenda eliges día y hora para una llamada, un WhatsApp o una videollamada, de lunes a domingo de 7 de la mañana a 11 de la noche."
+   }
+  },
+  {
+   "@type": "Question",
+   "name": "¿Cómo se paga?",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "Lo acordamos al cotizar: normalmente anticipo para apartar el corte y el resto al recibir la fruta."
+   }
+  }
+ ]
+}
+</script>
 <link rel="icon" href="img/logo.svg" type="image/svg+xml">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<link rel="icon" href="img/icono-32.png" type="image/png" sizes="32x32">
+<link rel="apple-touch-icon" href="img/icono-180.png">
+<link rel="preload" href="fonts/bebas-neue.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/eb-garamond-normal.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="styles.css">
 <script>document.documentElement.classList.add('js');try{if(sessionStorage.getItem('ixchel-carga')==='1')document.documentElement.classList.add('is-seen')}catch(e){}</script>
 </head>
@@ -165,7 +238,7 @@
       <a class="link" href="#precio">Pedido</a>
       <a class="link" href="#agenda">Agenda</a>
       <a class="link" href="#preguntas">Preguntas</a>
-      <a class="lang" href="en/" hreflang="en" lang="en" aria-label="English version">EN</a>
+      <a class="lang" href="en/" hreflang="en" lang="en" aria-label="EN: English version">EN</a>
     </nav>
     </div>
     <h1 class="card__title"><span>Rambután</span> <span>por</span> <span>tonelada</span></h1>
@@ -467,6 +540,7 @@
       </div>
       <p class="agenda__error small" id="agenda-error" role="alert" hidden></p>
       <button class="coupon__submit agenda__submit" type="submit">Apartar cita</button>
+      <p class="small form-legal">Al apartar aceptas el <a class="link-plain" href="privacidad.html">aviso de privacidad</a>.</p>
       <div class="agenda__done" hidden>
         <p class="agenda__stamp" aria-hidden="true"><span data-sello>APARTADO</span></p>
         <p class="send__title" data-done-title>Cita apartada</p>
@@ -589,6 +663,7 @@
         <input class="field" id="f-tel" name="telefono" type="tel" autocomplete="tel" placeholder="Teléfono">
         <p class="coupon__error small" id="coupon-error" role="alert" hidden>Escribe tu nombre y la ciudad de entrega.</p>
         <button class="coupon__submit" type="submit">Enviar por WhatsApp</button>
+        <p class="small form-legal">Al enviar aceptas el <a class="link-plain" href="privacidad.html">aviso de privacidad</a>.</p>
       </div>
       <div class="send" id="send" hidden>
         <svg class="send__scene" viewBox="0 0 600 160" aria-hidden="true">
@@ -661,7 +736,7 @@
       </div>
     </div>
     <div class="foot__last">
-      <p class="small">© <span data-year>2026</span> Ixchel, Frutas del Soconusco. Ilustraciones hechas para este sitio.</p>
+      <p class="small">© <span data-year>2026</span> Ixchel, Frutas del Soconusco. Ilustraciones hechas para este sitio. <a class="link-plain" href="privacidad.html">Aviso de privacidad</a></p>
       <a class="button button--small" href="#inicio">Volver arriba</a>
     </div>
   </div>

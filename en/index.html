@@ -38,10 +38,83 @@
   "makesOffer": { "@type": "Offer", "itemOffered": { "@type": "Product", "name": "Red rambutan by the ton" } }
 }
 </script>
+<script type="application/ld+json" id="faq-ld">
+{
+ "@context": "https://schema.org",
+ "@type": "FAQPage",
+ "mainEntity": [
+  {
+   "@type": "Question",
+   "name": "How long does rambutan last after harvest?",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "About two weeks refrigerated at 10 to 12 °C with good humidity. At room temperature the skin darkens in three to five days, which is why it always travels in a reefer."
+   }
+  },
+  {
+   "@type": "Question",
+   "name": "Do you ship to my city?",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "We ship to any city in Mexico with road access: Monterrey, Saltillo, Chihuahua, Hermosillo, Tijuana, Guadalajara, Mexico City and more. Use the shipping slip to see the distance and time."
+   }
+  },
+  {
+   "@type": "Question",
+   "name": "What is the minimum order?",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "One metric ton per order. For weekly volumes through the season we plan a harvest program and set fruit aside for you."
+   }
+  },
+  {
+   "@type": "Question",
+   "name": "How is it packed?",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "In 10 kg boxes of fruit of the same size. If your customers need another pack, tell us which one and we will quote it."
+   }
+  },
+  {
+   "@type": "Question",
+   "name": "Can I get a sample?",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "Yes. Before your first large order we can send a sample box by courier so you can check size, color and flavor."
+   }
+  },
+  {
+   "@type": "Question",
+   "name": "Do you sell to the United States or Canada?",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "Write to us with your city and port of entry. We will go over the phytosanitary requirements and export paperwork with you, and quote freight to the border or to your warehouse."
+   }
+  },
+  {
+   "@type": "Question",
+   "name": "Can I talk to you before ordering?",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "Yes. Use the booking calendar to pick a day and time for a phone call, a WhatsApp chat or a video call, Monday to Sunday from 7 a.m. to 11 p.m. We speak Spanish and English."
+   }
+  },
+  {
+   "@type": "Question",
+   "name": "How do I pay?",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "We agree on it when quoting: usually a deposit to reserve the harvest and the balance when you receive the fruit."
+   }
+  }
+ ]
+}
+</script>
 <link rel="icon" href="../img/logo.svg" type="image/svg+xml">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<link rel="icon" href="../img/icono-32.png" type="image/png" sizes="32x32">
+<link rel="apple-touch-icon" href="../img/icono-180.png">
+<link rel="preload" href="../fonts/bebas-neue.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="../fonts/eb-garamond-normal.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="../styles.css">
 <script>document.documentElement.classList.add('js');try{if(sessionStorage.getItem('ixchel-carga')==='1')document.documentElement.classList.add('is-seen')}catch(e){}</script>
 </head>
@@ -166,7 +239,7 @@
       <a class="link" href="#precio">Orders</a>
       <a class="link" href="#agenda">Book a call</a>
       <a class="link" href="#preguntas">FAQ</a>
-      <a class="lang" href="../" hreflang="es" lang="es" aria-label="Versión en español">ES</a>
+      <a class="lang" href="../" hreflang="es" lang="es" aria-label="ES: versión en español">ES</a>
     </nav>
     </div>
     <h1 class="card__title"><span>Rambutan</span> <span>by the</span> <span>ton</span></h1>
@@ -468,6 +541,7 @@
       </div>
       <p class="agenda__error small" id="agenda-error" role="alert" hidden></p>
       <button class="coupon__submit agenda__submit" type="submit">Book appointment</button>
+      <p class="small form-legal">By booking you accept our <a class="link-plain" href="privacy.html">privacy notice</a>.</p>
       <div class="agenda__done" hidden>
         <p class="agenda__stamp" aria-hidden="true"><span data-sello>BOOKED</span></p>
         <p class="send__title" data-done-title>You are booked</p>
@@ -590,6 +664,7 @@
         <input class="field" id="f-tel" name="telefono" type="tel" autocomplete="tel" placeholder="Phone">
         <p class="coupon__error small" id="coupon-error" role="alert" hidden>Enter your name and the delivery city.</p>
         <button class="coupon__submit" type="submit">Send on WhatsApp</button>
+        <p class="small form-legal">By sending you accept our <a class="link-plain" href="privacy.html">privacy notice</a>.</p>
       </div>
       <div class="send" id="send" hidden>
         <svg class="send__scene" viewBox="0 0 600 160" aria-hidden="true">
@@ -662,7 +737,7 @@
       </div>
     </div>
     <div class="foot__last">
-      <p class="small">© <span data-year>2026</span> Ixchel, Soconusco Fruit. Illustrations made for this site.</p>
+      <p class="small">© <span data-year>2026</span> Ixchel, Soconusco Fruit. Illustrations made for this site. <a class="link-plain" href="privacy.html">Privacy notice</a></p>
       <a class="button button--small" href="#inicio">Back to top</a>
     </div>
   </div>

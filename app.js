@@ -390,8 +390,8 @@ const guia = (() => {
     mover = el('g'); mover.append(el('rect', { x: -14, y: -9, width: 20, height: 14, fill: '#f4d96c' }), el('path', { d: 'M6 -4h6l5 5v4H6z', fill: '#c8202b' }), el('circle', { cx: -8, cy: 7, r: 3.5, fill: '#0b2416' }), el('circle', { cx: 11, cy: 7, r: 3.5, fill: '#0b2416' }));
     mapG.append(mover);
   }
-  function dibujarRuta(d) {
-    if (!mapG) return;
+  // marca la ciudad y traza el camino; devuelve el punto de salida
+  function trazar(d) {
     const i = Number(select.value);
     dots.forEach((c, k) => { c.classList.toggle('is-on', k === i); c.setAttribute('r', k === i ? 9 : 5); });
     const [ox, oy] = P(ORIGEN.lon, ORIGEN.lat);
@@ -402,6 +402,11 @@ const guia = (() => {
     label2.textContent = d.corta;
     const right = tx < 420;
     label2.setAttribute('x', tx + (right ? 16 : -16)); label2.setAttribute('y', ty - 12); label2.setAttribute('text-anchor', right ? 'start' : 'end');
+    return [ox, oy];
+  }
+  function dibujarRuta(d) {
+    if (!mapG) return;
+    trazar(d);
     const len = route.getTotalLength();
     cancelAnimationFrame(raf);
     if (reduced) { route.style.strokeDasharray = 'none'; const pt = route.getPointAtLength(len); mover.setAttribute('transform', `translate(${pt.x} ${pt.y})`); return; }
@@ -437,7 +442,13 @@ const guia = (() => {
     llenarCamion(d);
     if (mapaVisto) dibujarRuta(d); else if (mapG) dibujarRutaQuieta(d);
   }
-  function dibujarRutaQuieta(d) { dibujarRuta(d); if (!reduced) { cancelAnimationFrame(raf); route.style.strokeDashoffset = String(route.getTotalLength()); } }
+  // antes de verse, la ruta queda trazada pero oculta, sin medirla (medir fuerza un cálculo de página)
+  function dibujarRutaQuieta(d) {
+    if (reduced) { dibujarRuta(d); return; }
+    const [ox, oy] = trazar(d);
+    route.style.strokeDasharray = '0 100000';
+    mover.setAttribute('transform', `translate(${ox} ${oy})`);
+  }
   $$('[data-precio]').forEach((n) => { n.hidden = !PRECIO_KG; });
 
   function mensaje() {

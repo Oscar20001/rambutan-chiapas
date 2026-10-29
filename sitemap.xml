@@ -12,4 +12,6 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://oscar20001.github.io/rambutan-chiapas/en/"/>
     <changefreq>weekly</changefreq>
   </url>
+  <url><loc>https://oscar20001.github.io/rambutan-chiapas/privacidad.html</loc><changefreq>yearly</changefreq></url>
+  <url><loc>https://oscar20001.github.io/rambutan-chiapas/en/privacy.html</loc><changefreq>yearly</changefreq></url>
 </urlset>

@@ -15,7 +15,8 @@ PARES = [
     ('<link rel="canonical" href="https://oscar20001.github.io/rambutan-chiapas/">', '<link rel="canonical" href="https://oscar20001.github.io/rambutan-chiapas/en/">'),
     ('<meta property="og:url" content="https://oscar20001.github.io/rambutan-chiapas/">', '<meta property="og:url" content="https://oscar20001.github.io/rambutan-chiapas/en/">'),
     ('<meta property="og:locale" content="es_MX">', '<meta property="og:locale" content="en_US">\n<meta property="og:locale:alternate" content="es_MX">'),
-    ('<a class="lang" href="en/" hreflang="en" lang="en" aria-label="English version">EN</a>', '<a class="lang" href="../" hreflang="es" lang="es" aria-label="Versión en español">ES</a>'),
+    ('<a class="lang" href="en/" hreflang="en" lang="en" aria-label="EN: English version">EN</a>', '<a class="lang" href="../" hreflang="es" lang="es" aria-label="ES: versión en español">ES</a>'),
+    ('href="fonts/', 'href="../fonts/'),
     ('<p><a class="link-plain" href="en/" hreflang="en" lang="en">English version</a></p>', '<p><a class="link-plain" href="../" hreflang="es" lang="es">Versión en español</a></p>'),
 
     # cabecera
@@ -243,7 +244,11 @@ PARES = [
     ('<p><b>Ixchel, Frutas del Soconusco</b></p>\n        <p>Tuxtla Chico, Soconusco, Chiapas, México</p>\n        <p>Envíos refrigerados a toda la República</p>', '<p><b>Ixchel, Soconusco Fruit</b></p>\n        <p>Tuxtla Chico, Soconusco, Chiapas, Mexico</p>\n        <p>Refrigerated shipping across Mexico</p>'),
     ('>Llamar al 962 269 9611</a>', '>Call +52 962 269 9611</a>'),
     ('<p class="small">Todos los días, de 7:00 a 23:00 (hora de Chiapas)</p>', '<p class="small">Every day, 7 a.m. to 11 p.m. Chiapas time (UTC−6)</p>'),
-    ('<p class="small">© <span data-year>2026</span> Ixchel, Frutas del Soconusco. Ilustraciones hechas para este sitio.</p>', '<p class="small">© <span data-year>2026</span> Ixchel, Soconusco Fruit. Illustrations made for this site.</p>'),
+    ('<p class="small">© <span data-year>2026</span> Ixchel, Frutas del Soconusco. ', '<p class="small">© <span data-year>2026</span> Ixchel, Soconusco Fruit. '),
+    ('<p class="small form-legal">Al apartar aceptas el <a class="link-plain" href="privacidad.html">aviso de privacidad</a>.</p>', '<p class="small form-legal">By booking you accept our <a class="link-plain" href="privacy.html">privacy notice</a>.</p>'),
+    ('<p class="small form-legal">Al enviar aceptas el <a class="link-plain" href="privacidad.html">aviso de privacidad</a>.</p>', '<p class="small form-legal">By sending you accept our <a class="link-plain" href="privacy.html">privacy notice</a>.</p>'),
+    ('Ilustraciones hechas para este sitio. <a class="link-plain" href="privacidad.html">Aviso de privacidad</a></p>', 'Illustrations made for this site. <a class="link-plain" href="privacy.html">Privacy notice</a></p>'),
+    ('href="img/icono-', 'href="../img/icono-'),
     ('<a class="button button--small" href="#inicio">Volver arriba</a>', '<a class="button button--small" href="#inicio">Back to top</a>'),
     ('aria-label="Escribir por WhatsApp">', 'aria-label="Message us on WhatsApp">'),
 ]

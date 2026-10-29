@@ -16,7 +16,7 @@ rambután en todo México. Se abre directo con `index.html`.
    la guía de embarque muestra el costo aproximado de la fruta del pedido.
 4. **Temporada.** `const COSECHA` en `app.js` marca los meses de cosecha y de pico en el calendario.
 5. **Inglés.** La página en inglés es `en/index.html` y se genera desde la de español con
-   `python3 tools/traducir.py`. Si cambias un texto en `index.html`, agrega su traducción en
+   `python3 tools/traducir.py` y luego `python3 tools/faq.py` (las preguntas frecuentes para Google). Si cambias un texto en `index.html`, agrega su traducción en
    `tools/traducir.py` y vuelve a correrlo; el script avisa qué frases ya no encontró.
    Los textos que arma `app.js` (mensajes de WhatsApp, agenda, guía) están en `TEXTOS.es` y `TEXTOS.en`.
 6. **Contenido de muestra que debes confirmar** (está escrito para que el diseño se vea completo):
