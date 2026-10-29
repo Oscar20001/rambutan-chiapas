@@ -845,7 +845,7 @@ $$('[data-imprimir]').forEach((btn) => btn.addEventListener('click', () => {
   const fab = $('.fab');
   if (!fab) return;
   // se quita del camino donde ya hay un formulario a la vista
-  const formas = $$('#cotizar, #agenda');
+  const formas = $$('#cotizar, #agenda, #contacto');
   const visibles = new Set();
   const pintar = () => fab.classList.toggle('is-on', window.scrollY > window.innerHeight * 0.6 && !visibles.size);
   if ('IntersectionObserver' in window) {
@@ -854,6 +854,83 @@ $$('[data-imprimir]').forEach((btn) => btn.addEventListener('click', () => {
   }
   window.addEventListener('scroll', pintar, { passive: true });
   pintar();
+})();
+
+// ---------- menú desplegable de contacto ----------
+(() => {
+  const btn = $('.drop-btn');
+  const menu = $('#menu-contacto');
+  if (!btn || !menu) return;
+  const movil = matchMedia('(max-width: 760px)');
+  let abierto = false;
+  btn.setAttribute('role', 'button');
+  btn.setAttribute('aria-expanded', 'false');
+
+  const colocar = () => {
+    if (movil.matches) { menu.style.top = menu.style.left = ''; return; }
+    const r = btn.getBoundingClientRect();
+    const ancho = $('.drop__panel', menu).offsetWidth;
+    menu.style.top = `${r.bottom + window.scrollY + 10}px`;
+    menu.style.left = `${Math.max(16, Math.min(r.right - ancho, document.documentElement.clientWidth - ancho - 16)) + window.scrollX}px`;
+  };
+  const abrir = () => {
+    abierto = true;
+    menu.hidden = false;
+    colocar();
+    btn.setAttribute('aria-expanded', 'true');
+    document.documentElement.classList.toggle('drop-lock', movil.matches);
+    requestAnimationFrame(() => menu.classList.add('is-open'));
+    $('a', menu)?.focus({ preventScroll: true });
+  };
+  const cerrar = (devolver) => {
+    if (!abierto) return;
+    abierto = false;
+    btn.setAttribute('aria-expanded', 'false');
+    menu.classList.remove('is-open');
+    document.documentElement.classList.remove('drop-lock');
+    const fin = () => { if (!abierto) menu.hidden = true; };
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches) fin(); else setTimeout(fin, 260);
+    if (devolver) btn.focus({ preventScroll: true });
+  };
+
+  btn.addEventListener('click', (e) => { e.preventDefault(); abierto ? cerrar(true) : abrir(); });
+  $('.drop__close', menu).addEventListener('click', () => cerrar(true));
+  menu.addEventListener('click', (e) => {
+    if (e.target === menu) cerrar(true); // el fondo oscuro en celular
+    if (e.target.closest('a')) cerrar(false);
+  });
+  document.addEventListener('click', (e) => {
+    if (abierto && !menu.contains(e.target) && !btn.contains(e.target)) cerrar(false);
+  });
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') cerrar(true); });
+  window.addEventListener('resize', () => abierto && colocar());
+})();
+
+// ---------- mapa: mapa o satélite y copiar la ubicación ----------
+(() => {
+  const mapa = $('#mapa');
+  if (!mapa) return;
+  const vista = mapa.closest('.visit__view');
+  mapa.addEventListener('load', () => vista.classList.add('is-ready'));
+  $$('[data-modo]').forEach((b) => b.addEventListener('click', () => {
+    if (b.getAttribute('aria-pressed') === 'true') return;
+    $$('[data-modo]').forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
+    vista.classList.remove('is-ready');
+    mapa.src = `${mapa.dataset.src}&t=${b.dataset.modo}`;
+  }));
+  const copiar = $('[data-copiar]');
+  if (!copiar) return;
+  const original = copiar.textContent;
+  copiar.addEventListener('click', async () => {
+    try {
+      await navigator.clipboard.writeText(copiar.dataset.copiar);
+      copiar.textContent = copiar.dataset.ok;
+      copiar.classList.add('is-ok');
+      setTimeout(() => { copiar.textContent = original; copiar.classList.remove('is-ok'); }, 2200);
+    } catch {
+      window.open(copiar.dataset.copiar, '_blank', 'noopener');
+    }
+  });
 })();
 
 // ---------- entradas al hacer scroll (nunca dejan contenido oculto) ----------

@@ -31,6 +31,8 @@
   "description": "Rambutan growers in Tuxtla Chico, Chiapas, Mexico. Sold by the ton with refrigerated shipping.",
   "address": { "@type": "PostalAddress", "addressLocality": "Tuxtla Chico", "addressRegion": "Chiapas", "addressCountry": "MX" },
   "areaServed": ["MX", "US", "CA"],
+  "email": "oscaralexander2000@gmail.com",
+  "location": { "@type": "Place", "name": "Orchard in Tuxtla Chico, Chiapas, Mexico", "geo": { "@type": "GeoCoordinates", "latitude": 14.922712, "longitude": -92.180526 }, "hasMap": "https://maps.app.goo.gl/ZEzXxGLVB8gdPqeT9" },
   "contactPoint": [
     { "@type": "ContactPoint", "telephone": "+52-962-269-9611", "contactType": "sales", "availableLanguage": ["es", "en"] },
     { "@type": "ContactPoint", "telephone": "+52-962-170-7553", "contactType": "sales", "availableLanguage": ["es"] }
@@ -239,6 +241,7 @@
       <a class="link" href="#precio">Orders</a>
       <a class="link" href="#agenda">Book a call</a>
       <a class="link" href="#preguntas">FAQ</a>
+      <a class="link drop-btn" href="#contacto" aria-controls="menu-contacto" aria-haspopup="true">Contact <svg viewBox="0 0 16 10" aria-hidden="true"><path d="M2 2l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.5"/></svg></a>
       <a class="lang" href="../" hreflang="es" lang="es" aria-label="ES: versión en español">ES</a>
     </nav>
     </div>
@@ -691,6 +694,54 @@
 </section>
 
 
+<section class="visit section" id="contacto" aria-labelledby="t-contacto">
+  <div class="visit__grid frame">
+    <div class="visit__head">
+      <h2 id="t-contacto" class="head" data-reveal>Location and contact</h2>
+      <p data-reveal style="--i:1">Our orchard is in Tuxtla Chico, in the Soconusco region of Chiapas, near Tapachula and the Guatemalan border. If you would like to visit, let us know ahead of time and we will be expecting you.</p>
+    </div>
+    <figure class="visit__map" data-reveal style="--i:1">
+      <div class="visit__view">
+        <div class="visit__wait" aria-hidden="true"><svg viewBox="0 0 24 32"><path d="M12 1C5.9 1 1 5.8 1 11.8 1 20 12 31 12 31s11-11 11-19.2C23 5.8 18.1 1 12 1z" fill="currentColor"/><circle cx="12" cy="12" r="4.2" fill="var(--bg)"/></svg></div>
+        <iframe id="mapa" title="Google map showing the orchard in Tuxtla Chico, Chiapas" src="https://maps.google.com/maps?q=14.922712,-92.180526&amp;hl=en&amp;z=15&amp;t=m&amp;output=embed" data-src="https://maps.google.com/maps?q=14.922712,-92.180526&amp;hl=en&amp;z=15&amp;output=embed" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe>
+      </div>
+      <figcaption class="visit__bar">
+        <div class="visit__modes" role="group" aria-label="Map type">
+          <button type="button" data-modo="m" aria-pressed="true">Map</button>
+          <button type="button" data-modo="k" aria-pressed="false">Satellite</button>
+        </div>
+        <p class="visit__coords small nums">14.9227° N, 92.1805° W</p>
+        <div class="visit__acts">
+          <a class="button button--small" href="https://www.google.com/maps/dir/?api=1&amp;destination=14.922712,-92.180526" target="_blank" rel="noopener">Get directions</a>
+          <a class="link-plain" href="https://maps.app.goo.gl/ZEzXxGLVB8gdPqeT9" target="_blank" rel="noopener">Open in Google Maps</a>
+          <button type="button" class="link-plain" data-copiar="https://maps.app.goo.gl/ZEzXxGLVB8gdPqeT9" data-ok="Link copied">Copy location</button>
+        </div>
+      </figcaption>
+    </figure>
+    <ul class="visit__cards">
+      <li class="visit__card" data-reveal style="--i:1">
+        <h3>WhatsApp</h3>
+        <a class="link-plain nums" href="https://wa.me/529622699611" data-wa="flotante" data-fijo target="_blank" rel="noopener">962 269 9611</a>
+        <a class="link-plain nums" href="https://wa.me/529621707553" data-wa="flotante" data-numero="529621707553" data-fijo target="_blank" rel="noopener">962 170 7553</a>
+      </li>
+      <li class="visit__card" data-reveal style="--i:2">
+        <h3>Phone</h3>
+        <a class="link-plain nums" href="tel:+529622699611">962 269 9611</a>
+        <a class="link-plain nums" href="tel:+529621707553">962 170 7553</a>
+      </li>
+      <li class="visit__card visit__card--wide" data-reveal style="--i:3">
+        <h3>Email</h3>
+        <a class="link-plain" href="mailto:oscaralexander_28@hotmail.com">oscaralexander_28@hotmail.com</a>
+        <a class="link-plain" href="mailto:oscaralexander2000@gmail.com">oscaralexander2000@gmail.com</a>
+      </li>
+      <li class="visit__card visit__card--wide" data-reveal style="--i:4">
+        <h3>Hours</h3>
+        <p>Every day, 7 a.m. to 11 p.m. Chiapas time (UTC−6)</p>
+      </li>
+    </ul>
+  </div>
+</section>
+
 <section class="more section" id="mas-frutas" aria-labelledby="t-mas">
   <div class="more__grid frame">
     <h2 id="t-mas" class="head" data-reveal>More Soconusco fruit, soon</h2>
@@ -722,6 +773,7 @@
         <li><a class="link" href="#agenda">Book a call</a></li>
         <li><a class="link" href="#preguntas">FAQ</a></li>
         <li><a class="link" href="#cotizar">Get a quote</a></li>
+        <li><a class="link" href="#contacto">Location</a></li>
       </ul>
       <div class="foot__contact">
         <p><b>Ixchel, Soconusco Fruit</b></p>
@@ -731,6 +783,8 @@
           <a class="link-plain" href="https://wa.me/529622699611" data-wa="flotante" data-fijo target="_blank" rel="noopener">WhatsApp 962 269 9611</a>
           <a class="link-plain" href="https://wa.me/529621707553" data-wa="flotante" data-numero="529621707553" data-fijo target="_blank" rel="noopener">WhatsApp 962 170 7553</a>
           <a class="link-plain" href="tel:+529622699611">Call +52 962 269 9611</a>
+          <a class="link-plain" href="mailto:oscaralexander_28@hotmail.com">oscaralexander_28@hotmail.com</a>
+          <a class="link-plain" href="mailto:oscaralexander2000@gmail.com">oscaralexander2000@gmail.com</a>
         </p>
         <p class="small">Every day, 7 a.m. to 11 p.m. Chiapas time (UTC−6)</p>
         <p><a class="link-plain" href="../" hreflang="es" lang="es">Versión en español</a></p>
@@ -743,6 +797,28 @@
     </div>
   </div>
 </footer>
+
+<div class="drop" id="menu-contacto" hidden>
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <symbol id="i-pin" viewBox="0 0 24 24"><path d="M12 2C8 2 5 5 5 9c0 5.3 7 13 7 13s7-7.7 7-13c0-4-3-7-7-7z" fill="currentColor"/><circle cx="12" cy="9" r="2.6" fill="var(--paper)"/></symbol>
+    <symbol id="i-wa" viewBox="0 0 32 32"><path d="M16 3C8.8 3 3 8.5 3 15.3c0 2.6.9 5 2.4 7L4 29l6.9-2.2c1.6.7 3.3 1 5.1 1 7.2 0 13-5.5 13-12.3S23.2 3 16 3z" fill="currentColor"/><path d="M11.5 10.5c.4-.4 1.2-.5 1.6 0l1.4 2.4c.2.4.1.9-.2 1.2l-.8.8c.8 1.7 2.1 3 3.8 3.8l.8-.8c.3-.3.8-.4 1.2-.2l2.4 1.4c.5.3.5 1.1 0 1.6l-1 1c-1 1-2.6 1.1-4.4.2-2.6-1.3-4.7-3.4-6-6-.9-1.8-.8-3.4.2-4.4z" fill="var(--paper)"/></symbol>
+    <symbol id="i-tel" viewBox="0 0 24 24"><path d="M6.6 3.5c.6-.6 1.6-.5 2 .2l1.8 3c.3.5.2 1.2-.2 1.6L9 9.5c1 2.2 2.8 4 5 5l1.2-1.2c.4-.4 1.1-.5 1.6-.2l3 1.8c.7.4.8 1.4.2 2l-1.4 1.4c-1.3 1.3-3.4 1.4-5.7.3-3.4-1.6-6-4.3-7.7-7.7C3.1 8.6 3.2 6.5 4.5 5.2z" fill="currentColor"/></symbol>
+    <symbol id="i-mail" viewBox="0 0 24 24"><rect x="2.5" y="5" width="19" height="14" fill="currentColor"/><path d="M3.5 6.5l8.5 6.5 8.5-6.5" fill="none" stroke="var(--paper)" stroke-width="1.8"/></symbol>
+  </svg>
+  <div class="drop__panel">
+    <p class="drop__title">Contact</p>
+    <button type="button" class="drop__close" aria-label="Close contact menu"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 3l10 10M13 3L3 13" stroke="currentColor" stroke-width="2.5"/></svg></button>
+    <ul class="drop__list">
+      <li style="--k:1"><a href="#contacto" data-cerrar><svg class="drop__ico" aria-hidden="true"><use href="#i-pin"/></svg><span><b>See map and location</b><small>Tuxtla Chico, Chiapas</small></span></a></li>
+      <li style="--k:2"><a href="https://wa.me/529622699611" data-wa="flotante" data-fijo target="_blank" rel="noopener"><svg class="drop__ico" aria-hidden="true"><use href="#i-wa"/></svg><span><b>WhatsApp</b><small class="nums">962 269 9611</small></span></a></li>
+      <li style="--k:3"><a href="https://wa.me/529621707553" data-wa="flotante" data-numero="529621707553" data-fijo target="_blank" rel="noopener"><svg class="drop__ico" aria-hidden="true"><use href="#i-wa"/></svg><span><b>WhatsApp</b><small class="nums">962 170 7553</small></span></a></li>
+      <li style="--k:4"><a href="tel:+529622699611"><svg class="drop__ico" aria-hidden="true"><use href="#i-tel"/></svg><span><b>Call</b><small class="nums">962 269 9611</small></span></a></li>
+      <li style="--k:5"><a href="tel:+529621707553"><svg class="drop__ico" aria-hidden="true"><use href="#i-tel"/></svg><span><b>Call</b><small class="nums">962 170 7553</small></span></a></li>
+      <li style="--k:6"><a href="mailto:oscaralexander_28@hotmail.com"><svg class="drop__ico" aria-hidden="true"><use href="#i-mail"/></svg><span><b>Email</b><small>oscaralexander_28@hotmail.com</small></span></a></li>
+      <li style="--k:7"><a href="mailto:oscaralexander2000@gmail.com"><svg class="drop__ico" aria-hidden="true"><use href="#i-mail"/></svg><span><b>Email</b><small>oscaralexander2000@gmail.com</small></span></a></li>
+    </ul>
+  </div>
+</div>
 
 <a class="fab" href="https://wa.me/529622699611" data-wa="flotante" data-fijo target="_blank" rel="noopener" aria-label="Message us on WhatsApp">
   <svg viewBox="0 0 32 32" aria-hidden="true"><path d="M16 3C8.8 3 3 8.5 3 15.3c0 2.6.9 5 2.4 7L4 29l6.9-2.2c1.6.7 3.3 1 5.1 1 7.2 0 13-5.5 13-12.3S23.2 3 16 3z" fill="currentColor"/><path d="M11.5 10.5c.4-.4 1.2-.5 1.6 0l1.4 2.4c.2.4.1.9-.2 1.2l-.8.8c.8 1.7 2.1 3 3.8 3.8l.8-.8c.3-.3.8-.4 1.2-.2l2.4 1.4c.5.3.5 1.1 0 1.6l-1 1c-1 1-2.6 1.1-4.4.2-2.6-1.3-4.7-3.4-6-6-.9-1.8-.8-3.4.2-4.4z" fill="var(--fab-ink)"/></svg>
