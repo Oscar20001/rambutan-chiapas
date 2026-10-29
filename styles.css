@@ -234,6 +234,7 @@ h1, h2, h3 { font-family: var(--font-display); font-weight: 400; text-transform:
 .rows li { display: flex; align-items: baseline; gap: 0.5rem; padding-block: 0.3rem; }
 .rows li > span:first-child { flex: 0 1 auto; min-width: 0; }
 .rows li > span:last-child { flex: none; text-align: right; }
+.rows li[hidden] { display: none; }
 .rows i { flex: 1 1 1rem; min-width: 1rem; align-self: flex-end; margin-bottom: 0.4em; border-bottom: 4px dotted rgba(19, 54, 33, 0.55); }
 .rows b { font-weight: 600; }
 .slip__total { max-width: none; margin: 1.9rem calc(clamp(1.25rem, 2.6vw, 2.25rem) * -1) 0; padding: 0.85rem clamp(1.25rem, 2.6vw, 2.25rem); background: var(--paper-ink); color: var(--paper); display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; font-size: var(--step-lead); font-family: var(--font-display); letter-spacing: 0.01em; flex-wrap: wrap; }
