@@ -845,7 +845,7 @@ $$('[data-imprimir]').forEach((btn) => btn.addEventListener('click', () => {
   const fab = $('.fab');
   if (!fab) return;
   // se quita del camino donde ya hay un formulario a la vista
-  const formas = $$('#cotizar, #agenda, #contacto, .foot');
+  const formas = $$('#envio .slip, #cotizar, #agenda, #contacto, .foot');
   const visibles = new Set();
   const pintar = () => fab.classList.toggle('is-on', window.scrollY > window.innerHeight * 0.6 && !visibles.size);
   if ('IntersectionObserver' in window) {
@@ -912,6 +912,12 @@ $$('[data-imprimir]').forEach((btn) => btn.addEventListener('click', () => {
   if (!mapa) return;
   const vista = mapa.closest('.visit__view');
   mapa.addEventListener('load', () => vista.classList.add('is-ready'));
+  // el mapa de Google pesa: se carga solo cuando su sección ya está cerca
+  const cargar = () => { if (!mapa.src) mapa.src = `${mapa.dataset.src}&t=${$('[data-modo][aria-pressed="true"]')?.dataset.modo || 'm'}`; };
+  if ('IntersectionObserver' in window) {
+    const io = new IntersectionObserver((es) => { if (es.some((e) => e.isIntersecting)) { cargar(); io.disconnect(); } }, { rootMargin: '400px 0px' });
+    io.observe(vista);
+  } else cargar();
   $$('[data-modo]').forEach((b) => b.addEventListener('click', () => {
     if (b.getAttribute('aria-pressed') === 'true') return;
     $$('[data-modo]').forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
