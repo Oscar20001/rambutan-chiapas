@@ -249,6 +249,7 @@ PARES = [
     ('<p class="small form-legal">Al enviar aceptas el <a class="link-plain" href="privacidad.html">aviso de privacidad</a>.</p>', '<p class="small form-legal">By sending you accept our <a class="link-plain" href="privacy.html">privacy notice</a>.</p>'),
     ('Ilustraciones hechas para este sitio. <a class="link-plain" href="privacidad.html">Aviso de privacidad</a></p>', 'Illustrations made for this site. <a class="link-plain" href="privacy.html">Privacy notice</a></p>'),
     ('href="img/icono-', 'href="../img/icono-'),
+    ('aria-label="Hecho por J.O.K.S (abre su página de Facebook)"><span class="joks__by">Hecho por</span>', 'aria-label="Made by J.O.K.S (opens their Facebook page)"><span class="joks__by">Made by</span>'),
     ('<a class="button button--small" href="#inicio">Volver arriba</a>', '<a class="button button--small" href="#inicio">Back to top</a>'),
     ('aria-label="Escribir por WhatsApp">', 'aria-label="Message us on WhatsApp">'),
 ]

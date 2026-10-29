@@ -689,6 +689,7 @@ select.field option { background: var(--red); color: var(--paper); }
 /* ---------- contacto en el pie ---------- */
 .foot__phones { display: grid; gap: 0.35rem; justify-items: inherit; }
 .foot__phones a { display: inline-flex; min-height: 2.75rem; align-items: center; }
+.foot a[hreflang] { display: inline-flex; min-height: 2.75rem; align-items: center; }
 
 /* ---------- botón flotante de WhatsApp ---------- */
 .fab { --fab-ink: var(--red); position: fixed; right: max(1rem, env(safe-area-inset-right)); bottom: max(1rem, env(safe-area-inset-bottom)); z-index: 30; display: inline-flex; align-items: center; gap: 0.5rem; min-height: 3.5rem; padding: 0 1.25rem 0 0.9rem; background: var(--ink); color: var(--bg); font-family: var(--font-display); font-size: var(--step-lead); letter-spacing: 0.03em; text-decoration: none; transform: translateY(160%); transition: transform 420ms var(--ease-out), background-color var(--t-hover) ease; }
@@ -721,3 +722,33 @@ select.field option { background: var(--red); color: var(--paper); }
 .legal a:focus-visible { outline-color: var(--paper-ink); }
 .form-legal { margin-top: 0.25rem; }
 .form-legal a { color: inherit; }
+
+/* ---------- firma de J.O.K.S: las letras saltan y llevan a su Facebook ---------- */
+.foot__last { align-items: center; }
+.joks { display: inline-flex; align-items: center; gap: 0.6rem; min-height: 3rem; padding: 0.25rem 0.9rem; border: 2px solid var(--ink); color: var(--ink); text-decoration: none; -webkit-tap-highlight-color: transparent; transition: background-color var(--t-hover) ease, color var(--t-hover) ease, transform var(--t-press) var(--ease-out); }
+.joks__by { font-style: italic; }
+.joks__name { display: inline-flex; align-items: baseline; font-family: var(--font-display); font-size: var(--step-lead); letter-spacing: 0.04em; line-height: 1; }
+.joks__name b, .joks__name i { font-weight: 400; font-style: normal; display: inline-block; transition: transform 360ms cubic-bezier(0.34, 1.6, 0.64, 1), color var(--t-hover) ease; }
+.joks__name i { color: var(--fruit-skin); }
+.joks:active { transform: scale(0.96); }
+.joks:hover, .joks:focus-visible, .joks:active { background: var(--ink); color: var(--bg); }
+.joks:hover .joks__name i, .joks:focus-visible .joks__name i, .joks:active .joks__name i { color: var(--red); }
+@media (prefers-reduced-motion: no-preference) {
+  .joks:hover .joks__name > *, .joks:focus-visible .joks__name > *, .joks:active .joks__name > * { transform: translateY(-0.18em); }
+  .joks__name > :nth-child(2) { transition-delay: 30ms; } .joks__name > :nth-child(3) { transition-delay: 60ms; }
+  .joks__name > :nth-child(4) { transition-delay: 90ms; } .joks__name > :nth-child(5) { transition-delay: 120ms; }
+  .joks__name > :nth-child(6) { transition-delay: 150ms; } .joks__name > :nth-child(7) { transition-delay: 180ms; }
+}
+@media (max-width: 760px) {
+  .foot__last { flex-direction: column; align-items: stretch; }
+  .joks { justify-content: center; }
+  .foot__last .button { align-self: flex-start; }
+}
+
+/* ---------- ajustes para tableta, iPhone y enlaces pequeños ---------- */
+.form-legal a, .foot__last .small a { display: inline-block; padding-block: 0.35rem; }
+@media (min-width: 561px) and (max-width: 900px) {
+  .faq__tall { aspect-ratio: 16 / 9; }
+  .faq__square { width: 26%; }
+}
+.foot { padding-bottom: max(2rem, calc(env(safe-area-inset-bottom) + 1rem)); }
