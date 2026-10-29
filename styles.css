@@ -337,18 +337,9 @@ h1, h2, h3 { font-family: var(--font-display); font-weight: 400; text-transform:
 .foot__blocks { display: flex; align-items: flex-end; gap: 4px; height: calc(var(--step-display) * 1.12); }
 .foot__blocks span { flex: 1 1 0; height: var(--h); background: var(--red); color: var(--bg); display: flex; align-items: flex-end; justify-content: center; overflow: hidden; font-family: var(--font-display); font-size: var(--step-display); line-height: 0.78; padding-bottom: 0.04em; }
 .foot__blocks span:nth-child(even) { background: var(--ink); }
-.foot__grid { margin-top: 3.5rem; display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: var(--gutter); }
-.foot__links { grid-column: 1 / span 8; display: grid; grid-template-columns: repeat(3, auto); justify-content: start; gap: 0.5rem 3rem; }
-.foot__links a { display: inline-flex; min-height: 2.75rem; align-items: center; }
-.foot__contact { grid-column: 9 / -1; display: grid; gap: 0.5rem; align-content: start; justify-items: end; text-align: right; }
-.foot__contact p + p { margin-top: 0; }
-.foot__last { margin-top: 3rem; display: flex; justify-content: space-between; align-items: center; gap: 1rem; flex-wrap: wrap; }
 @media (max-width: 760px) {
   .foot__blocks { gap: 3px; }
   .foot__blocks span { font-size: min(var(--step-display), 17vw); }
-  .foot__grid { grid-template-columns: 1fr; margin-top: 2.5rem; }
-  .foot__links { grid-column: 1; grid-template-columns: 1fr 1fr; gap: 0 1.5rem; }
-  .foot__contact { grid-column: 1; margin-top: 1rem; justify-items: start; text-align: left; }
 }
 
 /* ---------- entradas: el contenido nunca queda oculto sin script ---------- */
@@ -687,13 +678,11 @@ select.field option { background: var(--red); color: var(--paper); }
 @media (max-width: 420px) { .coupon__pair { grid-template-columns: 1fr; } }
 
 /* ---------- contacto en el pie ---------- */
-.foot__phones { display: grid; gap: 0.35rem; justify-items: inherit; }
-.foot__phones a { display: inline-flex; min-height: 2.75rem; align-items: center; }
-.foot a[hreflang] { display: inline-flex; min-height: 2.75rem; align-items: center; }
 
 /* ---------- botón flotante de WhatsApp ---------- */
-.fab { --fab-ink: var(--red); position: fixed; right: max(1rem, env(safe-area-inset-right)); bottom: max(1rem, env(safe-area-inset-bottom)); z-index: 30; display: inline-flex; align-items: center; gap: 0.5rem; min-height: 3.5rem; padding: 0 1.25rem 0 0.9rem; background: var(--ink); color: var(--bg); font-family: var(--font-display); font-size: var(--step-lead); letter-spacing: 0.03em; text-decoration: none; transform: translateY(160%); transition: transform 420ms var(--ease-out), background-color var(--t-hover) ease; }
-.fab svg { width: 2rem; height: 2rem; flex: none; }
+.fab { --fab-ink: var(--red); position: fixed; right: max(1rem, env(safe-area-inset-right)); bottom: max(1rem, env(safe-area-inset-bottom)); z-index: 30; display: grid; place-items: center; width: 3.75rem; height: 3.75rem; padding: 0; background: var(--ink); color: var(--bg); box-shadow: 0 0.6rem 1.6rem rgba(0, 0, 0, 0.35); text-decoration: none; transform: translateY(160%); transition: transform 420ms var(--ease-out), background-color var(--t-hover) ease; }
+.fab svg { width: 2.1rem; height: 2.1rem; }
+.fab span { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
 .fab.is-on { transform: none; }
 .fab:focus-visible { transform: none; outline-color: var(--ink); }
 @media (hover: hover) and (pointer: fine) { .fab:hover { background: #fbe896; } }
@@ -701,10 +690,6 @@ select.field option { background: var(--red); color: var(--paper); }
   .fab.is-on svg { animation: nudge 4s ease-in-out 1.5s infinite; }
 }
 @keyframes nudge { 0%, 86%, 100% { transform: rotate(0); } 90% { transform: rotate(-12deg); } 94% { transform: rotate(10deg); } }
-@media (max-width: 760px) {
-  .fab { padding: 0; width: 3.5rem; justify-content: center; }
-  .fab span { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
-}
 
 /* ---------- impresión: la ficha técnica sola ---------- */
 @media print {
@@ -723,30 +708,8 @@ select.field option { background: var(--red); color: var(--paper); }
 .form-legal { margin-top: 0.25rem; }
 .form-legal a { color: inherit; }
 
-/* ---------- firma de J.O.K.S: las letras saltan y llevan a su Facebook ---------- */
-.foot__last { align-items: center; }
-.joks { display: inline-flex; align-items: center; gap: 0.6rem; min-height: 3rem; padding: 0.25rem 0.9rem; border: 2px solid var(--ink); color: var(--ink); text-decoration: none; -webkit-tap-highlight-color: transparent; transition: background-color var(--t-hover) ease, color var(--t-hover) ease, transform var(--t-press) var(--ease-out); }
-.joks__by { font-style: italic; }
-.joks__name { display: inline-flex; align-items: baseline; font-family: var(--font-display); font-size: var(--step-lead); letter-spacing: 0.04em; line-height: 1; }
-.joks__name b, .joks__name i { font-weight: 400; font-style: normal; display: inline-block; transition: transform 360ms cubic-bezier(0.34, 1.6, 0.64, 1), color var(--t-hover) ease; }
-.joks__name i { color: var(--fruit-skin); }
-.joks:active { transform: scale(0.96); }
-.joks:hover, .joks:focus-visible, .joks:active { background: var(--ink); color: var(--bg); }
-.joks:hover .joks__name i, .joks:focus-visible .joks__name i, .joks:active .joks__name i { color: var(--red); }
-@media (prefers-reduced-motion: no-preference) {
-  .joks:hover .joks__name > *, .joks:focus-visible .joks__name > *, .joks:active .joks__name > * { transform: translateY(-0.18em); }
-  .joks__name > :nth-child(2) { transition-delay: 30ms; } .joks__name > :nth-child(3) { transition-delay: 60ms; }
-  .joks__name > :nth-child(4) { transition-delay: 90ms; } .joks__name > :nth-child(5) { transition-delay: 120ms; }
-  .joks__name > :nth-child(6) { transition-delay: 150ms; } .joks__name > :nth-child(7) { transition-delay: 180ms; }
-}
-@media (max-width: 760px) {
-  .foot__last { flex-direction: column; align-items: stretch; }
-  .joks { justify-content: center; }
-  .foot__last .button { align-self: flex-start; }
-}
-
 /* ---------- ajustes para tableta, iPhone y enlaces pequeños ---------- */
-.form-legal a, .foot__last .small a { display: inline-block; padding-block: 0.35rem; }
+.form-legal a { display: inline-block; padding-block: 0.35rem; }
 @media (min-width: 561px) and (max-width: 900px) {
   .faq__tall { aspect-ratio: 16 / 9; }
   .faq__square { width: 26%; }
@@ -832,4 +795,73 @@ select.field option { background: var(--red); color: var(--paper); }
   .visit__cards { grid-template-columns: 1fr; }
   .visit__acts .button { flex: 1 1 100%; }
 }
-.foot__phones a[href^="mailto"] { overflow-wrap: anywhere; }
+
+/* ---------- pie de página ---------- */
+.foot { --ico-in: var(--bg); position: relative; }
+.foot__grid { margin-top: clamp(3rem, 6vw, 5rem); padding-top: clamp(2rem, 4vw, 3rem); border-top: 1px solid rgba(244, 217, 108, 0.22); display: grid; grid-template-columns: 1.3fr 1fr 1.25fr 1.1fr; gap: clamp(2rem, 4vw, 4rem); }
+.foot__col { display: grid; align-content: start; gap: 1rem; min-width: 0; }
+.foot__h { position: relative; padding-bottom: 0.7rem; font-family: var(--font-display); font-size: var(--step-lead); letter-spacing: 0.04em; line-height: 1; }
+.foot__h::after { content: ""; position: absolute; left: 0; bottom: 0; width: 2.5rem; height: 3px; background: var(--fruit-skin); }
+.foot__about p:not(.foot__h) { color: var(--muted); max-width: 32ch; }
+.foot__cta { justify-self: start; gap: 0.6rem; --ico-in: var(--accent); }
+.foot__cta svg { width: 1.4rem; height: 1.4rem; color: var(--accent-ink); }
+@media (hover: hover) and (pointer: fine) { .foot__cta:hover { background: #fbe896; } }
+.foot__links { display: grid; grid-template-columns: 1fr 1fr; gap: 0 1.25rem; }
+.foot__links a { position: relative; display: inline-flex; white-space: nowrap; align-items: center; min-height: 2.6rem; color: var(--muted); text-decoration: none; transition: color var(--t-hover) ease, transform var(--t-hover) var(--ease-out); }
+.foot__links a::before { content: ""; position: absolute; left: -0.9rem; width: 0.4rem; height: 0.4rem; border-radius: 50%; background: var(--fruit-skin); opacity: 0; transform: scale(0); transition: opacity var(--t-hover) ease, transform var(--t-hover) var(--ease-out); }
+.foot__links a:hover, .foot__links a:focus-visible { color: var(--ink); transform: translateX(0.5rem); }
+.foot__links a:hover::before, .foot__links a:focus-visible::before { opacity: 1; transform: none; }
+.foot__rows { display: grid; gap: 0.35rem; }
+.foot__rows a, .foot__rows p { display: flex; align-items: center; gap: 0.8rem; min-height: 3rem; margin: 0; padding: 0.25rem 0; color: var(--ink); text-decoration: none; max-width: none; }
+.foot__rows svg { flex: none; width: 2.4rem; height: 2.4rem; padding: 0.5rem; background: rgba(244, 217, 108, 0.1); color: var(--ink); transition: background-color var(--t-hover) ease, color var(--t-hover) ease, transform 320ms cubic-bezier(0.34, 1.6, 0.64, 1); }
+.foot__rows span { display: grid; min-width: 0; line-height: 1.25; overflow-wrap: anywhere; }
+.foot__rows small { font-size: 0.8125rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); opacity: 0.85; }
+.foot__rows a:hover svg, .foot__rows a:focus-visible svg { --ico-in: var(--ink); background: var(--fruit-skin); color: var(--ink); transform: rotate(-8deg) scale(1.06); }
+.foot__rows a:hover span, .foot__rows a:focus-visible span { text-decoration: underline; text-underline-offset: 0.2em; text-decoration-thickness: 0.07em; }
+.foot__lang { justify-self: start; display: inline-flex; align-items: center; min-height: 2.75rem; padding: 0 1rem; border: 1px solid rgba(244, 217, 108, 0.45); font-family: var(--font-display); letter-spacing: 0.06em; text-decoration: none; transition: background-color var(--t-hover) ease, color var(--t-hover) ease; }
+.foot__lang:hover, .foot__lang:focus-visible { background: var(--ink); color: var(--bg); }
+
+.foot__last { margin-top: clamp(2.5rem, 5vw, 4rem); padding-top: 1.5rem; border-top: 1px solid rgba(244, 217, 108, 0.22); display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 1.25rem; }
+.foot__legal { margin: 0; max-width: none; font-size: var(--step-small); color: var(--muted); }
+.foot__legal a { display: inline-block; padding-block: 0.6rem; color: var(--ink); text-decoration: underline; text-underline-offset: 0.2em; text-decoration-thickness: 0.07em; }
+.foot__dot { margin-inline: 0.35rem; color: var(--fruit-skin); }
+.foot__up { justify-self: end; display: grid; place-items: center; width: 3.25rem; height: 3.25rem; border: 2px solid var(--ink); color: var(--ink); transition: background-color var(--t-hover) ease, color var(--t-hover) ease, transform var(--t-press) var(--ease-out); }
+.foot__up svg { width: 1.2rem; height: 1.2rem; transition: transform 320ms var(--ease-out); }
+.foot__up:hover, .foot__up:focus-visible { background: var(--ink); color: var(--bg); }
+.foot__up:hover svg { transform: translateY(-3px); }
+.foot__up:active { transform: scale(0.94); }
+
+/* firma de J.O.K.S: lleva a su Facebook */
+.joks { display: inline-flex; align-items: center; gap: 0.85rem; min-height: 3.75rem; padding: 0.45rem 1.35rem 0.45rem 0.5rem; background: rgba(244, 217, 108, 0.06); border: 1px solid rgba(244, 217, 108, 0.45); color: var(--ink); text-decoration: none; -webkit-tap-highlight-color: transparent; transition: background-color var(--t-hover) ease, color var(--t-hover) ease, border-color var(--t-hover) ease, transform var(--t-press) var(--ease-out), box-shadow var(--t-hover) ease; }
+.joks__fb { flex: none; width: 2.75rem; height: 2.75rem; padding: 0.55rem; background: var(--ink); color: var(--bg); transition: background-color var(--t-hover) ease, color var(--t-hover) ease, transform 360ms cubic-bezier(0.34, 1.6, 0.64, 1); }
+.joks__txt { display: grid; gap: 0.35rem; text-align: left; }
+.joks__by { font-size: 0.75rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--muted); line-height: 1; }
+.joks__name { display: inline-flex; align-items: baseline; font-family: var(--font-display); font-size: clamp(1.6rem, 1.3rem + 0.9vw, 2.1rem); letter-spacing: 0.08em; line-height: 0.95; }
+.joks__name b, .joks__name i { font-weight: 400; font-style: normal; display: inline-block; transition: transform 360ms cubic-bezier(0.34, 1.6, 0.64, 1), color var(--t-hover) ease; }
+.joks__name i { color: var(--fruit-skin); }
+.joks:hover, .joks:focus-visible, .joks:active { background: var(--ink); border-color: var(--ink); color: var(--bg); box-shadow: 0 0.75rem 2rem rgba(0, 0, 0, 0.3); }
+.joks:hover .joks__by, .joks:focus-visible .joks__by, .joks:active .joks__by { color: var(--bg); }
+.joks:hover .joks__fb, .joks:focus-visible .joks__fb, .joks:active .joks__fb { background: #1877f2; color: #fff; transform: scale(1.06); }
+.joks:hover .joks__name i, .joks:focus-visible .joks__name i, .joks:active .joks__name i { color: var(--red); }
+.joks:active { transform: scale(0.97); }
+@media (prefers-reduced-motion: no-preference) {
+  .joks:hover .joks__name > *, .joks:focus-visible .joks__name > *, .joks:active .joks__name > * { transform: translateY(-0.08em) scale(1.06); }
+  .joks__name > :nth-child(2) { transition-delay: 30ms; } .joks__name > :nth-child(3) { transition-delay: 60ms; }
+  .joks__name > :nth-child(4) { transition-delay: 90ms; } .joks__name > :nth-child(5) { transition-delay: 120ms; }
+  .joks__name > :nth-child(6) { transition-delay: 150ms; } .joks__name > :nth-child(7) { transition-delay: 180ms; }
+}
+
+@media (max-width: 1280px) {
+  .foot__grid { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 1100px) {
+  .foot__last { grid-template-columns: 1fr auto; }
+  .foot__legal { grid-column: 1 / -1; order: 2; text-align: center; }
+  .joks { justify-self: start; }
+}
+@media (max-width: 600px) {
+  .foot__grid { grid-template-columns: 1fr; gap: 2.5rem; }
+  .foot__cta { justify-self: stretch; }
+  .foot__dot { display: none; }
+  .foot__legal a { display: block; width: fit-content; margin-inline: auto; }
+}

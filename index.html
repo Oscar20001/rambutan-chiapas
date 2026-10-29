@@ -122,6 +122,12 @@
 <body>
 
 <svg width="0" height="0" class="sr-only" aria-hidden="true" focusable="false">
+    <symbol id="i-pin" viewBox="0 0 24 24"><path d="M12 2C8 2 5 5 5 9c0 5.3 7 13 7 13s7-7.7 7-13c0-4-3-7-7-7z" fill="currentColor"/><circle cx="12" cy="9" r="2.6" fill="var(--ico-in, var(--paper))"/></symbol>
+    <symbol id="i-wa" viewBox="0 0 32 32"><path d="M16 3C8.8 3 3 8.5 3 15.3c0 2.6.9 5 2.4 7L4 29l6.9-2.2c1.6.7 3.3 1 5.1 1 7.2 0 13-5.5 13-12.3S23.2 3 16 3z" fill="currentColor"/><path d="M11.5 10.5c.4-.4 1.2-.5 1.6 0l1.4 2.4c.2.4.1.9-.2 1.2l-.8.8c.8 1.7 2.1 3 3.8 3.8l.8-.8c.3-.3.8-.4 1.2-.2l2.4 1.4c.5.3.5 1.1 0 1.6l-1 1c-1 1-2.6 1.1-4.4.2-2.6-1.3-4.7-3.4-6-6-.9-1.8-.8-3.4.2-4.4z" fill="var(--ico-in, var(--paper))"/></symbol>
+    <symbol id="i-tel" viewBox="0 0 24 24"><path d="M6.6 3.5c.6-.6 1.6-.5 2 .2l1.8 3c.3.5.2 1.2-.2 1.6L9 9.5c1 2.2 2.8 4 5 5l1.2-1.2c.4-.4 1.1-.5 1.6-.2l3 1.8c.7.4.8 1.4.2 2l-1.4 1.4c-1.3 1.3-3.4 1.4-5.7.3-3.4-1.6-6-4.3-7.7-7.7C3.1 8.6 3.2 6.5 4.5 5.2z" fill="currentColor"/></symbol>
+    <symbol id="i-reloj" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9.5" fill="currentColor"/><path d="M12 6.5V12l3.5 2.2" fill="none" stroke="var(--ico-in, var(--paper))" stroke-width="2"/></symbol>
+    <symbol id="i-camion" viewBox="0 0 24 24"><path d="M1.5 6h12.5v10H1.5zM14 9h4.5l3.5 3.8V16h-8z" fill="currentColor"/><circle cx="6" cy="17.5" r="2.2" fill="currentColor" stroke="var(--ico-in, var(--paper))" stroke-width="1.4"/><circle cx="17.5" cy="17.5" r="2.2" fill="currentColor" stroke="var(--ico-in, var(--paper))" stroke-width="1.4"/></symbol>
+    <symbol id="i-mail" viewBox="0 0 24 24"><rect x="2.5" y="5" width="19" height="14" fill="currentColor"/><path d="M3.5 6.5l8.5 6.5 8.5-6.5" fill="none" stroke="var(--ico-in, var(--paper))" stroke-width="1.8"/></symbol>
   <defs>
     <symbol id="fruta" viewBox="0 0 100 104"><path d="M77.0 52.3Q89.2 56.3 94.8 59.4M76.4 57.4Q86.1 62.6 89.0 69.1M75.9 59.5Q86.6 66.6 90.0 73.6M74.4 63.5Q82.8 71.0 85.9 75.6M72.9 66.3Q81.1 75.8 82.3 83.4M70.9 69.1Q76.7 77.6 77.3 83.3M67.7 72.3Q72.5 82.9 71.3 89.8M63.6 75.3Q66.3 87.3 65.2 93.8M60.6 76.8Q61.9 88.3 60.5 94.0M56.2 78.3Q55.2 91.4 51.7 97.9M54.3 78.7Q52.8 89.8 47.9 94.9M51.3 79.0Q48.6 89.8 45.0 94.5M46.2 78.7Q42.0 88.1 38.4 91.7M41.9 77.7Q34.3 88.5 30.1 93.3M39.8 77.0Q30.9 87.6 24.2 91.2M36.6 75.5Q28.2 83.4 22.5 85.7M33.3 73.2Q23.2 80.2 16.9 81.9M31.1 71.3Q21.2 76.8 16.1 78.5M28.8 68.7Q18.7 72.8 12.2 71.1M25.9 64.2Q12.7 66.3 6.2 66.8M24.5 61.0Q13.0 61.5 7.4 60.2M23.5 56.9Q10.3 55.3 3.9 53.1M23.0 53.3Q11.8 50.5 7.1 45.1M23.0 51.2Q13.2 48.1 9.1 45.2M23.5 46.7Q11.9 40.4 7.2 35.1M24.9 41.9Q15.5 34.3 13.3 27.1M25.3 41.2Q16.2 33.4 14.1 26.5M28.4 35.8Q21.1 25.8 18.3 20.4M30.5 33.4Q25.4 24.7 24.1 20.0M33.5 30.6Q29.4 19.8 29.2 13.8M36.5 28.6Q33.8 17.2 36.7 10.4M39.4 27.2Q38.2 15.2 39.4 9.1M41.7 26.3Q41.4 15.9 43.2 11.0M46.0 25.3Q47.6 14.1 49.2 9.0M49.7 25.0Q53.4 12.8 55.2 7.0M52.9 25.2Q57.4 14.5 60.9 10.0M57.7 26.1Q63.1 17.5 67.0 14.4M60.6 27.2Q67.2 19.2 73.1 17.5M62.6 28.1Q71.0 19.6 76.6 16.8M67.1 31.1Q78.3 23.8 84.2 21.0M69.6 33.5Q79.3 28.6 85.1 28.3M71.2 35.2Q81.3 31.2 87.3 31.6M73.3 38.3Q84.0 35.7 90.5 38.4M75.5 43.1Q86.2 42.6 91.4 44.5M76.6 47.6Q89.8 49.5 96.2 52.0M76.9 50.3Q88.0 52.8 92.7 58.1" fill="none" stroke="var(--fruit-hair)" stroke-width="2.6" stroke-linecap="round"/><circle cx="50" cy="52" r="30" fill="var(--fruit-skin)"/><path d="M56.1 44.4q4.0 0.0 4.8 5.1M42.6 65.7q-3.9 0.7 -5.7 -4.1M58.5 55.2q1.2 3.8 -3.3 6.2M49.8 52.4q-4.0 0.4 -5.4 -4.5M43.6 49.9q-1.4 -3.8 3.0 -6.3M48.4 51.3q-1.1 -3.8 3.5 -6.1M60.8 40.0q4.0 0.2 4.6 5.3M64.3 39.9q3.9 0.8 3.8 5.9M39.4 63.1q-4.0 -0.4 -4.4 -5.5M56.8 62.5q-1.3 3.8 -6.3 3.0M61.0 53.1q2.2 3.4 -1.6 6.8M41.5 49.2q-1.4 -3.8 3.0 -6.3M54.2 48.3q3.9 0.7 3.9 5.8M41.4 55.0q-3.4 -2.1 -1.4 -6.8M49.7 73.9q-3.2 2.4 -6.9 -1.0M33.2 47.5q-1.6 -3.7 2.7 -6.5M30.5 52.3q-2.5 -3.1 0.8 -7.0M66.2 39.6q3.9 1.0 3.5 6.1M38.1 37.5q0.8 -3.9 5.9 -3.7M51.3 50.5q4.0 0.2 4.7 5.2M42.9 31.8q2.1 -3.4 6.8 -1.4M57.3 44.6q4.0 0.4 4.3 5.5M52.3 39.1q3.5 -1.9 6.7 2.1M40.3 69.3q-3.9 0.6 -5.6 -4.2M42.0 48.1q-0.9 -3.9 3.8 -5.9M46.7 73.2q-3.5 2.0 -6.7 -2.0" fill="none" stroke="var(--fruit-hair-in)" stroke-width="2" stroke-linecap="round"/></symbol>
     <symbol id="hoja" viewBox="0 0 120 40"><path d="M2 20C30 -2 82 -4 118 20C82 44 30 42 2 20Z" fill="var(--leaf-fill)"/><path d="M6 20H112" stroke="var(--leaf-vein)" stroke-width="2.5" stroke-linecap="round"/></symbol>
@@ -761,49 +767,56 @@
     <p class="foot__mark"><span class="foot__blocks"><span data-reveal style="--h:100%;--i:1">I</span><span data-reveal style="--h:78%;--i:2">X</span><span data-reveal style="--h:92%;--i:3">C</span><span data-reveal style="--h:74%;--i:4">H</span><span data-reveal style="--h:96%;--i:5">E</span><span data-reveal style="--h:84%;--i:6">L</span></span>
     </p></div>
     <div class="foot__grid">
-      <ul class="foot__links">
-        <li><a class="link" href="#origen">Origen</a></li>
-        <li><a class="link" href="#fruta">La fruta</a></li>
-        <li><a class="link" href="#volumen">Por volumen</a></li>
-        <li><a class="link" href="#envio">Guía de embarque</a></li>
-        <li><a class="link" href="#confianza">Compromisos</a></li>
-        <li><a class="link" href="#ficha">Ficha técnica</a></li>
-        <li><a class="link" href="#precio">Pedido mayorista</a></li>
-        <li><a class="link" href="#agenda">Agenda</a></li>
-        <li><a class="link" href="#preguntas">Preguntas</a></li>
-        <li><a class="link" href="#cotizar">Cotizar</a></li>
-        <li><a class="link" href="#contacto">Ubicación</a></li>
-      </ul>
-      <div class="foot__contact">
-        <p><b>Ixchel, Frutas del Soconusco</b></p>
-        <p>Tuxtla Chico, Soconusco, Chiapas, México</p>
-        <p>Envíos refrigerados a toda la República</p>
-        <p class="foot__phones nums">
-          <a class="link-plain" href="https://wa.me/529622699611" data-wa="flotante" data-fijo target="_blank" rel="noopener">WhatsApp 962 269 9611</a>
-          <a class="link-plain" href="https://wa.me/529621707553" data-wa="flotante" data-numero="529621707553" data-fijo target="_blank" rel="noopener">WhatsApp 962 170 7553</a>
-          <a class="link-plain" href="tel:+529622699611">Llamar al 962 269 9611</a>
-          <a class="link-plain" href="mailto:oscaralexander_28@hotmail.com">oscaralexander_28@hotmail.com</a>
-          <a class="link-plain" href="mailto:oscaralexander2000@gmail.com">oscaralexander2000@gmail.com</a>
-        </p>
-        <p class="small">Todos los días, de 7:00 a 23:00 (hora de Chiapas)</p>
-        <p><a class="link-plain" href="en/" hreflang="en" lang="en">English version</a></p>
+      <div class="foot__col foot__about">
+        <p class="foot__h">Ixchel, Frutas del Soconusco</p>
+        <p>Rambután rojo cortado a mano en Tuxtla Chico, Chiapas. Vendemos por tonelada con envío refrigerado a todo México.</p>
+        <a class="button button--small foot__cta" href="https://wa.me/529622699611" data-wa="hero" data-fijo target="_blank" rel="noopener"><svg aria-hidden="true"><use href="#i-wa"/></svg>Cotizar por WhatsApp</a>
+      </div>
+      <nav class="foot__col" aria-labelledby="f-explora">
+        <p class="foot__h" id="f-explora">Explora</p>
+        <ul class="foot__links">
+          <li><a href="#origen">Origen</a></li>
+          <li><a href="#fruta">La fruta</a></li>
+          <li><a href="#ficha">Ficha técnica</a></li>
+          <li><a href="#volumen">Por volumen</a></li>
+          <li><a href="#envio">Guía de embarque</a></li>
+          <li><a href="#confianza">Compromisos</a></li>
+          <li><a href="#precio">Pedido mayorista</a></li>
+          <li><a href="#agenda">Agenda</a></li>
+          <li><a href="#preguntas">Preguntas</a></li>
+          <li><a href="#cotizar">Cotizar</a></li>
+        </ul>
+      </nav>
+      <div class="foot__col">
+        <p class="foot__h">Contacto</p>
+        <ul class="foot__rows nums">
+          <li><a href="https://wa.me/529622699611" data-wa="flotante" data-fijo target="_blank" rel="noopener"><svg aria-hidden="true"><use href="#i-wa"/></svg><span><small>WhatsApp</small>962 269 9611</span></a></li>
+          <li><a href="https://wa.me/529621707553" data-wa="flotante" data-numero="529621707553" data-fijo target="_blank" rel="noopener"><svg aria-hidden="true"><use href="#i-wa"/></svg><span><small>WhatsApp</small>962 170 7553</span></a></li>
+          <li><a href="tel:+529622699611"><svg aria-hidden="true"><use href="#i-tel"/></svg><span><small>Llamar</small>962 269 9611</span></a></li>
+          <li><a href="tel:+529621707553"><svg aria-hidden="true"><use href="#i-tel"/></svg><span><small>Llamar</small>962 170 7553</span></a></li>
+          <li><a href="mailto:oscaralexander_28@hotmail.com"><svg aria-hidden="true"><use href="#i-mail"/></svg><span><small>Correo</small>oscaralexander_28@hotmail.com</span></a></li>
+          <li><a href="mailto:oscaralexander2000@gmail.com"><svg aria-hidden="true"><use href="#i-mail"/></svg><span><small>Correo</small>oscaralexander2000@gmail.com</span></a></li>
+        </ul>
+      </div>
+      <div class="foot__col">
+        <p class="foot__h">Ubicación</p>
+        <ul class="foot__rows">
+          <li><a href="#contacto"><svg aria-hidden="true"><use href="#i-pin"/></svg><span><small>Huerta</small>Tuxtla Chico, Soconusco, Chiapas, México</span></a></li>
+          <li><p><svg aria-hidden="true"><use href="#i-reloj"/></svg><span><small>Horario</small>Todos los días, de 7:00 a 23:00 (hora de Chiapas)</span></p></li>
+          <li><p><svg aria-hidden="true"><use href="#i-camion"/></svg><span><small>Envíos</small>Refrigerados a toda la República</span></p></li>
+        </ul>
+        <a class="foot__lang" href="en/" hreflang="en" lang="en">English version</a>
       </div>
     </div>
     <div class="foot__last">
-      <p class="small">© <span data-year>2026</span> Ixchel, Frutas del Soconusco. Ilustraciones hechas para este sitio. <a class="link-plain" href="privacidad.html">Aviso de privacidad</a></p>
-      <a class="joks" href="https://www.facebook.com/share/1CNTDDn2zW/" target="_blank" rel="noopener" aria-label="Hecho por J.O.K.S (abre su página de Facebook)"><span class="joks__by">Hecho por</span> <span class="joks__name" aria-hidden="true"><b>J</b><i>.</i><b>O</b><i>.</i><b>K</b><i>.</i><b>S</b></span></a>
-      <a class="button button--small" href="#inicio">Volver arriba</a>
+      <p class="foot__legal">© <span data-year>2026</span> Ixchel, Frutas del Soconusco <span class="foot__dot" aria-hidden="true">·</span> <a href="privacidad.html">Aviso de privacidad</a></p>
+      <a class="joks" href="https://www.facebook.com/share/1CNTDDn2zW/" target="_blank" rel="noopener" aria-label="Hecho por J.O.K.S (abre su página de Facebook)"><svg class="joks__fb" viewBox="0 0 24 24" aria-hidden="true"><path d="M13.5 21v-7.5h2.6l.4-3h-3V8.6c0-.9.3-1.5 1.5-1.5h1.6V4.4c-.3 0-1.2-.1-2.3-.1-2.3 0-3.8 1.4-3.8 3.9v2.3H8v3h2.5V21z" fill="currentColor"/></svg><span class="joks__txt"><span class="joks__by">Hecho por</span><span class="joks__name" aria-hidden="true"><b>J</b><i>.</i><b>O</b><i>.</i><b>K</b><i>.</i><b>S</b></span></span></a>
+      <a class="foot__up" href="#inicio" aria-label="Volver arriba"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 13V3M3.5 7.5L8 3l4.5 4.5" fill="none" stroke="currentColor" stroke-width="2.2"/></svg></a>
     </div>
   </div>
 </footer>
 
 <div class="drop" id="menu-contacto" hidden>
-  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
-    <symbol id="i-pin" viewBox="0 0 24 24"><path d="M12 2C8 2 5 5 5 9c0 5.3 7 13 7 13s7-7.7 7-13c0-4-3-7-7-7z" fill="currentColor"/><circle cx="12" cy="9" r="2.6" fill="var(--paper)"/></symbol>
-    <symbol id="i-wa" viewBox="0 0 32 32"><path d="M16 3C8.8 3 3 8.5 3 15.3c0 2.6.9 5 2.4 7L4 29l6.9-2.2c1.6.7 3.3 1 5.1 1 7.2 0 13-5.5 13-12.3S23.2 3 16 3z" fill="currentColor"/><path d="M11.5 10.5c.4-.4 1.2-.5 1.6 0l1.4 2.4c.2.4.1.9-.2 1.2l-.8.8c.8 1.7 2.1 3 3.8 3.8l.8-.8c.3-.3.8-.4 1.2-.2l2.4 1.4c.5.3.5 1.1 0 1.6l-1 1c-1 1-2.6 1.1-4.4.2-2.6-1.3-4.7-3.4-6-6-.9-1.8-.8-3.4.2-4.4z" fill="var(--paper)"/></symbol>
-    <symbol id="i-tel" viewBox="0 0 24 24"><path d="M6.6 3.5c.6-.6 1.6-.5 2 .2l1.8 3c.3.5.2 1.2-.2 1.6L9 9.5c1 2.2 2.8 4 5 5l1.2-1.2c.4-.4 1.1-.5 1.6-.2l3 1.8c.7.4.8 1.4.2 2l-1.4 1.4c-1.3 1.3-3.4 1.4-5.7.3-3.4-1.6-6-4.3-7.7-7.7C3.1 8.6 3.2 6.5 4.5 5.2z" fill="currentColor"/></symbol>
-    <symbol id="i-mail" viewBox="0 0 24 24"><rect x="2.5" y="5" width="19" height="14" fill="currentColor"/><path d="M3.5 6.5l8.5 6.5 8.5-6.5" fill="none" stroke="var(--paper)" stroke-width="1.8"/></symbol>
-  </svg>
   <div class="drop__panel">
     <p class="drop__title">Contacto</p>
     <button type="button" class="drop__close" aria-label="Cerrar menú de contacto"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 3l10 10M13 3L3 13" stroke="currentColor" stroke-width="2.5"/></svg></button>

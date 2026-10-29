@@ -17,7 +17,6 @@ PARES = [
     ('<meta property="og:locale" content="es_MX">', '<meta property="og:locale" content="en_US">\n<meta property="og:locale:alternate" content="es_MX">'),
     ('<a class="lang" href="en/" hreflang="en" lang="en" aria-label="EN: English version">EN</a>', '<a class="lang" href="../" hreflang="es" lang="es" aria-label="ES: versión en español">ES</a>'),
     ('href="fonts/', 'href="../fonts/'),
-    ('<p><a class="link-plain" href="en/" hreflang="en" lang="en">English version</a></p>', '<p><a class="link-plain" href="../" hreflang="es" lang="es">Versión en español</a></p>'),
 
     # cabecera
     ('<title>Ixchel · Rambután por tonelada desde Chiapas</title>', '<title>Ixchel · Wholesale rambutan from Chiapas, Mexico</title>'),
@@ -239,18 +238,9 @@ PARES = [
 
     # pie
     ('aria-label="Logo de Ixchel: luna con conejo, pirámide y perfil maya"', 'aria-label="Ixchel logo: the moon with a rabbit, a pyramid and a Maya profile"'),
-    ('<li><a class="link" href="#origen">Origen</a></li>\n        <li><a class="link" href="#fruta">La fruta</a></li>\n        <li><a class="link" href="#volumen">Por volumen</a></li>\n        <li><a class="link" href="#envio">Guía de embarque</a></li>\n        <li><a class="link" href="#confianza">Compromisos</a></li>\n        <li><a class="link" href="#ficha">Ficha técnica</a></li>\n        <li><a class="link" href="#precio">Pedido mayorista</a></li>\n        <li><a class="link" href="#agenda">Agenda</a></li>\n        <li><a class="link" href="#preguntas">Preguntas</a></li>\n        <li><a class="link" href="#cotizar">Cotizar</a></li>',
-     '<li><a class="link" href="#origen">Origin</a></li>\n        <li><a class="link" href="#fruta">The fruit</a></li>\n        <li><a class="link" href="#volumen">By volume</a></li>\n        <li><a class="link" href="#envio">Shipping slip</a></li>\n        <li><a class="link" href="#confianza">Our promise</a></li>\n        <li><a class="link" href="#ficha">Spec sheet</a></li>\n        <li><a class="link" href="#precio">Wholesale order</a></li>\n        <li><a class="link" href="#agenda">Book a call</a></li>\n        <li><a class="link" href="#preguntas">FAQ</a></li>\n        <li><a class="link" href="#cotizar">Get a quote</a></li>'),
-    ('<p><b>Ixchel, Frutas del Soconusco</b></p>\n        <p>Tuxtla Chico, Soconusco, Chiapas, México</p>\n        <p>Envíos refrigerados a toda la República</p>', '<p><b>Ixchel, Soconusco Fruit</b></p>\n        <p>Tuxtla Chico, Soconusco, Chiapas, Mexico</p>\n        <p>Refrigerated shipping across Mexico</p>'),
-    ('>Llamar al 962 269 9611</a>', '>Call +52 962 269 9611</a>'),
-    ('<p class="small">Todos los días, de 7:00 a 23:00 (hora de Chiapas)</p>', '<p class="small">Every day, 7 a.m. to 11 p.m. Chiapas time (UTC−6)</p>'),
-    ('<p class="small">© <span data-year>2026</span> Ixchel, Frutas del Soconusco. ', '<p class="small">© <span data-year>2026</span> Ixchel, Soconusco Fruit. '),
     ('<p class="small form-legal">Al apartar aceptas el <a class="link-plain" href="privacidad.html">aviso de privacidad</a>.</p>', '<p class="small form-legal">By booking you accept our <a class="link-plain" href="privacy.html">privacy notice</a>.</p>'),
     ('<p class="small form-legal">Al enviar aceptas el <a class="link-plain" href="privacidad.html">aviso de privacidad</a>.</p>', '<p class="small form-legal">By sending you accept our <a class="link-plain" href="privacy.html">privacy notice</a>.</p>'),
-    ('Ilustraciones hechas para este sitio. <a class="link-plain" href="privacidad.html">Aviso de privacidad</a></p>', 'Illustrations made for this site. <a class="link-plain" href="privacy.html">Privacy notice</a></p>'),
     ('href="img/icono-', 'href="../img/icono-'),
-    ('aria-label="Hecho por J.O.K.S (abre su página de Facebook)"><span class="joks__by">Hecho por</span>', 'aria-label="Made by J.O.K.S (opens their Facebook page)"><span class="joks__by">Made by</span>'),
-    ('<a class="button button--small" href="#inicio">Volver arriba</a>', '<a class="button button--small" href="#inicio">Back to top</a>'),
     ('aria-label="Escribir por WhatsApp">', 'aria-label="Message us on WhatsApp">'),
     # menú de contacto y sección de ubicación
     ('href="#contacto" aria-controls="menu-contacto" aria-haspopup="true">Contacto <svg', 'href="#contacto" aria-controls="menu-contacto" aria-haspopup="true">Contact <svg'),
@@ -259,7 +249,6 @@ PARES = [
     ('<b>Ver mapa y ubicación</b>', '<b>See map and location</b>'),
     ('<b>Llamar</b>', '<b>Call</b>'),
     ('<b>Correo</b>', '<b>Email</b>'),
-    ('<li><a class="link" href="#contacto">Ubicación</a></li>', '<li><a class="link" href="#contacto">Location</a></li>'),
     ('<h2 id="t-contacto" class="head" data-reveal>Ubicación y contacto</h2>', '<h2 id="t-contacto" class="head" data-reveal>Location and contact</h2>'),
     ('La huerta está en Tuxtla Chico, en el Soconusco de Chiapas, cerca de Tapachula y de la frontera con Guatemala. Si quieres conocerla, avísanos antes y te esperamos.', 'Our orchard is in Tuxtla Chico, in the Soconusco region of Chiapas, near Tapachula and the Guatemalan border. If you would like to visit, let us know ahead of time and we will be expecting you.'),
     ('title="Mapa de Google con la ubicación de la huerta en Tuxtla Chico, Chiapas"', 'title="Google map showing the orchard in Tuxtla Chico, Chiapas"'),
@@ -275,6 +264,24 @@ PARES = [
     ('<h3>Correo</h3>', '<h3>Email</h3>'),
     ('<h3>Horario</h3>\n        <p>Todos los días, de 7:00 a 23:00, hora de Chiapas</p>', '<h3>Hours</h3>\n        <p>Every day, 7 a.m. to 11 p.m. Chiapas time (UTC−6)</p>'),
     ('"name": "Huerta en Tuxtla Chico, Chiapas"', '"name": "Orchard in Tuxtla Chico, Chiapas, Mexico"'),
+    # pie de página
+    ('<a class="foot__lang" href="en/" hreflang="en" lang="en">English version</a>', '<a class="foot__lang" href="../" hreflang="es" lang="es">Versión en español</a>'),
+    ('<p class="foot__h">Ixchel, Frutas del Soconusco</p>\n        <p>Rambután rojo cortado a mano en Tuxtla Chico, Chiapas. Vendemos por tonelada con envío refrigerado a todo México.</p>', '<p class="foot__h">Ixchel, Soconusco Fruit</p>\n        <p>Red rambutan, hand harvested in Tuxtla Chico, Chiapas, Mexico. Sold by the ton with refrigerated shipping.</p>'),
+    ('<use href="#i-wa"/></svg>Cotizar por WhatsApp</a>', '<use href="#i-wa"/></svg>Get a quote on WhatsApp</a>'),
+    ('<p class="foot__h" id="f-explora">Explora</p>', '<p class="foot__h" id="f-explora">Explore</p>'),
+    ('<li><a href="#origen">Origen</a></li>\n          <li><a href="#fruta">La fruta</a></li>\n          <li><a href="#ficha">Ficha técnica</a></li>\n          <li><a href="#volumen">Por volumen</a></li>\n          <li><a href="#envio">Guía de embarque</a></li>\n          <li><a href="#confianza">Compromisos</a></li>\n          <li><a href="#precio">Pedido mayorista</a></li>\n          <li><a href="#agenda">Agenda</a></li>\n          <li><a href="#preguntas">Preguntas</a></li>\n          <li><a href="#cotizar">Cotizar</a></li>',
+     '<li><a href="#origen">Origin</a></li>\n          <li><a href="#fruta">The fruit</a></li>\n          <li><a href="#ficha">Spec sheet</a></li>\n          <li><a href="#volumen">By volume</a></li>\n          <li><a href="#envio">Shipping slip</a></li>\n          <li><a href="#confianza">Our promise</a></li>\n          <li><a href="#precio">Wholesale order</a></li>\n          <li><a href="#agenda">Book a call</a></li>\n          <li><a href="#preguntas">FAQ</a></li>\n          <li><a href="#cotizar">Get a quote</a></li>'),
+    ('<p class="foot__h">Contacto</p>', '<p class="foot__h">Contact</p>'),
+    ('<span><small>Llamar</small>', '<span><small>Call</small>+52 '),
+    ('<span><small>Correo</small>', '<span><small>Email</small>'),
+    ('<p class="foot__h">Ubicación</p>', '<p class="foot__h">Location</p>'),
+    ('<span><small>Huerta</small>Tuxtla Chico, Soconusco, Chiapas, México</span>', '<span><small>Orchard</small>Tuxtla Chico, Soconusco, Chiapas, Mexico</span>'),
+    ('<span><small>Horario</small>Todos los días, de 7:00 a 23:00 (hora de Chiapas)</span>', '<span><small>Hours</small>Every day, 7 a.m. to 11 p.m. Chiapas time (UTC−6)</span>'),
+    ('<span><small>Envíos</small>Refrigerados a toda la República</span>', '<span><small>Shipping</small>Refrigerated, across Mexico</span>'),
+    ('Ixchel, Frutas del Soconusco <span class="foot__dot" aria-hidden="true">·</span> <a href="privacidad.html">Aviso de privacidad</a>', 'Ixchel, Soconusco Fruit <span class="foot__dot" aria-hidden="true">·</span> <a href="privacy.html">Privacy notice</a>'),
+    ('aria-label="Hecho por J.O.K.S (abre su página de Facebook)">', 'aria-label="Made by J.O.K.S (opens their Facebook page)">'),
+    ('<span class="joks__by">Hecho por</span>', '<span class="joks__by">Made by</span>'),
+    ('<a class="foot__up" href="#inicio" aria-label="Volver arriba">', '<a class="foot__up" href="#inicio" aria-label="Back to top">'),
 ]
 
 faltan = []

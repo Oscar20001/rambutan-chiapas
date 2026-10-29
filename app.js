@@ -840,12 +840,12 @@ $$('[data-imprimir]').forEach((btn) => btn.addEventListener('click', () => {
   document.fonts?.ready.then(place);
 })();
 
-// ---------- botón flotante de WhatsApp: se esconde arriba y junto a los formularios ----------
+// ---------- botón flotante de WhatsApp: se esconde arriba, junto a los formularios y sobre el pie ----------
 (() => {
   const fab = $('.fab');
   if (!fab) return;
   // se quita del camino donde ya hay un formulario a la vista
-  const formas = $$('#cotizar, #agenda, #contacto');
+  const formas = $$('#cotizar, #agenda, #contacto, .foot');
   const visibles = new Set();
   const pintar = () => fab.classList.toggle('is-on', window.scrollY > window.innerHeight * 0.6 && !visibles.size);
   if ('IntersectionObserver' in window) {
