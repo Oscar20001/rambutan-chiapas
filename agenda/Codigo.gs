@@ -7,7 +7,7 @@
 
 const ZONA = 'America/Mexico_City'; // Chiapas usa la misma hora todo el año (UTC−6)
 const DESDE = 7;      // primera cita: 7:00
-const HASTA = 22.5;   // última cita: 22:30, termina a las 23:00
+const HASTA = 18.5;   // última cita: 18:30, termina a las 19:00
 const MINUTOS = 30;   // duración de cada cita
 const MAX_DIAS = 31;
 

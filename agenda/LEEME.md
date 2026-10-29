@@ -34,7 +34,7 @@ La hoja **Citas Ixchel** queda en tu Google Drive con todas las citas recibidas.
 
 El horario está en dos lugares y deben coincidir:
 
-- `app.js`: `const AGENDA = { desde: 7, hasta: 22.5, ... }` (22.5 es la última cita, a las 22:30).
+- `app.js`: `const AGENDA = { desde: 7, hasta: 18.5, ... }` (18.5 es la última cita, a las 18:30).
 - `agenda/Codigo.gs`: `DESDE` y `HASTA`. Después de cambiarlo, en Apps Script toca
   **Implementar → Administrar implementaciones → editar → Versión: nueva** para publicarlo.
 

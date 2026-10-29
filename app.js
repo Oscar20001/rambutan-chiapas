@@ -12,7 +12,7 @@ const WHATSAPP = ['529622699611', '529621707553'];
 const AGENDA_URL = 'https://script.google.com/macros/s/AKfycbztSLxlmv_WAln5U7EQABAqDwkOVE1SdVj75fD98BIzX7AyP5DPxHDgXbqXqsDtnGyC/exec';
 
 // Horario de atención en hora de Chiapas: primera y última hora en que puede empezar una cita.
-const AGENDA = { desde: 7, hasta: 22.5, minutos: 30, dias: 14, anticipacion: 60 };
+const AGENDA = { desde: 7, hasta: 18.5, minutos: 30, dias: 14, anticipacion: 60 };
 
 // Precio de referencia por kilo en pesos. Mientras sea null, la guía no muestra precio.
 const PRECIO_KG = null;

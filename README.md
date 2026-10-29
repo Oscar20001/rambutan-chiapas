@@ -11,7 +11,7 @@ rambután en todo México. Se abre directo con `index.html`.
    recibe los mensajes de todos los botones; los dos aparecen en el pie de página. Formato: 52 + 10 dígitos.
 2. **Agenda de llamadas.** Funciona desde ya: la cita se pide por WhatsApp. Para que se aparte sola en tu
    Google Calendar y el sitio marque las horas ocupadas, sigue [`agenda/LEEME.md`](agenda/LEEME.md) y pega
-   la dirección en `const AGENDA_URL = '';`. El horario está en `const AGENDA` (7:00 a 22:30, cada 30 min).
+   la dirección en `const AGENDA_URL = '';`. El horario está en `const AGENDA` (7:00 a 18:30, cada 30 min; atención hasta las 19:00).
 3. **Precio de referencia.** `const PRECIO_KG = null;` en `app.js`. Si pones un número (pesos por kilo),
    la guía de embarque muestra el costo aproximado de la fruta del pedido.
 4. **Temporada.** `const COSECHA` en `app.js` marca los meses de cosecha y de pico en el calendario.
