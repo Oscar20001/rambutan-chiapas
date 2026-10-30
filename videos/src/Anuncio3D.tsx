@@ -4,6 +4,7 @@ import { useThree } from '@react-three/fiber';
 import * as THREE from 'three';
 import { AbsoluteFill, Easing, Img, interpolate, interpolateColors, staticFile, useCurrentFrame, useVideoConfig } from 'remotion';
 import { TEXTO, TITULO, avance } from './comun';
+import { Ambiente, CamionReal, LucesTarde, PisoHuerta } from './Camion3D';
 
 // Anuncios 3D estilo estudio: rambután modelado a mano (piel + pelitos), caja de madera y camión,
 // cámara en órbita y cortes secos para que Alex les ponga música en TikTok.
@@ -423,9 +424,10 @@ export const AnuncioCamion: React.FC = () => {
   const cortes = [0, 4.2, 9.0, 15.0];
   const esc = cortes.filter((c) => t >= c).length - 1;
   const local = t - cortes[esc];
-  const fondos = ['#2440ff', '#e6007e', '#00a6a6', '#0f3d2a'];
+  const fondos = ['#2440ff', '#e6007e', '#6fa8dc', '#6fa8dc'];
   const fondo = fondos[esc];
 
+  const avanzaCam = esc === 3 ? interpolate(t - 15.0, [3.2, 7], [0, 4], { extrapolateLeft: 'clamp', easing: Easing.in(Easing.cubic) }) : 0;
   let cam: [number, number, number] = [0, 0, 8];
   let mira: [number, number, number] = [0, 0, 0];
   let fov = 35;
@@ -438,10 +440,10 @@ export const AnuncioCamion: React.FC = () => {
     cam = [Math.sin(a) * 9.5, 6.5, Math.cos(a) * 9.5];
     mira = [0, -0.3, 0];
   } else {
-    const a = (esc === 2 ? -0.9 : -0.5) + local * 0.14;
-    const d = esc === 2 ? 30 : 32;
-    cam = [Math.sin(a) * d, 8, Math.cos(a) * d];
-    mira = [0, 0.6, 0];
+    const a = (esc === 2 ? 0.75 : 0.35) + local * (esc === 2 ? -0.07 : 0.05);
+    const d = esc === 2 ? 23 : 26;
+    cam = [Math.sin(a) * d + (esc === 3 ? avanzaCam : 0), esc === 2 ? 6 : 7, Math.cos(a) * d];
+    mira = [-0.5 + (esc === 3 ? avanzaCam : 0), 1.6, 0];
     fov = 40;
   }
 
@@ -451,7 +453,7 @@ export const AnuncioCamion: React.FC = () => {
     return [Math.cos(a) * (i % 2 ? 1.1 : 0.7), -0.4 - (i % 3) * 0.75, Math.sin(a) * 0.9] as [number, number, number];
   });
   const mece = Math.sin(t * 1.6) * 0.06;
-  const cajasEnCamion = esc === 2 ? Math.floor(tramo(local, 0.4, 5.2) * 12) : esc === 3 ? 12 : 0;
+  const cajasEnCamion = esc === 2 ? Math.floor(tramo(local, 0.3, 5.4) * 72) : esc === 3 ? 72 : 0;
   const avanza = esc === 3 ? interpolate(local, [3.2, 7], [0, 9], { extrapolateLeft: 'clamp', easing: Easing.in(Easing.cubic) }) : 0;
 
   return (
@@ -493,8 +495,10 @@ export const AnuncioCamion: React.FC = () => {
         )}
         {esc >= 2 && (
           <>
-            <Piso color={esc === 2 ? '#3cc6c6' : '#4f9a63'} y={-0.85} />
-            <Camion cajas={cajasEnCamion} position={[avanza, 0, 0]} />
+            <Ambiente />
+            <LucesTarde />
+            <PisoHuerta />
+            <CamionReal cajas={cajasEnCamion} position={[avanza, 0, 0]} giroRuedas={avanza / 0.52} />
           </>
         )}
       </ThreeCanvas>

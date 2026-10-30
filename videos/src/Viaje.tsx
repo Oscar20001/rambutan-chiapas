@@ -3,7 +3,10 @@ import { ThreeCanvas } from '@remotion/three';
 import { useThree } from '@react-three/fiber';
 import * as THREE from 'three';
 import { AbsoluteFill, Audio, Easing, Img, interpolate, staticFile, useCurrentFrame, useVideoConfig } from 'remotion';
+import { SVGLoader } from 'three/examples/jsm/loaders/SVGLoader.js';
 import { TITULO } from './comun';
+import mundo from '../public/viaje/mundo.json';
+import estados from '../public/viaje/estados.json';
 
 // "Del espacio a la huerta": la cámara baja del espacio a México, al Soconusco y a la huerta de Ixchel
 // en Tuxtla Chico, con HUD que marca latitud, longitud y altitud en tiempo real.
@@ -72,6 +75,53 @@ const enEsfera = (lat: number, lon: number, r: number) => {
   return new THREE.Vector3(-r * Math.sin(phi) * Math.cos(th), r * Math.cos(phi), r * Math.sin(phi) * Math.sin(th));
 };
 
+// ---------- mapas reales ----------
+// Mundo: Natural Earth (world-atlas). Estados: @svg-maps/mexico (CC BY 4.0), en Mercator;
+// lo alineamos con la caja real de México para poner los puntos en su lugar.
+
+const svgMx = new SVGLoader().parse(`<svg>${estados.estados.map((e) => `<path id="${e.id}" name="${e.nombre}" d="${e.d}"/>`).join('')}</svg>`);
+const MX = { lon0: -118.4, lon1: -86.7, lat0: 14.53, lat1: 32.72 };
+const caja = new THREE.Box2();
+svgMx.paths.forEach((p) => p.subPaths.forEach((sp) => sp.getPoints().forEach((v) => caja.expandByPoint(v))));
+const merc = (lat: number) => Math.log(Math.tan(Math.PI / 4 + (lat * Math.PI) / 360));
+const ESC = 0.05;
+const centro = caja.getCenter(new THREE.Vector2());
+// lat/lon → plano del mapa (x, z)
+export const enMapa = (lat: number, lon: number) => {
+  const x = caja.min.x + ((lon - MX.lon0) / (MX.lon1 - MX.lon0)) * (caja.max.x - caja.min.x);
+  const y = caja.max.y - ((merc(lat) - merc(MX.lat0)) / (merc(MX.lat1) - merc(MX.lat0))) * (caja.max.y - caja.min.y);
+  return new THREE.Vector3((x - centro.x) * ESC, 0, (y - centro.y) * ESC);
+};
+// plano del mapa → lat/lon (para dibujar Chiapas sobre el globo)
+const aLatLon = (v: THREE.Vector2) => {
+  const lon = MX.lon0 + ((v.x - caja.min.x) / (caja.max.x - caja.min.x)) * (MX.lon1 - MX.lon0);
+  const m = merc(MX.lat0) + ((caja.max.y - v.y) / (caja.max.y - caja.min.y)) * (merc(MX.lat1) - merc(MX.lat0));
+  const lat = (2 * Math.atan(Math.exp(m)) - Math.PI / 2) * (180 / Math.PI);
+  return [lat, lon];
+};
+const esChiapas = (p: { userData?: { node?: Element } }) => /chiapas/i.test(p.userData?.node?.getAttribute('name') ?? '');
+
+const CIUDADES: [number, number, number][] = [
+  [19.43, -99.13, 3], [20.67, -103.35, 2], [25.69, -100.32, 2], [19.04, -98.2, 1.5], [32.51, -117.04, 1.6], [21.16, -86.85, 1.2],
+  [20.97, -89.62, 1.3], [16.75, -93.12, 1.4], [14.9, -92.26, 1.3], [16.74, -92.64, 1], [17.99, -92.93, 1.2], [17.06, -96.72, 1],
+  [19.17, -96.13, 1.2], [21.88, -102.29, 1], [22.15, -100.98, 1], [24.8, -107.39, 1], [29.07, -110.96, 1.1], [28.63, -106.07, 1.2],
+  [31.69, -106.42, 1.3], [20.59, -100.39, 1.2], [16.85, -99.88, 1.1], [18.92, -99.23, 1], [19.7, -101.19, 1], [23.25, -106.41, 1],
+];
+
+const lineaGeo = (rings: number[][], aV: (lat: number, lon: number) => THREE.Vector3) => {
+  const pts: number[] = [];
+  rings.forEach((r) => {
+    for (let i = 0; i + 3 < r.length; i += 2) {
+      const a = aV(r[i + 1], r[i]);
+      const b = aV(r[i + 3], r[i + 2]);
+      pts.push(a.x, a.y, a.z, b.x, b.y, b.z);
+    }
+  });
+  const g = new THREE.BufferGeometry();
+  g.setAttribute('position', new THREE.Float32BufferAttribute(pts, 3));
+  return g;
+};
+
 // ---------- escena 1: globo ----------
 
 const atmosfera = new THREE.ShaderMaterial({
@@ -90,41 +140,40 @@ const borde = new THREE.ShaderMaterial({
 });
 
 const Globo: React.FC<{ t: number }> = ({ t }) => {
-  const { reticula, ciudades } = useMemo(() => {
-    const pts: number[] = [];
-    for (let lat = -80; lat <= 80; lat += 20)
-      for (let lon = -180; lon < 180; lon += 3) {
-        const a = enEsfera(lat, lon, 2.002);
-        const b = enEsfera(lat, lon + 3, 2.002);
-        pts.push(a.x, a.y, a.z, b.x, b.y, b.z);
-      }
-    for (let lon = -180; lon < 180; lon += 20)
-      for (let lat = -88; lat < 88; lat += 3) {
-        const a = enEsfera(lat, lon, 2.002);
-        const b = enEsfera(lat + 3, lon, 2.002);
-        pts.push(a.x, a.y, a.z, b.x, b.y, b.z);
-      }
-    const g = new THREE.BufferGeometry();
-    g.setAttribute('position', new THREE.Float32BufferAttribute(pts, 3));
-    // luces de ciudades: cúmulos alrededor de unos centros, más densos sobre México
-    const centros = [[19.4, -99.1], [20.7, -103.3], [25.7, -100.3], [16.7, -93.1], [14.9, -92.2], [40.7, -74], [34, -118], [-23.5, -46.6], [51.5, 0], [48.8, 2.3], [35.7, 139.7], [28.6, 77.2], [-33.9, 151.2], [4.7, -74], [-34.6, -58.4], [30, 31], [6.5, 3.4], [41, 29]];
+  const d = useMemo(() => {
     const p: number[] = [];
     const c: number[] = [];
-    centros.forEach(([la, lo], k) => {
-      const n = k < 5 ? 260 : 120;
-      for (let i = 0; i < n; i++) {
-        const v = enEsfera(la + (rnd(k * 999 + i) - 0.5) * 9 * rnd(i + k), lo + (rnd(k * 777 + i * 3) - 0.5) * 11 * rnd(i * 2 + k), 2.01);
-        p.push(v.x, v.y, v.z);
-        const cal = rnd(i * 5 + k) > 0.7;
-        const col = new THREE.Color(cal ? NARANJA : '#9fe8ff');
-        c.push(col.r, col.g, col.b);
-      }
+    const azul = new THREE.Color('#2f8cff');
+    const mx = new THREE.Color('#7ff6ff');
+    for (let i = 0; i < mundo.puntos.length; i += 2) {
+      const lon = mundo.puntos[i];
+      const lat = mundo.puntos[i + 1];
+      const v = enEsfera(lat, lon, 2.005);
+      p.push(v.x, v.y, v.z);
+      const enMx = lat > 14 && lat < 33 && lon > -118 && lon < -86;
+      const col = enMx ? mx : azul;
+      c.push(col.r, col.g, col.b);
+    }
+    const luces: number[] = [];
+    const lc: number[] = [];
+    CIUDADES.forEach(([la, lo]) => {
+      const v = enEsfera(la, lo, 2.012);
+      luces.push(v.x, v.y, v.z);
+      const col = new THREE.Color(NARANJA);
+      lc.push(col.r, col.g, col.b);
     });
-    return { reticula: g, ciudades: { pos: new Float32Array(p), col: new Float32Array(c) } };
+    const chiapas: number[][] = [];
+    svgMx.paths.filter(esChiapas).forEach((pa) => pa.subPaths.forEach((sp) => chiapas.push(sp.getPoints().flatMap((v) => { const [la, lo] = aLatLon(v); return [lo, la]; }))));
+    return {
+      tierra: { pos: new Float32Array(p), col: new Float32Array(c) },
+      luces: { pos: new Float32Array(luces), col: new Float32Array(lc) },
+      bordes: lineaGeo(mundo.bordes, (la, lo) => enEsfera(la, lo, 2.004)),
+      mexico: lineaGeo(mundo.mexico, (la, lo) => enEsfera(la, lo, 2.008)),
+      chiapas: lineaGeo(chiapas, (la, lo) => enEsfera(la, lo, 2.012)),
+    };
   }, []);
-  // el globo gira hasta dejar Chiapas de frente
-  const lonFrente = interpolate(t, [0, 3.5], [-20, LON], { easing: Easing.out(Easing.cubic) });
-  const latFrente = interpolate(t, [0, 3.5], [0, LAT], { easing: Easing.out(Easing.cubic) });
+  const lonFrente = interpolate(t, [0, 3.5], [-40, LON + 6], { easing: Easing.out(Easing.cubic) });
+  const latFrente = interpolate(t, [0, 3.5], [8, LAT + 4], { easing: Easing.out(Easing.cubic) });
   const meta = enEsfera(latFrente, lonFrente, 1).normalize();
   const q = new THREE.Quaternion().setFromUnitVectors(meta, new THREE.Vector3(0, 0, 1));
   const pin = enEsfera(LAT, LON, 2.03);
@@ -134,14 +183,21 @@ const Globo: React.FC<{ t: number }> = ({ t }) => {
       <mesh material={borde}>
         <sphereGeometry args={[2, 96, 64]} />
       </mesh>
-      <lineSegments geometry={reticula}>
-        <lineBasicMaterial color={CIAN} transparent opacity={0.18} blending={THREE.AdditiveBlending} />
+      <Puntos pos={d.tierra.pos} col={d.tierra.col} tam={0.035} opacidad={0.9} />
+      <lineSegments geometry={d.bordes}>
+        <lineBasicMaterial color="#5fb8ff" transparent opacity={0.35} blending={THREE.AdditiveBlending} />
       </lineSegments>
-      <Puntos pos={ciudades.pos} col={ciudades.col} tam={0.05} />
+      <lineSegments geometry={d.mexico}>
+        <lineBasicMaterial color={CIAN} />
+      </lineSegments>
+      <lineSegments geometry={d.chiapas}>
+        <lineBasicMaterial color={ROSA} />
+      </lineSegments>
+      <Puntos pos={d.luces.pos} col={d.luces.col} tam={0.12} />
       <mesh material={atmosfera} scale={1.18}>
         <sphereGeometry args={[2, 64, 48]} />
       </mesh>
-      <sprite position={pin} scale={0.35 * late}>
+      <sprite position={pin} scale={0.3 * late}>
         <spriteMaterial map={halo ?? undefined} color={ROSA} blending={THREE.AdditiveBlending} depthWrite={false} />
       </sprite>
     </group>
@@ -150,49 +206,74 @@ const Globo: React.FC<{ t: number }> = ({ t }) => {
 
 // ---------- escena 2: mapa del sur de México ----------
 
+export const PIN_MAPA = (() => enMapa(LAT, LON))();
 const Mapa: React.FC<{ t: number }> = ({ t }) => {
-  const datos = useMemo(() => {
+  const d = useMemo(() => {
+    const otros: THREE.Shape[] = [];
+    const chis: THREE.Shape[] = [];
+    const bordes: number[] = [];
+    const bordesCh: number[] = [];
+    svgMx.paths.forEach((pa) => {
+      const ch = esChiapas(pa);
+      SVGLoader.createShapes(pa).forEach((sh) => (ch ? chis : otros).push(sh));
+      pa.subPaths.forEach((sp) => {
+        const pts = sp.getPoints();
+        for (let i = 0; i + 1 < pts.length; i++) {
+          const a = pts[i];
+          const b = pts[i + 1];
+          (ch ? bordesCh : bordes).push((a.x - centro.x) * ESC, 0.02, (a.y - centro.y) * ESC, (b.x - centro.x) * ESC, 0.02, (b.y - centro.y) * ESC);
+        }
+      });
+    });
+    const plano = (shapes: THREE.Shape[]) => {
+      const g = new THREE.ShapeGeometry(shapes);
+      g.translate(-centro.x, -centro.y, 0);
+      g.scale(ESC, ESC, 1);
+      g.rotateX(Math.PI / 2);
+      return g;
+    };
+    const lg = (a: number[]) => {
+      const g = new THREE.BufferGeometry();
+      g.setAttribute('position', new THREE.Float32BufferAttribute(a, 3));
+      return g;
+    };
+    // luces: ciudades reales y pueblos alrededor
     const p: number[] = [];
     const c: number[] = [];
-    // centros de luz en coordenadas del plano (x = longitud, z = -latitud), relativos a Tuxtla Chico
-    const centros: [number, number, number][] = [
-      [-99.1, 19.4, 900], [-98.2, 19.0, 300], [-96.1, 19.2, 250], [-96.7, 17.1, 200], [-93.1, 16.75, 350],
-      [-92.6, 16.7, 160], [-92.26, 14.9, 300], [-92.17, 14.94, 160], [-92.9, 18.0, 260], [-90.5, 14.6, 400],
-      [-89.6, 21.0, 280], [-86.8, 21.2, 220], [-90.5, 19.8, 150], [-97.9, 22.2, 200], [-103.3, 20.7, 500],
-    ];
-    centros.forEach(([lo, la, n], k) => {
-      for (let i = 0; i < n; i++) {
-        const r = Math.pow(rnd(i * 13 + k), 2) * 0.7;
-        const a = rnd(i * 7 + k * 3) * Math.PI * 2;
-        p.push((lo - LON + Math.cos(a) * r) * 1.0, 0, -(la - LAT + Math.sin(a) * r) * 1.0);
-        const col = new THREE.Color(rnd(i + k * 5) > 0.75 ? NARANJA : '#8fe6ff');
+    CIUDADES.forEach(([la, lo, k], n) => {
+      for (let i = 0; i < 70 * k; i++) {
+        const r = Math.pow(rnd(i * 13 + n), 2) * 0.35 * k;
+        const a = rnd(i * 7 + n * 3) * Math.PI * 2;
+        const v = enMapa(la + Math.sin(a) * r, lo + Math.cos(a) * r);
+        p.push(v.x, 0.05, v.z);
+        const col = new THREE.Color(rnd(i + n * 5) > 0.6 ? NARANJA : '#bff4ff');
         c.push(col.r, col.g, col.b);
       }
     });
-    // polvo de luces sueltas (pueblos)
-    for (let i = 0; i < 2500; i++) {
-      p.push((rnd(i * 3.1) - 0.5) * 26, 0, (rnd(i * 5.7) - 0.5) * 26 - 4);
-      const col = new THREE.Color('#2f7fff');
-      c.push(col.r * 0.6, col.g * 0.6, col.b * 0.6);
-    }
-    const lineas: number[] = [];
-    for (let k = -14; k <= 14; k++) lineas.push(k, -0.01, -18, k, -0.01, 10, -14, -0.01, k - 4, 14, -0.01, k - 4);
-    const g = new THREE.BufferGeometry();
-    g.setAttribute('position', new THREE.Float32BufferAttribute(lineas, 3));
-    return { pos: new Float32Array(p), col: new Float32Array(c), lineas: g };
+    return { otros: plano(otros), chis: plano(chis), bordes: lg(bordes), bordesCh: lg(bordesCh), luces: { pos: new Float32Array(p), col: new Float32Array(c) } };
   }, []);
+  const brillo = tr(t, 0.8, 1.8);
   const late = 0.7 + 0.3 * Math.sin(t * 10);
   return (
     <group>
-      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.02, 0]}>
-        <planeGeometry args={[80, 80]} />
-        <meshBasicMaterial color="#020b1f" />
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.03, 0]}>
+        <planeGeometry args={[200, 200]} />
+        <meshBasicMaterial color="#010714" />
       </mesh>
-      <lineSegments geometry={datos.lineas}>
-        <lineBasicMaterial color="#1a5cff" transparent opacity={0.22} />
+      <mesh geometry={d.otros}>
+        <meshBasicMaterial color="#0b2f6b" side={THREE.DoubleSide} />
+      </mesh>
+      <mesh geometry={d.chis} position={[0, 0.005, 0]}>
+        <meshBasicMaterial color={new THREE.Color('#0b2f6b').lerp(new THREE.Color('#13c8e8'), 0.2 + brillo * 0.35)} side={THREE.DoubleSide} />
+      </mesh>
+      <lineSegments geometry={d.bordes}>
+        <lineBasicMaterial color="#3f8dff" transparent opacity={0.6} />
       </lineSegments>
-      <Puntos pos={datos.pos} col={datos.col} tam={0.18} />
-      <sprite position={[0, 0.05, 0]} scale={1.6 * late}>
+      <lineSegments geometry={d.bordesCh} position={[0, 0.01, 0]}>
+        <lineBasicMaterial color={CIAN} />
+      </lineSegments>
+      <Puntos pos={d.luces.pos} col={d.luces.col} tam={0.22} />
+      <sprite position={[PIN_MAPA.x, 0.1, PIN_MAPA.z]} scale={1.4 * late}>
         <spriteMaterial map={halo ?? undefined} color={ROSA} blending={THREE.AdditiveBlending} depthWrite={false} />
       </sprite>
     </group>
@@ -380,10 +461,12 @@ export const Viaje: React.FC = () => {
   if (esc === 0) {
     pos = new THREE.Vector3(0, 0, interpolate(local, [0, 3.5], [9.5, 4.2], { easing: Easing.in(Easing.cubic) }));
   } else if (esc === 1) {
-    const y = interpolate(local, [0, 3], [26, 7], { easing: Easing.inOut(Easing.cubic) });
-    pos = new THREE.Vector3(Math.sin(local * 0.2) * 1.5, y, y * 0.55);
-    mira = new THREE.Vector3(0, 0, -1);
-    fov = 55;
+    const k = tr(local, 0, 3, Easing.inOut(Easing.cubic));
+    const foco = new THREE.Vector3(0, 0, 0).lerp(PIN_MAPA, k);
+    const y = interpolate(k, [0, 1], [46, 8]);
+    pos = new THREE.Vector3(foco.x, y, foco.z + y * 0.45);
+    mira = foco;
+    fov = 50;
   } else if (esc === 2) {
     const y = interpolate(local, [0, 3.5], [48, 11], { easing: Easing.out(Easing.cubic) });
     const a = interpolate(local, [0, 3.5], [0.9, 0.35]);
@@ -465,7 +548,7 @@ export const Viaje: React.FC = () => {
         </div>
       )}
 
-      {esc === 1 && titulo('SOCONUSCO', 'CHIAPAS · MÉXICO', 0.3, 380)}
+      {esc === 1 && titulo('CHIAPAS', 'SOCONUSCO · MÉXICO', 0.9, 330)}
       {esc === 2 && titulo('LA CHANGUITA', 'JUNTO A IZAPA · TUXTLA CHICO', 0.6, 330)}
 
       {/* panel de navegación */}
