@@ -1,5 +1,5 @@
 import React from 'react';
-import { Audio, Sequence, staticFile, useCurrentFrame, useVideoConfig } from 'remotion';
+import { Audio, staticFile, useCurrentFrame, useVideoConfig } from 'remotion';
 import { avance, C, Cierre, Fruta, Marco, Tiempos, TEXTO, Titulo } from './comun';
 
 const PASOS = [
@@ -12,7 +12,7 @@ const rebote = (x: number) => {
   return 1 + (c + 1) * Math.pow(x - 1, 3) + c * Math.pow(x - 1, 2);
 };
 
-export const ComoSeCome: React.FC<Tiempos> = ({ inicios }) => {
+export const ComoSeCome: React.FC<Tiempos> = ({ voz, inicios }) => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
   const t = frame / fps;
@@ -35,11 +35,7 @@ export const ComoSeCome: React.FC<Tiempos> = ({ inicios }) => {
 
   return (
     <Marco>
-      {inicios.map((ini, n) => (
-        <Sequence key={n} from={Math.round(ini * fps)}>
-          <Audio src={staticFile(`voz/como-se-come/${n}.mp3`)} />
-        </Sequence>
-      ))}
+      <Audio src={staticFile(`voz/${voz}/toma.mp3`)} />
       <Titulo
         size={132}
         style={{

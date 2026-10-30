@@ -18,7 +18,7 @@ export const TEXTO = 'EB Garamond';
 loadFont({ family: TITULO, url: staticFile('bebas-neue.woff2') });
 loadFont({ family: TEXTO, url: staticFile('eb-garamond-normal.woff2') });
 
-export type Tiempos = { inicios: number[]; duraciones: number[] };
+export type Tiempos = { voz: string; inicios: number[] };
 
 // 0 → 1 entre `desde` y `desde + dura` segundos.
 export const avance = (t: number, desde: number, dura: number, easing = Easing.out(Easing.cubic)) =>

@@ -1,11 +1,12 @@
 {
   "id": "como-se-come",
   "voz": "FGY2WhTYpPnrIDTdsKH5",
+  "modelo": "eleven_v4",
   "lineas": [
-    "¿Sabes cómo se come un rambután?",
-    "Uno: aprieta la cáscara con los dedos.",
-    "Dos: ábrela... y aparece la pulpa blanca.",
-    "Tres: ¡cómetela! Dulce y jugosa. La semilla, no.",
-    "Rambután de Tuxtla Chico, Chiapas. ¿Compras por tonelada? Escríbenos por WhatsApp."
+    "[inhales] [curious] ¿Sabes cómo se come un rambután?",
+    "[playfully] Uno: aprieta la cáscara... con los dedos.",
+    "Dos: ábrela... [gasps] ¡y mira! Aparece la pulpa blanca.",
+    "[excited] Tres: ¡cómetela! [sighs] Dulce y jugosa... [laughs] la semilla, no.",
+    "[inhales] Rambután de Tuxtla Chico, Chiapas. [warmly] ¿Compras por tonelada? ¡Escríbenos por WhatsApp!"
   ]
 }

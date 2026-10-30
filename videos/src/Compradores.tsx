@@ -1,5 +1,5 @@
 import React from 'react';
-import { Audio, Easing, Img, Sequence, staticFile, useCurrentFrame, useVideoConfig } from 'remotion';
+import { Audio, Easing, Img, staticFile, useCurrentFrame, useVideoConfig } from 'remotion';
 import { avance, C, Cierre, Fruta, Marco, Tiempos, TEXTO, Titulo } from './comun';
 
 // Frutas que caen en la primera escena: [x, retraso, tamaño, giro].
@@ -26,7 +26,7 @@ const Camion: React.FC = () => (
   </svg>
 );
 
-export const Compradores: React.FC<Tiempos> = ({ inicios }) => {
+export const Compradores: React.FC<Tiempos> = ({ voz, inicios }) => {
   const frame = useCurrentFrame();
   const { fps, height } = useVideoConfig();
   const t = frame / fps;
@@ -37,11 +37,7 @@ export const Compradores: React.FC<Tiempos> = ({ inicios }) => {
 
   return (
     <Marco>
-      {inicios.map((ini, n) => (
-        <Sequence key={n} from={Math.round(ini * fps)}>
-          <Audio src={staticFile(`voz/compradores/${n}.mp3`)} />
-        </Sequence>
-      ))}
+      <Audio src={staticFile(`voz/${voz}/toma.mp3`)} />
 
       {escena === 0 && (
         <>
