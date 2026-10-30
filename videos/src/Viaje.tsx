@@ -2,7 +2,7 @@ import React, { useMemo } from 'react';
 import { ThreeCanvas } from '@remotion/three';
 import { useThree } from '@react-three/fiber';
 import * as THREE from 'three';
-import { AbsoluteFill, Audio, Easing, Img, interpolate, staticFile, useCurrentFrame, useVideoConfig } from 'remotion';
+import { AbsoluteFill, Audio, Easing, Img, interpolate, OffthreadVideo, Sequence, staticFile, useCurrentFrame, useVideoConfig } from 'remotion';
 import { SVGLoader } from 'three/examples/jsm/loaders/SVGLoader.js';
 import { TITULO } from './comun';
 import mundo from '../public/viaje/mundo.json';
@@ -206,6 +206,7 @@ const Globo: React.FC<{ t: number }> = ({ t }) => {
 
 // ---------- escena 2: mapa del sur de México ----------
 
+const PIN_SAT = { x: 689, y: 1687 }; // punta del pin de La Changuita en el último cuadro de satelite.mp4
 export const PIN_MAPA = (() => enMapa(LAT, LON))();
 const Mapa: React.FC<{ t: number }> = ({ t }) => {
   const d = useMemo(() => {
@@ -486,7 +487,8 @@ export const Viaje: React.FC = () => {
     mira = new THREE.Vector3(PIN.x, 2.5, PIN.z);
     fov = 50;
   }
-  const ruta = esc === 3 ? tr(local, 0, 2.6) : esc === 4 ? 1 : 0;
+  const inclina = 1 - tr(t, CORTES[2], CORTES[4], Easing.inOut(Easing.quad));
+  const subir = esc === 4 ? tr(local, 0, 1.6, Easing.inOut(Easing.cubic)) : 0;
   const columna = esc === 4 ? tr(local, 0.1, 1.0, Easing.out(Easing.exp)) : 0;
   const flash = Math.max(...CORTES.slice(1).map((c) => (t >= c && t < c + 0.25 ? 1 - (t - c) / 0.25 : 0)), 0);
   const tiembla = flash * 10;
@@ -515,8 +517,25 @@ export const Viaje: React.FC = () => {
             </>
           )}
           {esc === 1 && <Mapa t={local} />}
-          {esc >= 2 && <Huerta t={t} ruta={ruta} columna={columna} />}
         </ThreeCanvas>
+        {/* vista satelital real de La Changuita (grabación de Google Maps del usuario) */}
+        <Sequence from={Math.round(CORTES[2] * fps)}>
+          <AbsoluteFill style={{ perspective: 1600 }}>
+            <AbsoluteFill style={{ transformOrigin: `${PIN_SAT.x}px ${PIN_SAT.y}px`, transform: `translateY(${-subir * 420}px) scale(${1 + subir * 0.25}) rotateX(${inclina * 22}deg) scale(${1 + inclina * 0.8})` }}>
+              <OffthreadVideo src={staticFile('viaje/satelite.mp4')} muted style={{ width, height }} />
+              {columna > 0 && (
+                <>
+                  <div style={{ position: 'absolute', left: PIN_SAT.x - 45 * columna, top: PIN_SAT.y - 1400, width: 90 * columna, height: 1400, background: `linear-gradient(to top, ${ROSA}, ${ROSA}99 40%, transparent)`, filter: 'blur(10px)', mixBlendMode: 'screen' }} />
+                  <div style={{ position: 'absolute', left: PIN_SAT.x - 8, top: PIN_SAT.y - 1400, width: 16, height: 1400, background: 'linear-gradient(to top, white, transparent)', opacity: columna }} />
+                  {[0, 1].map((k) => {
+                    const f = ((local * 0.8 + k * 0.5) % 1);
+                    return <div key={k} style={{ position: 'absolute', left: PIN_SAT.x - 60 - f * 160, top: PIN_SAT.y - 24 - f * 64, width: 120 + f * 320, height: 48 + f * 128, borderRadius: '50%', border: `6px solid ${ROSA}`, opacity: (1 - f) * columna, boxShadow: `0 0 30px ${ROSA}` }} />;
+                  })}
+                </>
+              )}
+            </AbsoluteFill>
+          </AbsoluteFill>
+        </Sequence>
       </AbsoluteFill>
 
       {/* viñeta y velo frío */}
@@ -566,6 +585,7 @@ export const Viaje: React.FC = () => {
       {esc === 4 && (
         <>
           {titulo('IXCHEL', 'FRUTAS DEL SOCONUSCO', 0.3, 300)}
+          <div style={{ position: 'absolute', left: 0, right: 0, bottom: 0, height: 620, background: 'linear-gradient(to bottom, rgba(2,10,28,0), rgba(2,10,28,.92) 22%, rgba(2,10,28,.97))', opacity: subir }} />
           <div style={{ position: 'absolute', left: 60, right: 60, bottom: 110, textAlign: 'center', opacity: tr(local, 0.8, 1.3) }}>
             <div style={{ fontFamily: 'DejaVu Sans', fontSize: 40, color: 'white' }}>Huerta de rambután · La Changuita, Izapa · Tuxtla Chico</div>
             <div style={{ fontFamily: MONO, fontSize: 26, color: CIAN, marginTop: 14 }}>{coord(LAT, LON)}</div>
@@ -576,6 +596,8 @@ export const Viaje: React.FC = () => {
           </div>
         </>
       )}
+
+      {esc >= 2 && <div style={{ position: 'absolute', right: 70, bottom: 50, fontFamily: 'DejaVu Sans', fontSize: 18, color: 'white', opacity: 0.7 }}>Imágenes satelitales: Google Maps</div>}
 
       {/* golpe de luz en cada corte */}
       <AbsoluteFill style={{ background: 'white', opacity: flash * 0.65, mixBlendMode: 'screen' }} />

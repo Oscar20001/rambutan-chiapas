@@ -4,6 +4,7 @@ import { useThree } from '@react-three/fiber';
 import * as THREE from 'three';
 import { AbsoluteFill, Easing, Img, interpolate, interpolateColors, staticFile, useCurrentFrame, useVideoConfig } from 'remotion';
 import { TEXTO, TITULO, avance } from './comun';
+import { RoomEnvironment } from 'three/examples/jsm/environments/RoomEnvironment.js';
 import { Ambiente, CamionReal, LucesTarde, PisoHuerta } from './Camion3D';
 
 // Anuncios 3D estilo estudio: rambután modelado a mano (piel + pelitos), caja de madera y camión,
@@ -80,13 +81,146 @@ const pielGeo = (() => {
   return g;
 })();
 
+// pulpa (arilo): elipsoide con arruguitas suaves; las dos mitades usan la misma deformación para que casen
+const arilo = (v: THREE.Vector3) => {
+  const k = 1 + 0.035 * Math.sin(v.x * 7 + v.y * 3) * Math.sin(v.y * 9) + 0.02 * Math.sin(v.z * 13 + v.x * 5);
+  return new THREE.Vector3(v.x * 0.84 * k, v.y * 0.93 * k * (1 + 0.08 * Math.max(0, v.y)), v.z * 0.84 * k);
+};
+const ariloGeo = (phi0: number) => {
+  const g = new THREE.SphereGeometry(1, 72, 54, phi0, Math.PI);
+  const pos = g.attributes.position;
+  for (let i = 0; i < pos.count; i++) {
+    const v = arilo(new THREE.Vector3().fromBufferAttribute(pos, i));
+    pos.setXYZ(i, v.x, v.y, v.z);
+  }
+  g.computeVertexNormals();
+  return g;
+};
+// corte de la pulpa: contorno real de la mitad, con el hueco donde va la semilla
+const corteGeo = (() => {
+  const forma = new THREE.Shape();
+  for (let i = 0; i <= 96; i++) {
+    const a = (i / 96) * Math.PI * 2;
+    const v = arilo(new THREE.Vector3(Math.cos(a), Math.sin(a), 0));
+    i === 0 ? forma.moveTo(v.x, v.y) : forma.lineTo(v.x * 0.995, v.y * 0.995);
+  }
+  const g = new THREE.ShapeGeometry(forma, 48);
+  const pos = g.attributes.position;
+  const uv = g.attributes.uv;
+  for (let i = 0; i < pos.count; i++) uv.setXY(i, pos.getX(i) / 1.84 + 0.5, pos.getY(i) / 2.1 + 0.5);
+  return g;
+})();
+const pulpaMat = new THREE.MeshPhysicalMaterial({ color: '#f7f3ea', roughness: 0.08, transmission: 0.3, thickness: 0.9, emissive: new THREE.Color('#d8d2c4'), emissiveIntensity: 0.18, ior: 1.38, attenuationColor: new THREE.Color('#efe4c8'), attenuationDistance: 1.2, clearcoat: 1, clearcoatRoughness: 0.05, sheen: 0.4, sheenColor: new THREE.Color('#ffffff') });
+// textura del corte: pulpa más blanca al centro, translúcida hacia la orilla, con fibras finas y el hueco de la semilla
+const corteTex = (() => {
+  if (typeof document === 'undefined') return null;
+  const c = document.createElement('canvas');
+  c.width = c.height = 512;
+  const g = c.getContext('2d')!;
+  const r = g.createRadialGradient(256, 256, 40, 256, 256, 256);
+  r.addColorStop(0, '#fffefa');
+  r.addColorStop(0.55, '#f6f1e4');
+  r.addColorStop(0.85, '#e4dccb');
+  r.addColorStop(1, '#cfc6b2');
+  g.fillStyle = r;
+  g.fillRect(0, 0, 512, 512);
+  for (let i = 0; i < 260; i++) {
+    const a = (i / 260) * Math.PI * 2 + Math.sin(i * 7.1) * 0.02;
+    g.strokeStyle = `rgba(${200 + (i % 3) * 15},${190 + (i % 5) * 8},170,${0.12 + (i % 4) * 0.04})`;
+    g.lineWidth = 1 + (i % 3) * 0.6;
+    g.beginPath();
+    g.moveTo(256 + Math.cos(a) * 70, 256 + Math.sin(a) * 120);
+    g.lineTo(256 + Math.cos(a) * 250, 256 + Math.sin(a) * 250);
+    g.stroke();
+  }
+  // brillo de jugo
+  const b = g.createRadialGradient(200, 170, 5, 200, 170, 120);
+  b.addColorStop(0, 'rgba(255,255,255,.7)');
+  b.addColorStop(1, 'rgba(255,255,255,0)');
+  g.fillStyle = b;
+  g.fillRect(0, 0, 512, 512);
+  const t = new THREE.CanvasTexture(c);
+  t.colorSpace = THREE.SRGBColorSpace;
+  return t;
+})();
+const corteMat = new THREE.MeshPhysicalMaterial({ map: corteTex, color: '#ffffff', roughness: 0.22, clearcoat: 1, clearcoatRoughness: 0.08, emissive: new THREE.Color('#ffffff'), emissiveMap: corteTex, emissiveIntensity: 0.35, side: THREE.DoubleSide });
+const cascaraDentro = '#f1dccb';
+
+// medio cascarón con grosor: rojo por fuera, crema rosado por dentro y canto visible
+const Cascara: React.FC<{ arriba: boolean }> = ({ arriba }) => {
+  const t0 = arriba ? 0 : Math.PI / 2;
+  return (
+    <group>
+      <mesh>
+        <sphereGeometry args={[1, 48, 24, 0, Math.PI * 2, t0, Math.PI / 2]} />
+        <meshStandardMaterial color={ROJO} roughness={0.5} />
+      </mesh>
+      <mesh>
+        <sphereGeometry args={[0.92, 48, 24, 0, Math.PI * 2, t0, Math.PI / 2]} />
+        <meshStandardMaterial color={cascaraDentro} roughness={0.7} side={THREE.BackSide} />
+      </mesh>
+      <mesh rotation={[arriba ? Math.PI / 2 : -Math.PI / 2, 0, 0]}>
+        <ringGeometry args={[0.92, 1, 64]} />
+        <meshStandardMaterial color="#e7a99a" roughness={0.6} side={THREE.DoubleSide} />
+      </mesh>
+    </group>
+  );
+};
+
+const Semilla: React.FC = () => (
+  <group>
+    <mesh scale={[0.27, 0.46, 0.23]}>
+      <sphereGeometry args={[1, 40, 28]} />
+      <meshPhysicalMaterial color="#7b5131" roughness={0.45} clearcoat={0.5} clearcoatRoughness={0.3} />
+    </mesh>
+    {/* telilla blanca pegada a la semilla */}
+    <mesh scale={[0.275, 0.3, 0.235]} position={[0, -0.2, 0]}>
+      <sphereGeometry args={[1, 32, 20, 0, Math.PI * 2, Math.PI / 2, Math.PI / 2]} />
+      <meshStandardMaterial color="#e8dcc6" roughness={0.8} transparent opacity={0.85} />
+    </mesh>
+  </group>
+);
+
+const MitadPulpa: React.FC<{ lado: 1 | -1; abre: number }> = ({ lado, abre }) => {
+  // la mitad izquierda (x<0) gira hacia la cámara como un libro; la derecha igual del otro lado
+  const geo = useMemo(() => ariloGeo(lado < 0 ? -Math.PI / 2 : Math.PI / 2), [lado]);
+  return (
+    <group position={[lado * abre * 0.55, abre * 0.1, abre * 0.15]} rotation={[0, lado * abre * 0.7, 0]}>
+      <mesh geometry={geo} material={pulpaMat} />
+      <group rotation={[0, (-lado * Math.PI) / 2, 0]}>
+        <mesh geometry={corteGeo} material={corteMat} />
+        {/* hueco de la semilla en el corte */}
+        <mesh position={[0, 0, 0.004]} scale={[0.25, 0.44, 1]}>
+          <circleGeometry args={[1, 48]} />
+          <meshPhysicalMaterial color="#e9dcc2" roughness={0.3} clearcoat={1} />
+        </mesh>
+        <mesh position={[0, 0, 0.006]} scale={[0.25, 0.44, 1]}>
+          <ringGeometry args={[0.93, 1, 48]} />
+          <meshStandardMaterial color="#dcc7a2" roughness={0.5} />
+        </mesh>
+      </group>
+    </group>
+  );
+};
+
+const useBrillo = () => {
+  const gl = useThree((s) => s.gl);
+  const scene = useThree((s) => s.scene);
+  useMemo(() => {
+    const pm = new THREE.PMREMGenerator(gl);
+    scene.environment = pm.fromScene(new RoomEnvironment(), 0.04).texture;
+    scene.environmentIntensity = 0.6;
+  }, [gl, scene]);
+};
+
 export const Rambutan: React.FC<{
   semilla?: number;
   abierto?: number; // 0 cerrado → 1 la mitad de arriba se levanta y deja ver la pulpa
+  parte?: number; // 0 → 1 la pulpa se abre en dos y se ve la semilla
   position?: [number, number, number];
   rotation?: [number, number, number];
   escala?: number;
-}> = ({ semilla = 1, abierto = 0, position = [0, 0, 0], rotation = [0, 0, 0], escala = 1 }) => {
+}> = ({ semilla = 1, abierto = 0, parte = 0, position = [0, 0, 0], rotation = [0, 0, 0], escala = 1 }) => {
   const piel = <meshStandardMaterial color={ROJO} roughness={0.5} metalness={0.05} />;
   if (abierto <= 0)
     return (
@@ -97,26 +231,29 @@ export const Rambutan: React.FC<{
     );
   return (
     <group position={position} rotation={rotation} scale={escala}>
-      {/* pulpa blanca, brillante */}
-      <mesh scale={[0.86, 0.95, 0.86]}>
-        <sphereGeometry args={[1, 48, 32]} />
-        <meshStandardMaterial color="#ffffff" emissive="#e6dfcc" emissiveIntensity={0.45} roughness={0.12} />
-      </mesh>
+      <PulpaYSemilla parte={parte} />
       {/* mitad de abajo de la cáscara */}
       <group>
-        <mesh>
-          <sphereGeometry args={[1, 48, 24, 0, Math.PI * 2, Math.PI / 2, Math.PI / 2]} />
-          <meshStandardMaterial color={ROJO} roughness={0.5} side={THREE.DoubleSide} />
-        </mesh>
+        <Cascara arriba={false} />
         <Pelitos semilla={semilla} mitad="abajo" />
       </group>
       {/* mitad de arriba que se va */}
       <group position={[abierto * 2.3, abierto * 0.9, abierto * 0.8]} rotation={[0, 0, -abierto * 1.6]}>
-        <mesh>
-          <sphereGeometry args={[1, 48, 24, 0, Math.PI * 2, 0, Math.PI / 2]} />
-          <meshStandardMaterial color={ROJO} roughness={0.5} side={THREE.DoubleSide} />
-        </mesh>
+        <Cascara arriba />
         <Pelitos semilla={semilla} mitad="arriba" />
+      </group>
+    </group>
+  );
+};
+
+const PulpaYSemilla: React.FC<{ parte: number }> = ({ parte }) => {
+  useBrillo();
+  return (
+    <group position={[0, parte * 0.75, 0]}>
+      <MitadPulpa lado={-1} abre={parte} />
+      <MitadPulpa lado={1} abre={parte} />
+      <group position={[0, 0, parte * 0.35]} rotation={[0.2 * parte, parte * 0.6, 0]}>
+        <Semilla />
       </group>
     </group>
   );
@@ -335,7 +472,8 @@ export const AnuncioProducto: React.FC = () => {
     mira = [0.2, 0.5, 0];
     fov = 30;
   } else if (esc === 2) {
-    cam = [0.6, 2.4, 9.5];
+    const z = interpolate(local, [2.2, 3.8], [9.5, 7.9], { extrapolateLeft: 'clamp', extrapolateRight: 'clamp', easing: Easing.inOut(Easing.cubic) });
+    cam = [0.6, 2.4 + (z - 9.5) * 0.25, z];
     mira = [0, 1.0, 0];
   } else if (esc === 3) {
     const a = -0.6 + local * 0.18;
@@ -348,6 +486,7 @@ export const AnuncioProducto: React.FC = () => {
   }
 
   const abierto = esc === 2 ? suave(tramo(local, 0.9, 2.2)) : 0;
+  const parte = esc === 2 ? suave(tramo(local, 2.3, 3.4)) : 0;
 
   return (
     <AbsoluteFill style={{ background: `radial-gradient(circle at 50% 42%, ${interpolateColors(0.15, [0, 1], [fondo, '#ffffff'])}, ${fondo} 70%)` }}>
@@ -367,7 +506,7 @@ export const AnuncioProducto: React.FC = () => {
       <ThreeCanvas width={width} height={height} linear camera={{ fov: 35, position: [0, 0, 7] }}>
         <Camara pos={cam} mira={mira} fov={fov} />
         <Luces />
-        {esc <= 2 && <Rambutan semilla={3} abierto={abierto} rotation={[0.15, esc === 2 ? 0.4 : giro, 0.05]} position={[0, esc === 2 ? 0 : 0.15, 0]} />}
+        {esc <= 2 && <Rambutan semilla={3} abierto={abierto} parte={parte} rotation={[0.15, esc === 2 ? 0.4 : giro, 0.05]} position={[0, esc === 2 ? 0 : 0.15, 0]} />}
         {esc === 2 && <Piso color="#e3a72f" y={-1.25} />}
         {esc >= 3 && (
           <>
@@ -397,6 +536,9 @@ export const AnuncioProducto: React.FC = () => {
       <Letrero t={t} desde={8.6} hasta={11.5} y={180} tam={170} color="#3a0d0d">
         DULCE
         <br />Y JUGOSO
+      </Letrero>
+      <Letrero t={t} desde={9.9} hasta={11.5} y={1790} tam={46} color="#3a0d0d">
+        Pulpa blanca y jugosa · la semilla no se come
       </Letrero>
       <Letrero t={t} desde={12.0} hasta={16.5} y={1520} tam={110}>
         COSECHADO A MANO
