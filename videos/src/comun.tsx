@@ -18,7 +18,11 @@ export const TEXTO = 'EB Garamond';
 loadFont({ family: TITULO, url: staticFile('bebas-neue.woff2') });
 loadFont({ family: TEXTO, url: staticFile('eb-garamond-normal.woff2') });
 
-export type Tiempos = { voz: string; inicios: number[] };
+export type Tiempos = { voz: string; inicios: number[]; palabras: { t: number; w: string }[] };
+
+// Segundo en que la voz dice `palabra` (la primera vez después de `desde`).
+export const cuando = (palabras: Tiempos['palabras'], palabra: string, desde = 0, otro = 0) =>
+  palabras.find((p) => p.t >= desde && p.w === palabra)?.t ?? otro;
 
 // 0 → 1 entre `desde` y `desde + dura` segundos.
 export const avance = (t: number, desde: number, dura: number, easing = Easing.out(Easing.cubic)) =>

@@ -54,6 +54,7 @@ for (const archivo of readdirSync(dir).filter((f) => f.endsWith('.json'))) {
     n += palabras(linea).length;
   }
   const fin = +dichas.at(-1).end.toFixed(2);
-  writeFileSync(new URL('tiempos.json', salida), JSON.stringify({ inicios, fin }, null, 2));
+  const lista = dichas.map((w) => ({ t: +w.start.toFixed(2), w: w.text.toLowerCase().replace(/[^\p{L}\p{N}]/gu, '') }));
+  writeFileSync(new URL('tiempos.json', salida), JSON.stringify({ inicios, fin, palabras: lista }, null, 1));
   console.log(`✓ ${guion.id}: ${fin}s, líneas en ${inicios.join(', ')}`);
 }
