@@ -1,12 +1,13 @@
 {
   "id": "compradores",
-  "voz": "FGY2WhTYpPnrIDTdsKH5",
+  "voz": "htFfPSZGJwjBv1CL0aMD",
   "modelo": "eleven_v4",
   "lineas": [
-    "[inhales] ¿Compras rambután... por tonelada?",
-    "[pause] Lo cosechamos en Tuxtla Chico, Chiapas... [warmly] en el mero corazón del Soconusco.",
+    "[inhales] [excited] ¿Quieres comprar rambután... por tonelada?",
+    "[warmly] Imagina... cajas y cajas de rambután rojo, recién cortado en las huertas de Tuxtla Chico, Chiapas.",
+    "El sol y la lluvia del Soconusco lo hacen dulce... [sighs] y jugoso.",
     "[excited] Tú mandas tu camión: camioneta, tortón... ¡o tráiler!",
-    "[confident] Nosotros cosechamos, empacamos... y cargamos, ahí mismo en la huerta.",
-    "[inhales] Buscamos compradores en todo México. [warmly] ¡Escríbenos por WhatsApp!"
+    "[proudly] Nosotros cosechamos, empacamos y cargamos... ahí mismo, en la huerta.",
+    "[inhales] Ixchel, Frutas del Soconusco. [warmly] ¡Escríbenos por WhatsApp... y llévate lo mejor de Chiapas!"
   ]
 }
