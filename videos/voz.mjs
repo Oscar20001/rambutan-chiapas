@@ -5,11 +5,13 @@
 // respiraciones y emoción; no se leen en voz alta.
 // Uso: ELEVENLABS_API_KEY=... npm run voz            (todos los guiones)
 //      ELEVENLABS_API_KEY=... npm run voz compradores (solo uno)
+//      ELEVENLABS_API_KEY=... npm run voz compradores mi-grabacion.mp3
+//        (usa tu propia grabación en vez de generar la voz; solo la transcribe)
 import { readdirSync, readFileSync, mkdirSync, writeFileSync } from 'node:fs';
 
 const API = 'https://api.elevenlabs.io/v1';
 const dir = new URL('./src/guiones/', import.meta.url);
-const solo = process.argv[2];
+const [solo, grabacion] = process.argv.slice(2);
 const clave = process.env.ELEVENLABS_API_KEY ? { 'xi-api-key': process.env.ELEVENLABS_API_KEY } : {};
 
 const palabras = (texto) =>
@@ -30,11 +32,13 @@ for (const archivo of readdirSync(dir).filter((f) => f.endsWith('.json'))) {
   const salida = new URL(`./public/voz/${guion.id}/`, import.meta.url);
   mkdirSync(salida, { recursive: true });
 
-  const audio = await pedir(`/text-to-speech/${guion.voz}?output_format=mp3_44100_128`, {
-    method: 'POST',
-    headers: { 'content-type': 'application/json' },
-    body: JSON.stringify({ text: guion.lineas.join(' '), model_id: guion.modelo ?? 'eleven_v3', language_code: 'es' }),
-  }).then((r) => r.arrayBuffer());
+  const audio = grabacion
+    ? readFileSync(grabacion)
+    : await pedir(`/text-to-speech/${guion.voz}?output_format=mp3_44100_128`, {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ text: guion.lineas.join(' '), model_id: guion.modelo ?? 'eleven_v3', language_code: 'es' }),
+      }).then((r) => r.arrayBuffer());
   writeFileSync(new URL('toma.mp3', salida), Buffer.from(audio));
 
   // Transcribe la toma para saber en qué segundo empieza cada línea.
