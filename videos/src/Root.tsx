@@ -4,6 +4,7 @@ import { Tiempos } from './comun';
 import { ComoSeCome } from './ComoSeCome';
 import { Compradores } from './Compradores';
 import { Huerta } from './Huerta';
+import { Carrusel, DOMINGO, DURA, SABADO } from './Carrusel';
 import comoSeCome from './guiones/como-se-come.json';
 import compradores from './guiones/compradores.json';
 
@@ -26,5 +27,9 @@ export const Root: React.FC = () => (
     <Composition id="ComoSeCome" component={ComoSeCome} {...vertical} calculateMetadata={tiemposDe(comoSeCome)} />
     <Composition id="Huerta" component={Huerta} {...vertical} calculateMetadata={tiemposDe(compradores)} />
     <Composition id="Compradores" component={Compradores} {...vertical} calculateMetadata={tiemposDe(compradores)} />
+    <Composition id="CarruselSabado" component={Carrusel} fps={FPS} width={1080} height={1920}
+      durationInFrames={Math.round(SABADO.length * DURA * FPS + FPS)} defaultProps={{ laminas: SABADO }} />
+    <Composition id="CarruselDomingo" component={Carrusel} fps={FPS} width={1080} height={1920}
+      durationInFrames={Math.round(DOMINGO.length * DURA * FPS + FPS)} defaultProps={{ laminas: DOMINGO }} />
   </>
 );
