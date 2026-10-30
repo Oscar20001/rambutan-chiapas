@@ -64,45 +64,84 @@ export const Titulo: React.FC<{ size: number; style?: React.CSSProperties; child
 // Tarjeta final con el logo y el WhatsApp. `t` en segundos desde que aparece.
 export const Cierre: React.FC<{ t: number }> = ({ t }) => {
   const f = avance(t, 0, 0.45);
-  const s = 1.06 - 0.06 * avance(t, 0, 0.6);
+  const entra = (i: number) => avance(t, 0.15 + i * 0.12, 0.45, Easing.out(Easing.back(2)));
+  const pieza = (i: number): React.CSSProperties => ({
+    opacity: Math.min(1, entra(i) * 1.3),
+    transform: `translateY(${(1 - entra(i)) * 60}px) scale(${0.85 + 0.15 * entra(i)})`,
+  });
+  const late = 1 + 0.05 * Math.sin(t * 7);
   return (
     <AbsoluteFill
       style={{
-        background: C.rojo,
-        opacity: f,
-        transform: `scale(${s})`,
+        background: `radial-gradient(circle at 50% 35%, ${C.piel}, ${C.rojo} 60%, #6a1016)`,
+        clipPath: `circle(${f * 150}% at 50% 50%)`,
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
         textAlign: 'center',
         color: C.oro,
+        overflow: 'hidden',
       }}
     >
-      <div>
-        <Img src={staticFile('logo.svg')} style={{ width: 330, height: 330 }} />
-        <Titulo size={150} style={{ marginTop: 30 }}>
+      <div
+        style={{
+          position: 'absolute',
+          left: -460,
+          top: -40,
+          width: 2000,
+          height: 2000,
+          background: 'repeating-conic-gradient(rgba(244,217,108,.09) 0 8deg, transparent 8deg 16deg)',
+          transform: `rotate(${t * 12}deg)`,
+          borderRadius: '50%',
+        }}
+      />
+      <div style={{ position: 'relative' }}>
+        <Img src={staticFile('logo.svg')} style={{ width: 330, height: 330, ...pieza(0), transform: `${pieza(0).transform} rotate(${Math.sin(t * 2) * 4}deg)` }} />
+        <Titulo size={150} style={{ marginTop: 30, ...pieza(1) }}>
           RAMBUTÁN DE
           <br />
           TUXTLA CHICO
         </Titulo>
-        <div style={{ fontSize: 54, marginTop: 20 }}>Soconusco, Chiapas</div>
-        <div
-          style={{
-            fontFamily: TITULO,
-            fontSize: 84,
-            marginTop: 70,
-            background: C.oro,
-            color: C.verde,
-            display: 'inline-block',
-            padding: '18px 40px 10px',
-          }}
-        >
-          BUSCAMOS COMPRADORES
+        <div style={{ fontSize: 54, marginTop: 20, ...pieza(2) }}>Soconusco, Chiapas</div>
+        <div style={{ ...pieza(3) }}>
+          <div
+            style={{
+              fontFamily: TITULO,
+              fontSize: 84,
+              marginTop: 60,
+              background: C.oro,
+              color: C.verde,
+              display: 'inline-block',
+              padding: '18px 40px 10px',
+              borderRadius: 12,
+              boxShadow: '0 10px 0 rgba(0,0,0,.25)',
+            }}
+          >
+            BUSCAMOS COMPRADORES
+          </div>
         </div>
-        <div style={{ fontSize: 50, marginTop: 26 }}>Por tonelada · tú mandas el camión</div>
-        <Titulo size={96} style={{ marginTop: 40 }}>
-          WHATSAPP 962 269 9611
-        </Titulo>
+        <div style={{ fontSize: 50, marginTop: 26, ...pieza(4) }}>Por tonelada · tú mandas el camión</div>
+        <div style={{ ...pieza(5) }}>
+          <div
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: 22,
+              marginTop: 44,
+              background: '#25d366',
+              color: '#fff',
+              borderRadius: 999,
+              padding: '18px 44px 18px 30px',
+              boxShadow: '0 12px 0 rgba(0,0,0,.25)',
+              transform: `scale(${late})`,
+            }}
+          >
+            <svg viewBox="0 0 32 32" width={74} height={74}>
+              <path fill="#fff" d="M16 3a13 13 0 0 0-11.2 19.6L3 29l6.6-1.7A13 13 0 1 0 16 3Zm0 23.6a10.6 10.6 0 0 1-5.4-1.5l-.4-.2-3.9 1 1-3.8-.2-.4A10.6 10.6 0 1 1 16 26.6Zm5.8-7.9c-.3-.2-1.9-.9-2.2-1s-.5-.2-.7.2-.8 1-1 1.2-.4.2-.7 0a8.7 8.7 0 0 1-4.3-3.8c-.3-.6.3-.5 1-1.7.1-.2 0-.4 0-.5l-1-2.4c-.3-.6-.5-.5-.7-.5h-.6a1.2 1.2 0 0 0-.9.4 3.7 3.7 0 0 0-1.1 2.7 6.4 6.4 0 0 0 1.3 3.4 14.6 14.6 0 0 0 5.6 5c2.1.9 2.9 1 4 .8a3.4 3.4 0 0 0 2.2-1.6 2.8 2.8 0 0 0 .2-1.6c0-.1-.3-.2-.6-.3Z" />
+            </svg>
+            <span style={{ fontFamily: TITULO, fontSize: 92, lineHeight: 1, paddingTop: 8 }}>962 269 9611</span>
+          </div>
+        </div>
       </div>
     </AbsoluteFill>
   );

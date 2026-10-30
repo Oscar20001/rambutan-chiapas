@@ -50,10 +50,18 @@ export const Arbol: React.FC<{ x: number; y: number; s?: number; sway?: number; 
         [100, -380, 110, '#2a6e40'],
         [0, -450, 100, '#2f7a46'],
       ].map(([cx, cy, r, f], i) => (
-        <circle key={i} cx={cx as number} cy={cy as number} r={r as number} fill={f as string} />
+        <g key={i}>
+          <circle cx={cx as number} cy={cy as number} r={r as number} fill={f as string} />
+          <circle cx={(cx as number) - (r as number) * 0.3} cy={(cy as number) - (r as number) * 0.35} r={(r as number) * 0.45} fill="rgba(255,255,255,.07)" />
+        </g>
+      ))}
+      {[[-90, -300], [60, -420], [120, -330], [-30, -360], [20, -250], [-150, -330]].map(([cx, cy], i) => (
+        <path key={i} d={`M${cx} ${cy} q10 -14 22 -4 q-8 12 -22 4`} fill="#15402a" opacity=".6" />
       ))}
       {RACIMOS.slice(0, RACIMOS.length - cortados).map(([cx, cy], i) => (
-        <Racimo key={i} x={cx} y={cy} s={0.85} />
+        <g key={i} transform={`rotate(${Math.sin(sway * 0.8 + i) * 6} ${cx} ${cy - 20})`}>
+          <Racimo x={cx} y={cy} s={0.85} />
+        </g>
       ))}
     </g>
   </g>
@@ -66,49 +74,92 @@ export type Pose = {
   risa?: number; // 0..1 boca abierta
   salto?: number; // px hacia arriba
   mano?: React.ReactNode; // lo que lleva en la mano de enfrente
+  t?: number; // segundos, para que parpadee y respire
+  semilla?: number; // desfasa el parpadeo entre personajes
+  mujer?: boolean; // trenza, mandil y falda en lugar de sombrero y pantalón
 };
 
-// Trabajador con sombrero. Base en los pies. dir = 1 mira a la derecha, -1 a la izquierda.
+// Trabajador (o trabajadora) de la huerta. Base en los pies. dir = 1 mira a la derecha.
 export const Trabajador: React.FC<
   { x: number; y: number; s?: number; dir?: 1 | -1; camisa: string; piel?: number } & Pose
-> = ({ x, y, s = 1, dir = 1, camisa, piel = 0, brazoA = 8, brazoB = -8, pierna = 0, risa = 0, salto = 0, mano }) => {
+> = ({
+  x, y, s = 1, dir = 1, camisa, piel = 0, brazoA = 8, brazoB = -8, pierna = 0, risa = 0, salto = 0, mano,
+  t = 0, semilla = 0, mujer = false,
+}) => {
   const p = PIEL[piel % PIEL.length];
+  const fase = (((t + semilla * 1.37) % 3.3) + 3.3) % 3.3;
+  const ojo = fase < 0.12 ? 0.6 : 5; // parpadeo
+  const respira = 1 + Math.sin(t * 2.4 + semilla) * 0.018;
+  const pelo = '#2a1a12';
   return (
     <g transform={`translate(${x} ${y - salto}) scale(${s * dir} ${s})`}>
-      <ellipse cx="0" cy={salto / s + 4} rx="46" ry="10" fill="rgba(0,0,0,.18)" />
+      <ellipse cx="0" cy={salto / s + 4} rx={46 - Math.min(salto, 40) * 0.3} ry="10" fill="rgba(0,0,0,.2)" />
       {/* piernas */}
       <g transform={`rotate(${pierna} 0 -110)`}>
-        <rect x="-26" y="-112" width="24" height="112" rx="10" fill={PANTALON} />
+        <rect x="-26" y="-112" width="24" height="112" rx="10" fill={mujer ? p : PANTALON} />
         <rect x="-32" y="-12" width="34" height="14" rx="6" fill="#3b2416" />
       </g>
       <g transform={`rotate(${-pierna} 0 -110)`}>
-        <rect x="2" y="-112" width="24" height="112" rx="10" fill={PANTALON} />
+        <rect x="2" y="-112" width="24" height="112" rx="10" fill={mujer ? p : PANTALON} />
         <rect x="0" y="-12" width="34" height="14" rx="6" fill="#3b2416" />
       </g>
+      {mujer && <path d="M-44 -122 L44 -122 L60 -40 L-60 -40 Z" fill="#1f5a8a" />}
+      {mujer && (
+        // trenza por la espalda
+        <g>
+          {[0, 1, 2, 3, 4].map((i) => (
+            <ellipse key={i} cx={-30 - Math.sin(t * 2 + i) * 2} cy={-250 + i * 22} rx="11" ry="14" fill={pelo} />
+          ))}
+          <rect x="-38" y="-148" width="16" height="10" rx="4" fill={C.pelo} />
+        </g>
+      )}
       {/* brazo de atrás */}
       <g transform={`rotate(${brazoA} -30 -205)`}>
         <rect x="-44" y="-212" width="24" height="100" rx="12" fill={camisa} />
         <circle cx="-32" cy="-108" r="13" fill={p} />
       </g>
-      {/* torso */}
-      <rect x="-40" y="-230" width="80" height="128" rx="26" fill={camisa} />
-      <path d="M-14 -230 L0 -205 L14 -230" fill={p} />
-      <rect x="-40" y="-118" width="80" height="16" fill="#5b3a22" />
+      {/* torso que respira */}
+      <g transform={`translate(0 -110) scale(1 ${respira}) translate(0 110)`}>
+        <rect x="-40" y="-230" width="80" height="128" rx="26" fill={camisa} />
+        <rect x="-40" y="-230" width="18" height="128" rx="9" fill="rgba(0,0,0,.08)" />
+        <path d="M-14 -230 L0 -205 L14 -230" fill={p} />
+        {mujer ? (
+          <path d="M-30 -180 L30 -180 L36 -60 L-36 -60 Z" fill="#fffaf0" stroke="#e8dcc0" strokeWidth="3" />
+        ) : (
+          <rect x="-40" y="-118" width="80" height="16" fill="#5b3a22" />
+        )}
+      </g>
       {/* cabeza */}
       <rect x="-10" y="-246" width="20" height="20" fill={p} />
       <circle cx="0" cy="-272" r="34" fill={p} />
-      <circle cx="12" cy="-280" r="4.5" fill="#1b1b1b" />
-      <circle cx="-8" cy="-280" r="4.5" fill="#1b1b1b" />
+      <circle cx="30" cy="-266" r="6" fill="rgba(200,60,60,.25)" />
+      <ellipse cx="12" cy="-280" rx="4.5" ry={ojo} fill="#1b1b1b" />
+      <ellipse cx="-8" cy="-280" rx="4.5" ry={ojo} fill="#1b1b1b" />
       <path d="M-14 -292 q6 -5 12 0 M6 -292 q6 -5 12 0" stroke="#1b1b1b" strokeWidth="3" fill="none" />
+      {!mujer && <path d="M-4 -264 q8 5 18 0" stroke={pelo} strokeWidth="5" fill="none" strokeLinecap="round" />}
       {risa > 0.05 ? (
-        <ellipse cx="4" cy="-258" rx={12} ry={4 + risa * 9} fill="#5a1414" />
+        <g>
+          <ellipse cx="4" cy="-252" rx={12} ry={4 + risa * 9} fill="#5a1414" />
+          <ellipse cx="4" cy={-252 + (4 + risa * 9) * 0.5} rx={7} ry={(4 + risa * 9) * 0.35} fill="#d9534f" />
+        </g>
       ) : (
-        <path d="M-8 -260 Q4 -248 16 -260" stroke="#3a1a10" strokeWidth="4" fill="none" strokeLinecap="round" />
+        <path d="M-8 -256 Q4 -244 16 -256" stroke="#3a1a10" strokeWidth="4" fill="none" strokeLinecap="round" />
       )}
-      {/* sombrero */}
-      <ellipse cx="0" cy="-298" rx="64" ry="13" fill={SOMBRERO} />
-      <path d="M-32 -298 Q-30 -346 0 -346 Q30 -346 32 -298 Z" fill={SOMBRERO} />
-      <rect x="-32" y="-310" width="64" height="9" fill={C.rojo} />
+      {mujer ? (
+        <g>
+          <path d="M-34 -276 Q-36 -312 0 -310 Q30 -310 34 -284 Q14 -300 -10 -296 Q-24 -292 -34 -276 Z" fill={pelo} />
+          <circle cx="-26" cy="-302" r="10" fill={C.pelo} />
+          <circle cx="-14" cy="-310" r="7" fill={C.oro} />
+        </g>
+      ) : (
+        <g>
+          <ellipse cx="0" cy="-298" rx="64" ry="13" fill={SOMBRERO} />
+          <ellipse cx="0" cy="-301" rx="64" ry="8" fill="#f3d995" />
+          <path d="M-32 -298 Q-30 -346 0 -346 Q30 -346 32 -298 Z" fill={SOMBRERO} />
+          <path d="M-20 -300 Q-18 -336 0 -338" stroke="#d4af5f" strokeWidth="3" fill="none" />
+          <rect x="-32" y="-310" width="64" height="9" fill={C.rojo} />
+        </g>
+      )}
       {/* brazo de enfrente con lo que carga */}
       <g transform={`rotate(${brazoB} 30 -205)`}>
         <rect x="20" y="-212" width="24" height="100" rx="12" fill={camisa} />
