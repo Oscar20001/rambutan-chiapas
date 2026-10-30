@@ -4,6 +4,8 @@ import { Tiempos } from './comun';
 import { ComoSeCome } from './ComoSeCome';
 import { Compradores } from './Compradores';
 import { Huerta } from './Huerta';
+import { Viaje } from './Viaje';
+import { AnuncioCamion, AnuncioProducto } from './Anuncio3D';
 import { Carrusel, DOMINGO, DURA, SABADO } from './Carrusel';
 import comoSeCome from './guiones/como-se-come.json';
 import compradores from './guiones/compradores.json';
@@ -31,5 +33,8 @@ export const Root: React.FC = () => (
       durationInFrames={Math.round(SABADO.length * DURA * FPS + FPS)} defaultProps={{ laminas: SABADO }} />
     <Composition id="CarruselDomingo" component={Carrusel} fps={FPS} width={1080} height={1920}
       durationInFrames={Math.round(DOMINGO.length * DURA * FPS + FPS)} defaultProps={{ laminas: DOMINGO }} />
+    <Composition id="AnuncioProducto" component={AnuncioProducto} fps={FPS} width={1080} height={1920} durationInFrames={22 * FPS} />
+    <Composition id="AnuncioCamion" component={AnuncioCamion} fps={FPS} width={1080} height={1920} durationInFrames={22 * FPS} />
+    <Composition id="Viaje" component={Viaje} fps={60} width={1080} height={1920} durationInFrames={15 * 60} />
   </>
 );
