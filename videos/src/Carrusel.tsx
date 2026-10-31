@@ -76,7 +76,7 @@ const LaminaVista: React.FC<{ l: Lamina; t: number; i: number; total: number }> 
   if (l.grande?.cuenta) {
     const [a, b, suf = ''] = l.grande.cuenta;
     const v = Math.round(interpolate(avance(t, 0.4, 1.1, Easing.out(Easing.cubic)), [0, 1], [a, b]));
-    grande = `${v}${suf}`;
+    grande = `${v >= 1000 && b >= 1000 ? v.toLocaleString("en-US") : v}${suf}`;
   }
 
   return (
@@ -296,4 +296,46 @@ export const DOMINGO: Lamina[] = [
     cuerpo: ['Casi siempre es rojo, pero también existen rambutanes ', ['naranjas y amarillos', ORO], ', aunque son raros.'], fuente: 'Wikipedia, "Rambutan".' },
   { ...V('#ffc21a', '#3a0d0d', '#ffd75a'), arriba: 'IXCHEL', titulo: [['¿CUÁL NO'], ['SABÍAS?']], tam: 200, centrado: true, medallon: 'logo',
     cuerpo: ['Cuéntanos en los comentarios. Rambután por tonelada desde Tuxtla Chico: tú mandas tu camión.'] },
+];
+
+export const COMPRAR: Lamina[] = [
+  { ...V('#2440ff', CREMA, '#4a63ff'), arriba: 'PARA COMPRADORES', titulo: [['ASÍ COMPRAS'], [['RAMBUTÁN', ORO]], ['POR TONELADA']], tam: 175, centrado: true, medallon: 'centro' },
+  { ...V('#b8f02e', '#14301a', '#d2ff5c'), arriba: 'PASO', n: '01', titulo: [['ESCRÍBENOS'], ['POR WHATSAPP']], tam: 180,
+    cuerpo: ['Al ', ['962 269 9611', '#c8202b'], '. Te atendemos de lunes a domingo, de 7:00 a 19:00.'] },
+  { ...V('#ffc21a', '#3a0d0d', '#ffd75a'), arriba: 'PASO', n: '02', titulo: [['DINOS CUÁNTAS'], ['TONELADAS']], tam: 180,
+    cuerpo: ['Acordamos la cantidad, el precio y el día de carga.'] },
+  { ...V('#e6007e', CREMA, '#ff3ca0'), arriba: 'PASO', n: '03', titulo: [['TÚ MANDAS'], [['TU CAMIÓN', ORO]]], tam: 200,
+    cuerpo: ['Nosotros no hacemos envíos: el camión lo pones tú y llega directo a la huerta en Tuxtla Chico, Chiapas.'] },
+  { ...V('#00a6a6', '#062a2a', '#25c4c4'), arriba: 'PASO', n: '04', titulo: [['COSECHAMOS,'], ['EMPACAMOS'], ['Y CARGAMOS']], tam: 175,
+    cuerpo: ['Cortado a mano, seleccionado y subido a tu camión en la huerta.'] },
+  { ...V('#ff5a1f', '#2b0a3d', '#ff8a3d'), arriba: 'IXCHEL', titulo: [['¿LISTO PARA'], ['TU PRIMERA'], [['CARGA?', CREMA]]], tam: 185, centrado: true, medallon: 'logo',
+    cuerpo: ['WhatsApp 962 269 9611 · Rambután de Tuxtla Chico para todo México.'] },
+];
+
+export const PREGUNTAS: Lamina[] = [
+  { ...V('#6a1fd1', CREMA, '#8a46ef'), arriba: 'PREGUNTAS FRECUENTES', titulo: [['LO QUE'], ['NOS PREGUNTAN'], [['LOS COMPRADORES', ORO]]], tam: 150, centrado: true, medallon: 'centro' },
+  { ...V('#ffc21a', '#3a0d0d', '#ffd75a'), arriba: 'PREGUNTA', n: '01', titulo: [['¿VENDEN'], ['POR KILO?']], tam: 210,
+    cuerpo: ['No. Vendemos ', ['por tonelada', '#c8202b'], ', para bodegas, centrales de abasto y distribuidores.'] },
+  { ...V('#e6007e', CREMA, '#ff3ca0'), arriba: 'PREGUNTA', n: '02', titulo: [['¿USTEDES'], ['LO ENVÍAN?']], tam: 210,
+    cuerpo: ['No hacemos envíos. ', ['Tú mandas tu camión', ORO], ' y nosotros lo cargamos en la huerta.'] },
+  { ...V('#00a6a6', '#062a2a', '#25c4c4'), arriba: 'PREGUNTA', n: '03', titulo: [['¿DE DÓNDE'], ['ES LA FRUTA?']], tam: 200,
+    cuerpo: ['De nuestra huerta en ', ['Tuxtla Chico, Chiapas', CREMA], ', en el Soconusco, al pie del volcán Tacaná.'] },
+  { ...V('#b8f02e', '#14301a', '#d2ff5c'), arriba: 'PREGUNTA', n: '04', titulo: [['¿A QUÉ HORA'], ['ATIENDEN?']], tam: 200,
+    cuerpo: ['De ', ['lunes a domingo', '#c8202b'], ', de 7:00 a 19:00.'] },
+  { ...V('#2440ff', CREMA, '#4a63ff'), arriba: 'IXCHEL', titulo: [['¿TIENES OTRA'], ['PREGUNTA?']], tam: 190, centrado: true, medallon: 'logo',
+    cuerpo: ['Déjala en los comentarios o escríbenos: WhatsApp 962 269 9611.'] },
+];
+
+export const SOCONUSCO: Lamina[] = [
+  { ...V('#14301a', CREMA, '#24502c'), arriba: 'ORIGEN', titulo: [['SOCONUSCO,'], [['TIERRA DEL', '#b8f02e']], [['RAMBUTÁN', '#ff5a6e']]], tam: 175, centrado: true, medallon: 'centro' },
+  { ...V('#ff5a1f', '#2b0a3d', '#ff8a3d'), arriba: 'EL VOLCÁN', grande: { texto: '4,060 M', cuenta: [0, 4060, ' M'], tam: 260 }, titulo: [['VOLCÁN TACANÁ']], tam: 120,
+    cuerpo: ['Mide 4,060 metros y marca la frontera entre México y Guatemala. Sus faldas bajan hasta las huertas del Soconusco.'] },
+  { ...V('#00a6a6', '#062a2a', '#25c4c4'), arriba: 'LA ALTURA', grande: { texto: '100–700 M', color: CREMA, tam: 230 },
+    cuerpo: ['Es la altura donde se da el rambután en el Soconusco: tierra caliente, húmeda y fértil.'], fuente: 'Revista Chapingo, 2011.' },
+  { ...V('#e6007e', CREMA, '#ff3ca0'), arriba: 'LA HISTORIA', titulo: [['ZONA ARQUEOLÓGICA'], [['IZAPA', ORO]]], tam: 170,
+    cuerpo: ['Tuxtla Chico guarda Izapa, uno de los sitios más antiguos de Mesoamérica, hoy rodeado de huertas.'], fuente: 'INAH.' },
+  { ...V('#ffc21a', '#3a0d0d', '#ffd75a'), arriba: 'LA PRODUCCIÓN', titulo: [['CHIAPAS ES EL'], [['CENTRO', '#c8202b']], ['DEL RAMBUTÁN']], tam: 180,
+    cuerpo: ['Tuxtla Chico, Metapa y Cacahoatán están en el corazón de la producción de México.'], fuente: 'Revista Chapingo, 2011; FreshPlaza, 2019.' },
+  { ...V('#b8f02e', '#14301a', '#d2ff5c'), arriba: 'IXCHEL', titulo: [['DEL SOCONUSCO'], ['A TU BODEGA']], tam: 160, centrado: true, medallon: 'arriba',
+    cuerpo: ['Venta por tonelada. Tú mandas tu camión; nosotros cosechamos, empacamos y cargamos. WhatsApp 962 269 9611.'] },
 ];

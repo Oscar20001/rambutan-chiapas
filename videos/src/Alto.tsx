@@ -215,7 +215,6 @@ export const Alto: React.FC = () => {
         </svg>
       </AbsoluteFill>
       {T.fin > 0 && <Audio src={staticFile('alto/voz.mp3')} />}
-      <Audio src={staticFile('alto/musica.wav')} volume={0.3} />
     </AbsoluteFill>
   );
 };

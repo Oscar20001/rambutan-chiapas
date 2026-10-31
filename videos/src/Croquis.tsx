@@ -42,7 +42,7 @@ const Trazo: React.FC<{ pts: number[][]; color: string; ancho: number; avance: n
 };
 
 // volcán: cono con cañadas radiales, cráter y nieve/roca arriba, selva abajo
-const volcanGeo = (() => {
+export const volcanGeo = (() => {
   const g = new THREE.PlaneGeometry(26, 26, 220, 220);
   g.rotateX(-Math.PI / 2);
   const pos = g.attributes.position;
