@@ -240,7 +240,7 @@ export const RambutanAbre: React.FC = () => {
         </svg>
       </AbsoluteFill>
       <Audio src={staticFile('abre/voz.mp3')} />
-      <Audio src={staticFile('abre/musica.wav')} volume={0.32} />
+      
     </AbsoluteFill>
   );
 };
