@@ -33,6 +33,9 @@ import { TierraVolcan, DURACION_VOLCAN } from './TierraVolcan';
 
 import { TresCosechas, DURACION_COSECHAS } from './TresCosechas';
 
+import { PrimerRambutan, DURACION_PRIMER } from './PrimerRambutan';
+import { QueTiene, DURACION_QUE } from './QueTiene';
+
 export const Root: React.FC = () => (
   <>
     <Composition id="ComoSeCome" component={ComoSeCome} {...vertical} calculateMetadata={tiemposDe(comoSeCome)} />
@@ -57,6 +60,12 @@ export const Root: React.FC = () => (
     <Composition id="TresCosechasV" component={TresCosechas} fps={30} width={1080} height={1920} durationInFrames={Math.round(DURACION_COSECHAS * 30)} />
     <Composition id="TresCosechasH" component={TresCosechas} fps={30} width={1920} height={1080} durationInFrames={Math.round(DURACION_COSECHAS * 30)} />
     <Composition id="TresCosechasC" component={TresCosechas} fps={30} width={1080} height={1080} durationInFrames={Math.round(DURACION_COSECHAS * 30)} />
+    <Composition id="PrimerRambutanV" component={PrimerRambutan} fps={30} width={1080} height={1920} durationInFrames={Math.round(DURACION_PRIMER * 30)} />
+    <Composition id="PrimerRambutanH" component={PrimerRambutan} fps={30} width={1920} height={1080} durationInFrames={Math.round(DURACION_PRIMER * 30)} />
+    <Composition id="PrimerRambutanC" component={PrimerRambutan} fps={30} width={1080} height={1080} durationInFrames={Math.round(DURACION_PRIMER * 30)} />
+    <Composition id="QueTieneV" component={QueTiene} fps={30} width={1080} height={1920} durationInFrames={Math.round(DURACION_QUE * 30)} />
+    <Composition id="QueTieneH" component={QueTiene} fps={30} width={1920} height={1080} durationInFrames={Math.round(DURACION_QUE * 30)} />
+    <Composition id="QueTieneC" component={QueTiene} fps={30} width={1080} height={1080} durationInFrames={Math.round(DURACION_QUE * 30)} />
     <Composition id="AnuncioProducto" component={AnuncioProducto} fps={FPS} width={1080} height={1920} durationInFrames={22 * FPS} />
     <Composition id="AnuncioCamion" component={AnuncioCamion} fps={FPS} width={1080} height={1920} durationInFrames={22 * FPS} />
     <Composition id="RambutanAbre" component={RambutanAbre} fps={FPS} width={1080} height={1920} durationInFrames={Math.round(DURACION_ABRE * FPS)} />

@@ -14,8 +14,9 @@ import { TITULO } from './comun';
 // Datos: flores de 2.5–5 mm sin pétalos, abejas de 7 a 11 h, 15–18 semanas de flor a fruto,
 // no madura después de cortado (Wikipedia, "Rambutan").
 
-export const DURACION_FLOR = 22.5;
-const S = { flor: 3, abejas: 6.5, fruto: 10, arbol: 15.5, cierre: 18.6 };
+export const DURACION_FLOR = 37.8;
+// tiempos de la voz de Antonio (transcripción palabra por palabra)
+const S = { flor: 4.2, abejas: 10.4, fruto: 14.7, arbol: 22.1, cierre: 26.5 };
 
 const lerpV = (a: THREE.Vector3, b: THREE.Vector3, k: number) => a.clone().lerp(b, k);
 
@@ -62,8 +63,8 @@ export const FlorAFruto: React.FC = () => {
 
   const arbol = t >= S.arbol;
   // del amanecer al día durante los primeros 10 s
-  const cielo = cieloEntre('amanecer', 'dia', suave(t, 0, 10));
-  const solY = 0.34 - suave(t, 0, 10) * 0.16;
+  const cielo = cieloEntre('amanecer', 'dia', suave(t, 0, 14));
+  const solY = 0.34 - suave(t, 0, 14) * 0.16;
 
   // cámara
   let pos: THREE.Vector3;
@@ -165,7 +166,7 @@ export const FlorAFruto: React.FC = () => {
       )}
 
       <CierreSerie t={t} desde={S.cierre} />
-      <Audio src={staticFile('flor/musica.wav')} />
+      <Audio src={staticFile('serie/voz1.mp3')} />
     </AbsoluteFill>
   );
 };

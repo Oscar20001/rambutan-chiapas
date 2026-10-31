@@ -1,5 +1,5 @@
 import React from 'react';
-import { Img, staticFile, useVideoConfig } from 'remotion';
+import { Easing, Img, staticFile, useVideoConfig } from 'remotion';
 import { TITULO, TEXTO, avance } from './comun';
 
 // Datos de contacto que cierran todos los videos de la serie.
@@ -44,13 +44,19 @@ export const Rotulo: React.FC<{
     : abajo
       ? `linear-gradient(0deg, rgba(0,0,0,.5) 0%, rgba(0,0,0,.2) 28%, transparent 42%)`
       : `linear-gradient(180deg, rgba(0,0,0,.5) 0%, rgba(0,0,0,.22) 26%, transparent 40%)`;
+  // entrada: sube, se enfoca y las letras se juntan; salida: se va hacia arriba difuminándose
+  const ent = avance(t, desde, 0.6, Easing.out(Easing.exp));
+  const sal = avance(t, hasta - 0.4, 0.4, Easing.in(Easing.cubic));
+  const subA = avance(t, desde + 0.25, 0.6, Easing.out(Easing.cubic)) * (1 - sal);
+  const raya = avance(t, desde + 0.15, 0.7, Easing.inOut(Easing.cubic)) * (1 - sal);
   return (
     <>
     <div style={{ position: 'absolute', inset: 0, background: velo, opacity: a }} />
-    <div style={{ position: 'absolute', ...estilo, opacity: a, transform: `translateY(${(1 - a) * 40 * u}px)`, filter: `blur(${(1 - a) * 8}px)` }}>
-      <div style={{ fontFamily: TITULO, fontSize: tam, lineHeight: 0.92, color, letterSpacing: 2 * u, textShadow: `0 ${6 * u}px ${30 * u}px rgba(0,0,0,.45)` }}>{titulo}</div>
+    <div style={{ position: 'absolute', ...estilo, opacity: ent * (1 - sal), transform: `translateY(${((1 - ent) * 60 - sal * 50) * u}px) scale(${0.94 + 0.06 * ent})`, filter: `blur(${((1 - ent) * 10 + sal * 8) * u}px)` }}>
+      <div style={{ fontFamily: TITULO, fontSize: tam, lineHeight: 0.92, color, letterSpacing: (2 + (1 - ent) * 22) * u, textShadow: `0 ${6 * u}px ${30 * u}px rgba(0,0,0,.45)` }}>{titulo}</div>
+      <div style={{ height: 4 * u, width: `${61.8 * raya}%`, margin: hor ? `${16 * u}px 0 0` : `${16 * u}px auto 0`, background: 'linear-gradient(90deg, #ffd84d, #ff4a5a)', borderRadius: 4 * u }} />
       {sub && (
-        <div style={{ marginTop: 18 * u, fontFamily: TEXTO, fontSize: tam * 0.42, lineHeight: 1.2, color, opacity: 0.92, textShadow: `0 ${3 * u}px ${16 * u}px rgba(0,0,0,.55)` }}>{sub}</div>
+        <div style={{ marginTop: 16 * u, fontFamily: TEXTO, fontSize: tam * 0.42, lineHeight: 1.2, color, opacity: 0.92 * subA, transform: `translateY(${(1 - subA) * 20 * u}px)`, textShadow: `0 ${3 * u}px ${16 * u}px rgba(0,0,0,.55)` }}>{sub}</div>
       )}
     </div>
     </>
@@ -91,7 +97,9 @@ export const CierreSerie: React.FC<{ t: number; desde: number; fondo?: string }>
   };
   const hor = tipo === 'horizontal';
   return (
-    <div style={{ position: 'absolute', inset: 0, background: fondo, opacity: a, display: 'flex', flexDirection: hor ? 'row' : 'column', alignItems: 'center', justifyContent: 'center', gap: (hor ? 90 : 26) * u, color: '#fff8e6', textAlign: hor ? 'left' : 'center' }}>
+    <>
+    <div style={{ position: 'absolute', inset: 0, background: fondo, opacity: a * 0.86 }} />
+    <div style={{ position: 'absolute', inset: 0, opacity: a, display: 'flex', flexDirection: hor ? 'row' : 'column', alignItems: 'center', justifyContent: 'center', gap: (hor ? 90 : 26) * u, color: '#fff8e6', textAlign: hor ? 'left' : 'center' }}>
       <EspiralAurea w={w} h={h} o={0.07 * a} />
       <div style={{ ...it(0), display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 14 * u }}>
         <Img src={staticFile('logo.svg')} style={{ width: (hor ? 300 : 210) * u, background: '#fff4dc', borderRadius: '50%', padding: 10 * u, boxShadow: `0 0 ${60 * u}px rgba(255,210,120,.35)` }} />
@@ -106,9 +114,10 @@ export const CierreSerie: React.FC<{ t: number; desde: number; fondo?: string }>
         </div>
         <div style={{ ...it(2), fontFamily: TEXTO, fontSize: 36 * u, opacity: 0.9 }}>Rambután de Tuxtla Chico, Chiapas</div>
         <div style={{ ...it(3), fontFamily: TITULO, fontSize: 40 * u, letterSpacing: 4 * u, opacity: 0.85 }}>LLAMA O ENVÍA WHATSAPP</div>
-        <div style={{ ...it(3.4), fontFamily: TITULO, fontSize: 104 * u, letterSpacing: 3 * u, color: '#25d366', background: 'rgba(5,30,15,.85)', padding: `${8 * u}px ${44 * u}px 0`, borderRadius: 80 * u, boxShadow: `0 0 ${40 * u}px rgba(37,211,102,.35)` }}>{TEL}</div>
+        <div style={{ ...it(3.4), fontFamily: TITULO, fontSize: 104 * u, letterSpacing: 3 * u, color: '#25d366', background: 'rgba(5,30,15,.85)', padding: `${8 * u}px ${44 * u}px 0`, borderRadius: 80 * u, boxShadow: `0 0 ${(40 + 30 * Math.max(0, Math.sin(l * 3))) * u}px rgba(37,211,102,${0.35 + 0.25 * Math.max(0, Math.sin(l * 3))})`, transform: `scale(${1 + 0.035 * Math.max(0, Math.sin(l * 3))})` }}>{TEL}</div>
         <div style={{ ...it(4), fontFamily: TEXTO, fontSize: 38 * u }}>{CORREO}</div>
       </div>
     </div>
+    </>
   );
 };
