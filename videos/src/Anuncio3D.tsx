@@ -28,55 +28,79 @@ const rnd = (s: number) => {
   return x - Math.floor(x);
 };
 
-// Un pelito: cono delgado, rojo en la base y verde-amarillo en la punta.
+// Un pelito (espinterno): filamento delgado y flexible que sale recto, se dobla y se riza en la punta;
+// rojo en la base, rosado al medio y verde-amarillo en la punta, como en la fruta real.
 const pelitoGeo = (() => {
-  const g = new THREE.ConeGeometry(0.045, 0.5, 5, 4);
-  g.translate(0, 0.25, 0);
+  const L = 0.62;
+  const curva = new THREE.CatmullRomCurve3([
+    new THREE.Vector3(0, 0, 0),
+    new THREE.Vector3(0.01, L * 0.3, 0),
+    new THREE.Vector3(0.07, L * 0.58, 0.01),
+    new THREE.Vector3(0.17, L * 0.8, 0.03),
+    new THREE.Vector3(0.27, L * 0.88, 0.07),
+    new THREE.Vector3(0.31, L * 0.8, 0.12),
+  ]);
+  const SEG = 11;
+  const RAD = 3;
+  const g = new THREE.TubeGeometry(curva, SEG, 0.022, RAD, false);
   const pos = g.attributes.position;
   const col: number[] = [];
-  const base = new THREE.Color('#b3141f');
-  const medio = new THREE.Color('#e0473a');
-  const punta = new THREE.Color('#9fbf3a');
+  const base = new THREE.Color('#a10f1c');
+  const medio = new THREE.Color('#e2364a');
+  const punta = new THREE.Color('#b8cf4a');
   for (let i = 0; i < pos.count; i++) {
-    const y = pos.getY(i) / 0.5;
-    // curva suave: se dobla hacia un lado conforme sube
-    pos.setX(i, pos.getX(i) + y * y * 0.12);
-    const c = y < 0.6 ? base.clone().lerp(medio, y / 0.6) : medio.clone().lerp(punta, (y - 0.6) / 0.4);
-    col.push(c.r, c.g, c.b);
+    const anillo = Math.floor(i / (RAD + 1));
+    const u = anillo / SEG;
+    const c = curva.getPointAt(u);
+    const v = new THREE.Vector3().fromBufferAttribute(pos, i);
+    // se adelgaza hacia la punta
+    v.sub(c).multiplyScalar(1.15 - u * 0.85).add(c);
+    pos.setXYZ(i, v.x, v.y, v.z);
+    const k = u < 0.55 ? base.clone().lerp(medio, u / 0.55) : medio.clone().lerp(punta, Math.min(1, (u - 0.55) / 0.35));
+    col.push(k.r, k.g, k.b);
   }
   g.setAttribute('color', new THREE.Float32BufferAttribute(col, 3));
   g.computeVertexNormals();
   return g;
 })();
+const pelitoMat = new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.55 });
 
-const Pelitos: React.FC<{ semilla: number; mitad?: 'arriba' | 'abajo' }> = ({ semilla, mitad }) => {
+const Pelitos: React.FC<{ semilla: number; mitad?: 'arriba' | 'abajo'; n?: number }> = ({ semilla, mitad, n = 620 }) => {
   const mesh = useMemo(() => {
-    const pts = fibo(380).filter((p) => (mitad === 'arriba' ? p.y > 0.02 : mitad === 'abajo' ? p.y < -0.02 : true));
-    const m = new THREE.InstancedMesh(pelitoGeo, new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.6 }), pts.length);
+    const pts = fibo(n).filter((p) => (mitad === 'arriba' ? p.y > 0.02 : mitad === 'abajo' ? p.y < -0.02 : true));
+    const m = new THREE.InstancedMesh(pelitoGeo, pelitoMat, pts.length);
     const q = new THREE.Quaternion();
     const giro = new THREE.Quaternion();
     const up = new THREE.Vector3(0, 1, 0);
     pts.forEach((p, i) => {
-      const n = p.clone().add(new THREE.Vector3(rnd(i + semilla) - 0.5, rnd(i * 3 + semilla) - 0.5, rnd(i * 7 + semilla) - 0.5).multiplyScalar(0.5)).normalize();
+      const n = p.clone().add(new THREE.Vector3(rnd(i + semilla) - 0.5, rnd(i * 3 + semilla) - 0.5, rnd(i * 7 + semilla) - 0.5).multiplyScalar(0.35)).normalize();
       q.setFromUnitVectors(up, n);
       giro.setFromAxisAngle(n, rnd(i * 11 + semilla) * Math.PI * 2);
-      const largo = 0.75 + rnd(i * 5 + semilla) * 0.5;
-      const mat = new THREE.Matrix4().compose(p.clone().multiply(new THREE.Vector3(0.98, 1.08, 0.98)), giro.multiply(q), new THREE.Vector3(1, largo, 1));
+      const largo = 0.8 + rnd(i * 5 + semilla) * 0.45;
+      const mat = new THREE.Matrix4().compose(p.clone().multiply(new THREE.Vector3(0.98, 1.08, 0.98)), giro.multiply(q), new THREE.Vector3(largo, largo, largo));
       m.setMatrixAt(i, mat);
     });
     return m;
-  }, [semilla, mitad]);
+  }, [semilla, mitad, n]);
   return <primitive object={mesh} />;
 };
 
 const pielGeo = (() => {
-  const g = new THREE.SphereGeometry(1, 64, 48);
+  const g = new THREE.SphereGeometry(1, 128, 96);
   const pos = g.attributes.position;
+  const col: number[] = [];
+  const oscuro = new THREE.Color('#7d0a16');
+  const vivo = new THREE.Color('#e3263a');
   for (let i = 0; i < pos.count; i++) {
     const v = new THREE.Vector3().fromBufferAttribute(pos, i);
-    const k = 1 + 0.025 * Math.sin(v.x * 9) * Math.sin(v.y * 11) * Math.sin(v.z * 10);
+    // granitos (tubérculos) de donde nacen los pelitos
+    const gr = Math.sin(v.x * 38) * Math.sin(v.y * 41) * Math.sin(v.z * 37);
+    const k = 1 + 0.025 * Math.sin(v.x * 9) * Math.sin(v.y * 11) * Math.sin(v.z * 10) + 0.012 * gr;
     pos.setXYZ(i, v.x * k, v.y * k * 1.08, v.z * k);
+    const c = oscuro.clone().lerp(vivo, 0.5 + 0.5 * gr * 0.8 + 0.15 * Math.sin(v.x * 5 + v.z * 3));
+    col.push(c.r, c.g, c.b);
   }
+  g.setAttribute('color', new THREE.Float32BufferAttribute(col, 3));
   g.computeVertexNormals();
   return g;
 })();
@@ -110,7 +134,7 @@ const corteGeo = (() => {
   for (let i = 0; i < pos.count; i++) uv.setXY(i, pos.getX(i) / 1.84 + 0.5, pos.getY(i) / 2.1 + 0.5);
   return g;
 })();
-const pulpaMat = new THREE.MeshPhysicalMaterial({ color: '#f7f3ea', roughness: 0.08, transmission: 0.3, thickness: 0.9, emissive: new THREE.Color('#d8d2c4'), emissiveIntensity: 0.18, ior: 1.38, attenuationColor: new THREE.Color('#efe4c8'), attenuationDistance: 1.2, clearcoat: 1, clearcoatRoughness: 0.05, sheen: 0.4, sheenColor: new THREE.Color('#ffffff') });
+const pulpaMat = new THREE.MeshPhysicalMaterial({ color: '#f4ece0', roughness: 0.1, transmission: 0.3, thickness: 0.9, emissive: new THREE.Color('#d8d2c4'), emissiveIntensity: 0.18, ior: 1.38, attenuationColor: new THREE.Color('#efe4c8'), attenuationDistance: 1.2, clearcoat: 1, clearcoatRoughness: 0.05, sheen: 0.4, sheenColor: new THREE.Color('#ffffff') });
 // textura del corte: pulpa más blanca al centro, translúcida hacia la orilla, con fibras finas y el hueco de la semilla
 const corteTex = (() => {
   if (typeof document === 'undefined') return null;
@@ -169,9 +193,9 @@ const Cascara: React.FC<{ arriba: boolean }> = ({ arriba }) => {
 
 const Semilla: React.FC = () => (
   <group>
-    <mesh scale={[0.27, 0.46, 0.23]}>
+    <mesh scale={[0.3, 0.44, 0.19]}>
       <sphereGeometry args={[1, 40, 28]} />
-      <meshPhysicalMaterial color="#7b5131" roughness={0.45} clearcoat={0.5} clearcoatRoughness={0.3} />
+      <meshStandardMaterial color="#a8794f" roughness={0.9} />
     </mesh>
     {/* telilla blanca pegada a la semilla */}
     <mesh scale={[0.275, 0.3, 0.235]} position={[0, -0.2, 0]}>
@@ -217,28 +241,30 @@ export const Rambutan: React.FC<{
   semilla?: number;
   abierto?: number; // 0 cerrado → 1 la mitad de arriba se levanta y deja ver la pulpa
   parte?: number; // 0 → 1 la pulpa se abre en dos y se ve la semilla
+  explota?: number; // 0 → 1 vista explotada: tapa arriba, base abajo, pulpa y semilla al centro
+  pelos?: number; // menos pelitos para racimos y árboles (rinde más)
   position?: [number, number, number];
   rotation?: [number, number, number];
   escala?: number;
-}> = ({ semilla = 1, abierto = 0, parte = 0, position = [0, 0, 0], rotation = [0, 0, 0], escala = 1 }) => {
-  const piel = <meshStandardMaterial color={ROJO} roughness={0.5} metalness={0.05} />;
+}> = ({ semilla = 1, abierto = 0, parte = 0, explota = 0, pelos = 620, position = [0, 0, 0], rotation = [0, 0, 0], escala = 1 }) => {
+  const piel = <meshStandardMaterial vertexColors roughness={0.55} metalness={0.02} />;
   if (abierto <= 0)
     return (
       <group position={position} rotation={rotation} scale={escala}>
         <mesh geometry={pielGeo}>{piel}</mesh>
-        <Pelitos semilla={semilla} />
+        <Pelitos semilla={semilla} n={pelos} />
       </group>
     );
   return (
     <group position={position} rotation={rotation} scale={escala}>
       <PulpaYSemilla parte={parte} />
       {/* mitad de abajo de la cáscara */}
-      <group>
+      <group position={[0, -explota * 1.7, 0]}>
         <Cascara arriba={false} />
         <Pelitos semilla={semilla} mitad="abajo" />
       </group>
       {/* mitad de arriba que se va */}
-      <group position={[abierto * 2.3, abierto * 0.9, abierto * 0.8]} rotation={[0, 0, -abierto * 1.6]}>
+      <group position={[abierto * 2.3 * (1 - explota), abierto * 0.9 * (1 - explota) + explota * 2.3, abierto * 0.8 * (1 - explota)]} rotation={[0, 0, -abierto * 1.6 * (1 - explota)]}>
         <Cascara arriba />
         <Pelitos semilla={semilla} mitad="arriba" />
       </group>
@@ -428,7 +454,7 @@ const Pie: React.FC<{ t: number; desde: number; fondo: string; tinta: string }> 
 
 const tramo = (t: number, a: number, b: number) => Math.min(1, Math.max(0, (t - a) / (b - a)));
 const suave = (x: number) => Easing.inOut(Easing.cubic)(x);
-const caida = (t: number, desde: number, altura: number, hasta: number) => {
+export const caida = (t: number, desde: number, altura: number, hasta: number) => {
   // cae con un rebote pequeño
   const d = t - desde;
   if (d <= 0) return altura;

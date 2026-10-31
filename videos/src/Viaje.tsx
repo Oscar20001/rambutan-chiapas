@@ -2,6 +2,7 @@ import React, { useMemo } from 'react';
 import { ThreeCanvas } from '@remotion/three';
 import { useThree } from '@react-three/fiber';
 import * as THREE from 'three';
+import { Croquis, EtiquetasVuelo, LucesVuelo, camaraVuelo } from './Croquis';
 import { AbsoluteFill, Audio, Easing, Img, interpolate, OffthreadVideo, Sequence, staticFile, useCurrentFrame, useVideoConfig } from 'remotion';
 import { SVGLoader } from 'three/examples/jsm/loaders/SVGLoader.js';
 import { TITULO } from './comun';
@@ -11,6 +12,11 @@ import estados from '../public/viaje/estados.json';
 // "Del espacio a la huerta": la cámara baja del espacio a México, al Soconusco y a la huerta de Ixchel
 // en Tuxtla Chico, con HUD que marca latitud, longitud y altitud en tiempo real.
 
+const CamaraVuelo: React.FC<{ k: number }> = ({ k }) => {
+  const { pos, mira, fov } = camaraVuelo(k);
+  return <Camara pos={pos} mira={mira} fov={fov} />;
+};
+
 const MONO = '"DejaVu Sans Mono", monospace';
 const CIAN = '#3ff4ff';
 const ROSA = '#ff3d9a';
@@ -19,8 +25,9 @@ const NARANJA = '#ff9a3c';
 const LAT = 14.928;
 const LON = -92.178;
 
-export const CORTES = [0, 3.5, 6.5, 10, 12.8]; // segundos: globo · mapa · huerta · ruta · llegada
-export const DURACION = 15;
+export const CORTES = [0, 3.5, 10.5, 14, 16.8]; // segundos: globo · mapa (+ vuelo) · huerta · ruta · llegada
+export const VUELO = [6.5, 10.5]; // dentro del tramo del mapa: Tacaná → croquis de Tuxtla Chico → La Changuita
+export const DURACION = 19;
 
 const rnd = (s: number) => {
   const x = Math.sin(s * 12.9898 + 78.233) * 43758.5453;
@@ -450,10 +457,17 @@ export const Viaje: React.FC = () => {
   const local = t - CORTES[esc];
 
   // datos que cambian en vivo
-  const vuelo = tr(t, 0, 12.8, Easing.inOut(Easing.quad));
-  const lat = interpolate(tr(t, 0, 10, Easing.out(Easing.cubic)), [0, 1], [0, LAT]);
-  const lon = interpolate(tr(t, 0, 10, Easing.out(Easing.cubic)), [0, 1], [-20, LON]);
-  const alt = Math.max(0.12, 28078 * Math.pow(1 - vuelo, 3.2));
+  const enVuelo = t >= VUELO[0] && t < VUELO[1];
+  const kVuelo = tr(t, VUELO[0], VUELO[1], Easing.linear);
+  const lat = interpolate(tr(t, 0, 13.5, Easing.out(Easing.cubic)), [0, 1], [0, LAT]);
+  const lon = interpolate(tr(t, 0, 13.5, Easing.out(Easing.cubic)), [0, 1], [-20, LON]);
+  // altitud: del espacio a ~12 km al llegar sobre el Tacaná, luego bajando hasta la huerta
+  const alt =
+    t < VUELO[0]
+      ? 12 + 28066 * Math.pow(1 - tr(t, 0, VUELO[0], Easing.inOut(Easing.quad)), 3)
+      : t < VUELO[1]
+        ? interpolate(kVuelo, [0, 1], [12, 0.6])
+        : Math.max(0.12, interpolate(t, [VUELO[1], CORTES[4]], [0.6, 0.12], { extrapolateRight: 'clamp' }));
 
   // cámara por escena
   let pos = new THREE.Vector3(0, 0, 9);
@@ -490,7 +504,7 @@ export const Viaje: React.FC = () => {
   const inclina = 1 - tr(t, CORTES[2], CORTES[4], Easing.inOut(Easing.quad));
   const subir = esc === 4 ? tr(local, 0, 1.6, Easing.inOut(Easing.cubic)) : 0;
   const columna = esc === 4 ? tr(local, 0.1, 1.0, Easing.out(Easing.exp)) : 0;
-  const flash = Math.max(...CORTES.slice(1).map((c) => (t >= c && t < c + 0.25 ? 1 - (t - c) / 0.25 : 0)), 0);
+  const flash = Math.max(...[...CORTES.slice(1), VUELO[0]].map((c) => (t >= c && t < c + 0.25 ? 1 - (t - c) / 0.25 : 0)), 0);
   const tiembla = flash * 10;
 
   // panel de navegación
@@ -516,8 +530,17 @@ export const Viaje: React.FC = () => {
               <Puntos pos={ESTRELLAS.pos} col={ESTRELLAS.col} tam={0.12} opacidad={0.7} />
             </>
           )}
-          {esc === 1 && <Mapa t={local} />}
+          {esc === 1 && !enVuelo && <Mapa t={local} />}
         </ThreeCanvas>
+        {enVuelo && (
+          <AbsoluteFill style={{ background: 'linear-gradient(#1b3a6b, #6f86a8 55%, #f0b07a)' }}>
+            <ThreeCanvas width={width} height={height} linear camera={{ fov: 40, position: [0, 5, 10] }}>
+              <CamaraVuelo k={kVuelo} />
+              <LucesVuelo />
+              <Croquis dibujo={tr(kVuelo, 0.3, 0.75, Easing.linear)} pin={tr(kVuelo, 0.7, 0.9, Easing.linear)} t={t} />
+            </ThreeCanvas>
+          </AbsoluteFill>
+        )}
         {/* vista satelital real de La Changuita (grabación de Google Maps del usuario) */}
         <Sequence from={Math.round(CORTES[2] * fps)}>
           <AbsoluteFill style={{ perspective: 1600 }}>
@@ -557,7 +580,7 @@ export const Viaje: React.FC = () => {
         </div>
       </div>
       <div style={{ position: 'absolute', left: 80, top: 210, fontFamily: MONO, color: NARANJA, fontSize: 22, letterSpacing: 3 }}>
-        ● {['ÓRBITA', 'SURESTE DE MÉXICO', 'TUXTLA CHICO · CHIAPAS', 'CARRETERA 200 → HUERTA', 'DESTINO: HUERTA IXCHEL'][esc]}
+        ● {enVuelo ? 'VOLCÁN TACANÁ → TUXTLA CHICO' : ['ÓRBITA', 'SURESTE DE MÉXICO', 'TUXTLA CHICO · CHIAPAS', 'CARRETERA 200 → HUERTA', 'DESTINO: HUERTA IXCHEL'][esc]}
       </div>
       {/* regla de escala */}
       {esc < 3 && (
@@ -567,7 +590,8 @@ export const Viaje: React.FC = () => {
         </div>
       )}
 
-      {esc === 1 && titulo('CHIAPAS', 'SOCONUSCO · MÉXICO', 0.9, 330)}
+      {esc === 1 && !enVuelo && titulo('CHIAPAS', 'SOCONUSCO · MÉXICO', 0.9, 330)}
+      {enVuelo && <EtiquetasVuelo k={kVuelo} w={width} h={height} />}
       {esc === 2 && titulo('LA CHANGUITA', 'JUNTO A IZAPA · TUXTLA CHICO', 0.6, 330)}
 
       {/* panel de navegación */}

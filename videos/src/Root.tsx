@@ -4,8 +4,11 @@ import { Tiempos } from './comun';
 import { ComoSeCome } from './ComoSeCome';
 import { Compradores } from './Compradores';
 import { Huerta } from './Huerta';
-import { Viaje } from './Viaje';
+import { DURACION as DURACION_VIAJE, Viaje } from './Viaje';
 import { AnuncioCamion, AnuncioProducto } from './Anuncio3D';
+import { DURACION_ABRE, RambutanAbre } from './RambutanAbre';
+import { Alto, DURACION_ALTO } from './Alto';
+import { VueloPrueba } from './VueloPrueba';
 import { Carrusel, DOMINGO, DURA, SABADO } from './Carrusel';
 import comoSeCome from './guiones/como-se-come.json';
 import compradores from './guiones/compradores.json';
@@ -35,6 +38,9 @@ export const Root: React.FC = () => (
       durationInFrames={Math.round(DOMINGO.length * DURA * FPS + FPS)} defaultProps={{ laminas: DOMINGO }} />
     <Composition id="AnuncioProducto" component={AnuncioProducto} fps={FPS} width={1080} height={1920} durationInFrames={22 * FPS} />
     <Composition id="AnuncioCamion" component={AnuncioCamion} fps={FPS} width={1080} height={1920} durationInFrames={22 * FPS} />
-    <Composition id="Viaje" component={Viaje} fps={60} width={1080} height={1920} durationInFrames={15 * 60} />
+    <Composition id="RambutanAbre" component={RambutanAbre} fps={FPS} width={1080} height={1920} durationInFrames={Math.round(DURACION_ABRE * FPS)} />
+    <Composition id="Alto" component={Alto} fps={FPS} width={1080} height={1920} durationInFrames={Math.round(DURACION_ALTO * FPS)} />
+    <Composition id="VueloPrueba" component={VueloPrueba} fps={FPS} width={1080} height={1920} durationInFrames={150} />
+    <Composition id="Viaje" component={Viaje} fps={60} width={1080} height={1920} durationInFrames={DURACION_VIAJE * 60} />
   </>
 );
