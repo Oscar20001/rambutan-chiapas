@@ -224,7 +224,7 @@ export const RambutanAbre: React.FC = () => {
           <div style={{ fontFamily: TITULO, fontSize: 96, color: 'white', letterSpacing: 6, marginTop: 18 }}>IXCHEL</div>
           <div style={{ fontFamily: MONO, fontSize: 26, color: 'rgba(255,255,255,.7)', letterSpacing: 6 }}>FRUTAS DEL SOCONUSCO</div>
           <div style={{ display: 'inline-block', marginTop: 40, padding: '14px 44px 8px', borderRadius: 60, background: ACENTO, color: 'white', fontFamily: TITULO, fontSize: 90, letterSpacing: 3, boxShadow: `0 0 60px ${ACENTO}88` }}>
-            WA 962 269 9611
+            WA 962 170 7553
           </div>
         </div>
       )}

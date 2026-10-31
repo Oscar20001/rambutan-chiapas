@@ -445,7 +445,7 @@ const Pie: React.FC<{ t: number; desde: number; fondo: string; tinta: string }> 
         </div>
       </div>
       <div style={{ fontFamily: TEXTO, fontSize: 46, textAlign: 'center' }}>Venta por tonelada. Tú mandas tu camión.</div>
-      <div style={{ fontFamily: TITULO, fontSize: 110, letterSpacing: 2, color: '#25d366', background: '#0b2415', padding: '6px 40px 0', borderRadius: 60 }}>WA 962 269 9611</div>
+      <div style={{ fontFamily: TITULO, fontSize: 110, letterSpacing: 2, color: '#25d366', background: '#0b2415', padding: '6px 40px 0', borderRadius: 60 }}>WA 962 170 7553</div>
     </div>
   );
 };

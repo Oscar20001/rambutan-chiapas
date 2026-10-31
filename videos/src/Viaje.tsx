@@ -615,7 +615,7 @@ export const Viaje: React.FC = () => {
             <div style={{ fontFamily: MONO, fontSize: 26, color: CIAN, marginTop: 14 }}>{coord(LAT, LON)}</div>
             <div style={{ display: 'inline-flex', alignItems: 'center', gap: 20, marginTop: 34, padding: '14px 40px 8px', borderRadius: 60, background: ROSA, color: 'white', fontFamily: TITULO, fontSize: 84, letterSpacing: 2 }}>
               <Img src={staticFile('logo.svg')} style={{ width: 70, background: '#fff4dc', borderRadius: '50%', padding: 4, marginTop: -6 }} />
-              WA 962 269 9611
+              WA 962 170 7553
             </div>
           </div>
         </>

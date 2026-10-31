@@ -239,7 +239,7 @@ const LaminaVista: React.FC<{ l: Lamina; t: number; i: number; total: number }> 
       >
         <Img src={staticFile('logo.svg')} style={{ width: 104, background: CREMA, borderRadius: '50%', padding: 8 }} />
         IXCHEL · FRUTAS DEL SOCONUSCO
-        <span style={{ marginLeft: 'auto', fontSize: 50 }}>WA 962 269 9611</span>
+        <span style={{ marginLeft: 'auto', fontSize: 50 }}>WA 962 170 7553</span>
       </div>
     </AbsoluteFill>
   );
@@ -301,7 +301,7 @@ export const DOMINGO: Lamina[] = [
 export const COMPRAR: Lamina[] = [
   { ...V('#2440ff', CREMA, '#4a63ff'), arriba: 'PARA COMPRADORES', titulo: [['ASÍ COMPRAS'], [['RAMBUTÁN', ORO]], ['POR TONELADA']], tam: 175, centrado: true, medallon: 'centro' },
   { ...V('#b8f02e', '#14301a', '#d2ff5c'), arriba: 'PASO', n: '01', titulo: [['ESCRÍBENOS'], ['POR WHATSAPP']], tam: 180,
-    cuerpo: ['Al ', ['962 269 9611', '#c8202b'], '. Te atendemos de lunes a domingo, de 7:00 a 19:00.'] },
+    cuerpo: ['Al ', ['962 170 7553', '#c8202b'], '. Te atendemos de lunes a domingo, de 7:00 a 19:00.'] },
   { ...V('#ffc21a', '#3a0d0d', '#ffd75a'), arriba: 'PASO', n: '02', titulo: [['DINOS CUÁNTAS'], ['TONELADAS']], tam: 180,
     cuerpo: ['Acordamos la cantidad, el precio y el día de carga.'] },
   { ...V('#e6007e', CREMA, '#ff3ca0'), arriba: 'PASO', n: '03', titulo: [['TÚ MANDAS'], [['TU CAMIÓN', ORO]]], tam: 200,
@@ -309,7 +309,7 @@ export const COMPRAR: Lamina[] = [
   { ...V('#00a6a6', '#062a2a', '#25c4c4'), arriba: 'PASO', n: '04', titulo: [['COSECHAMOS,'], ['EMPACAMOS'], ['Y CARGAMOS']], tam: 175,
     cuerpo: ['Cortado a mano, seleccionado y subido a tu camión en la huerta.'] },
   { ...V('#ff5a1f', '#2b0a3d', '#ff8a3d'), arriba: 'IXCHEL', titulo: [['¿LISTO PARA'], ['TU PRIMERA'], [['CARGA?', CREMA]]], tam: 185, centrado: true, medallon: 'logo',
-    cuerpo: ['WhatsApp 962 269 9611 · Rambután de Tuxtla Chico para todo México.'] },
+    cuerpo: ['WhatsApp 962 170 7553 · Rambután de Tuxtla Chico para todo México.'] },
 ];
 
 export const PREGUNTAS: Lamina[] = [
@@ -323,7 +323,7 @@ export const PREGUNTAS: Lamina[] = [
   { ...V('#b8f02e', '#14301a', '#d2ff5c'), arriba: 'PREGUNTA', n: '04', titulo: [['¿A QUÉ HORA'], ['ATIENDEN?']], tam: 200,
     cuerpo: ['De ', ['lunes a domingo', '#c8202b'], ', de 7:00 a 19:00.'] },
   { ...V('#2440ff', CREMA, '#4a63ff'), arriba: 'IXCHEL', titulo: [['¿TIENES OTRA'], ['PREGUNTA?']], tam: 190, centrado: true, medallon: 'logo',
-    cuerpo: ['Déjala en los comentarios o escríbenos: WhatsApp 962 269 9611.'] },
+    cuerpo: ['Déjala en los comentarios o escríbenos: WhatsApp 962 170 7553.'] },
 ];
 
 export const SOCONUSCO: Lamina[] = [
@@ -337,5 +337,5 @@ export const SOCONUSCO: Lamina[] = [
   { ...V('#ffc21a', '#3a0d0d', '#ffd75a'), arriba: 'LA PRODUCCIÓN', titulo: [['CHIAPAS ES EL'], [['CENTRO', '#c8202b']], ['DEL RAMBUTÁN']], tam: 180,
     cuerpo: ['Tuxtla Chico, Metapa y Cacahoatán están en el corazón de la producción de México.'], fuente: 'Revista Chapingo, 2011; FreshPlaza, 2019.' },
   { ...V('#b8f02e', '#14301a', '#d2ff5c'), arriba: 'IXCHEL', titulo: [['DEL SOCONUSCO'], ['A TU BODEGA']], tam: 160, centrado: true, medallon: 'arriba',
-    cuerpo: ['Venta por tonelada. Tú mandas tu camión; nosotros cosechamos, empacamos y cargamos. WhatsApp 962 269 9611.'] },
+    cuerpo: ['Venta por tonelada. Tú mandas tu camión; nosotros cosechamos, empacamos y cargamos. WhatsApp 962 170 7553.'] },
 ];

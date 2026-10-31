@@ -5,7 +5,7 @@
 // ---------- datos que cambia el dueño ----------
 
 // Números de WhatsApp con lada de país (52) y sin espacios. El primero recibe los mensajes de los botones.
-const WHATSAPP = ['529622699611', '529621707553'];
+const WHATSAPP = ['529621707553', '529622699611'];
 
 // Dirección del script de Google que guarda las citas en tu Google Calendar (ver agenda/LEEME.md).
 // Mientras esté vacía, la agenda funciona igual pero la cita se pide por WhatsApp.
