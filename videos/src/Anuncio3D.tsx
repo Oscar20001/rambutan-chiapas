@@ -30,7 +30,7 @@ const rnd = (s: number) => {
 
 // Un pelito (espinterno): filamento delgado y flexible que sale recto, se dobla y se riza en la punta;
 // rojo en la base, rosado al medio y verde-amarillo en la punta, como en la fruta real.
-const pelitoGeo = (() => {
+export const pelitoGeo = (() => {
   const L = 0.62;
   const curva = new THREE.CatmullRomCurve3([
     new THREE.Vector3(0, 0, 0),
@@ -63,7 +63,7 @@ const pelitoGeo = (() => {
   g.computeVertexNormals();
   return g;
 })();
-const pelitoMat = new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.55 });
+export const pelitoMat = new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.55 });
 
 const Pelitos: React.FC<{ semilla: number; mitad?: 'arriba' | 'abajo'; n?: number }> = ({ semilla, mitad, n = 620 }) => {
   const mesh = useMemo(() => {
@@ -85,8 +85,8 @@ const Pelitos: React.FC<{ semilla: number; mitad?: 'arriba' | 'abajo'; n?: numbe
   return <primitive object={mesh} />;
 };
 
-const pielGeo = (() => {
-  const g = new THREE.SphereGeometry(1, 128, 96);
+const crearPiel = (sw: number, sh: number) => {
+  const g = new THREE.SphereGeometry(1, sw, sh);
   const pos = g.attributes.position;
   const col: number[] = [];
   const oscuro = new THREE.Color('#7d0a16');
@@ -103,7 +103,10 @@ const pielGeo = (() => {
   g.setAttribute('color', new THREE.Float32BufferAttribute(col, 3));
   g.computeVertexNormals();
   return g;
-})();
+};
+const pielGeo = crearPiel(128, 96);
+// piel ligera para frutas lejanas (racimos en árboles): rinde mucho más al renderizar
+export const pielBaja = crearPiel(36, 26);
 
 // pulpa (arilo): elipsoide con arruguitas suaves; las dos mitades usan la misma deformación para que casen
 const arilo = (v: THREE.Vector3) => {
@@ -251,7 +254,7 @@ export const Rambutan: React.FC<{
   if (abierto <= 0)
     return (
       <group position={position} rotation={rotation} scale={escala}>
-        <mesh geometry={pielGeo}>{piel}</mesh>
+        <mesh geometry={pelos <= 150 ? pielBaja : pielGeo}>{piel}</mesh>
         <Pelitos semilla={semilla} n={pelos} />
       </group>
     );

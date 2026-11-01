@@ -1,6 +1,7 @@
 import React, { useMemo } from 'react';
 import * as THREE from 'three';
 import { Rambutan } from './Anuncio3D';
+import { conViento, relojViento } from './Realismo';
 
 // Racimo colgando de su ramita con hojas, y árbol de rambután con varios racimos.
 // Hecho a partir de fotos de referencia: hojas elípticas verde oscuro y brillantes, ramitas cafés, frutas apretadas.
@@ -26,7 +27,7 @@ export const hojaGeo = (() => {
   g.computeVertexNormals();
   return g;
 })();
-export const hojaMat = new THREE.MeshPhysicalMaterial({ color: '#2f6b2a', roughness: 0.35, clearcoat: 0.6, clearcoatRoughness: 0.2, side: THREE.DoubleSide });
+export const hojaMat = conViento(new THREE.MeshPhysicalMaterial({ color: '#2f6b2a', roughness: 0.35, clearcoat: 0.6, clearcoatRoughness: 0.2, side: THREE.DoubleSide }), 0.05, 'hoja', 2.2);
 const ramaMat = new THREE.MeshStandardMaterial({ color: '#7a5a3a', roughness: 0.85 });
 
 const Tallo: React.FC<{ de: THREE.Vector3; a: THREE.Vector3; r?: number }> = ({ de, a, r = 0.025 }) => {
@@ -79,22 +80,30 @@ export const Racimo: React.FC<{ n?: number; semilla?: number; pelos?: number; po
 };
 
 // árbol: tronco, ramas y copa hecha de muchas hojas, con racimos colgando por fuera
-const N_HOJAS = 2200;
+const N_HOJAS = 9000;
 export const Arbol: React.FC<{ position?: [number, number, number]; racimos?: number; escala?: number }> = ({ position = [0, 0, 0], racimos = 7, escala = 1 }) => {
   const copa = useMemo(() => {
     const m = new THREE.InstancedMesh(hojaGeo, hojaMat, N_HOJAS);
     const centros = [new THREE.Vector3(0, 4.6, 0), new THREE.Vector3(-1.6, 4.0, 0.4), new THREE.Vector3(1.6, 4.1, -0.3), new THREE.Vector3(0.3, 5.6, -0.4), new THREE.Vector3(-0.6, 4.3, 1.4), new THREE.Vector3(0.9, 4.0, 1.2)];
     const mat = new THREE.Matrix4();
     const q = new THREE.Quaternion();
+    const q2 = new THREE.Quaternion();
+    const up = new THREE.Vector3(0, 1, 0);
     for (let i = 0; i < N_HOJAS; i++) {
       const c = centros[i % centros.length];
       const d = new THREE.Vector3(rnd(i) - 0.5, rnd(i * 2) - 0.5, rnd(i * 3) - 0.5).normalize();
-      const p = c.clone().add(d.clone().multiplyScalar(1.1 + rnd(i * 4) * 0.5));
-      q.setFromEuler(new THREE.Euler(rnd(i * 5) * 6.28, rnd(i * 6) * 6.28, rnd(i * 7) * 6.28));
-      const s = 0.38 + rnd(i * 8) * 0.18;
+      // más hojas en la orilla de la copa, algunas adentro
+      const r = 0.55 + Math.pow(rnd(i * 4), 0.35) * 1.15;
+      const p = c.clone().add(d.clone().multiplyScalar(r));
+      // la hoja apunta hacia afuera y cuelga un poco, girada sobre su nervadura
+      const afuera = d.clone().add(new THREE.Vector3(0, -0.55 - rnd(i * 5) * 0.4, 0)).normalize();
+      q.setFromUnitVectors(up, afuera);
+      q2.setFromAxisAngle(afuera, rnd(i * 6) * Math.PI * 2);
+      q.premultiply(q2);
+      const s = 0.13 + rnd(i * 8) * 0.09;
       mat.compose(p, q, new THREE.Vector3(s, s, s));
       m.setMatrixAt(i, mat);
-      m.setColorAt(i, new THREE.Color().setHSL(0.28 + rnd(i * 9) * 0.05, 0.5, 0.18 + rnd(i * 10) * 0.12));
+      m.setColorAt(i, new THREE.Color().setHSL(0.26 + rnd(i * 9) * 0.06, 0.45 + rnd(i * 11) * 0.15, 0.13 + rnd(i * 10) * 0.14 + (p.y - 4) * 0.02));
     }
     return m;
   }, []);
@@ -102,7 +111,7 @@ export const Arbol: React.FC<{ position?: [number, number, number]; racimos?: nu
     () =>
       Array.from({ length: racimos }, (_, i) => {
         const a = (i / racimos) * Math.PI * 2 + 0.4;
-        return new THREE.Vector3(Math.cos(a) * 2.2, 3.4 + rnd(i * 11) * 0.8, Math.sin(a) * 1.9);
+        return new THREE.Vector3(Math.cos(a) * (2.0 + rnd(i * 13) * 0.4), 3.3 + rnd(i * 11) * 1.0, Math.sin(a) * (1.8 + rnd(i * 17) * 0.4));
       }),
     [racimos],
   );
@@ -118,10 +127,15 @@ export const Arbol: React.FC<{ position?: [number, number, number]; racimos?: nu
           <meshStandardMaterial color="#5b4330" roughness={0.95} />
         </mesh>
       ))}
-      <primitive object={copa} />
-      {lugares.map((p, i) => (
-        <Racimo key={i} n={9} semilla={i + 3} pelos={90} escala={0.55} position={[p.x, p.y, p.z]} rotation={[0, -Math.atan2(p.z, p.x), 0]} hojas={false} />
-      ))}
+      <group position={[0, 2.6, 0]} rotation={[Math.sin(relojViento.value * 0.7 + position[0]) * 0.012, 0, Math.sin(relojViento.value * 0.9 + position[2]) * 0.018]}>
+        <group position={[0, -2.6, 0]}>
+          <primitive object={copa} />
+          {lugares.map((p, i) => {
+            const v = relojViento.value * 1.6 + i * 1.7 + position[0];
+            return <Racimo key={i} n={9} semilla={i + 3} pelos={70} escala={0.34} position={[p.x, p.y, p.z]} rotation={[Math.sin(v) * 0.06, -Math.atan2(p.z, p.x), Math.cos(v * 0.8) * 0.07]} hojas={false} />;
+          })}
+        </group>
+      </group>
     </group>
   );
 };

@@ -4,7 +4,9 @@ import * as THREE from 'three';
 import { AbsoluteFill, Audio, staticFile, useCurrentFrame, useVideoConfig } from 'remotion';
 import { Corona, Estudio, Gotas } from './RambutanAbre';
 import { Rambutan, caida } from './Anuncio3D';
-import { CamaraSerie, suave } from './Naturaleza';
+import { CamaraSerie, FondoCielo, cieloEntre, suave } from './Naturaleza';
+import { Arbol, Racimo } from './Racimo';
+import { Destello, LuzSol, Nubes, Pasto, Sombras, SueloReal, relojViento } from './Realismo';
 import { CierreSerie, Rotulo, useFormato } from './marca';
 import { avance, TITULO, TEXTO } from './comun';
 
@@ -77,6 +79,8 @@ export const QueTiene: React.FC = () => {
   const { fps } = useVideoConfig();
   const t = frame / fps;
   const { w, h, u, tipo, fov } = useFormato();
+  relojViento.value = t;
+  const cielo = cieloEntre('dia', 'atardecer', 0.25 + suave(t, 0, 30) * 0.35);
 
   // la fruta cae del cielo y rebota al inicio
   const y0 = caida(t, 0.15, 6, 0);
@@ -99,8 +103,8 @@ export const QueTiene: React.FC = () => {
   }
   if (t > T.ojo) {
     d = 8.6 + explota * 4.5;
-    alto = 1.6;
-    foco = new THREE.Vector3(0, 0.4, 0);
+    alto = 1.6 + explota * 1.2;
+    foco = new THREE.Vector3(0, 0.4 + explota * 1.2, 0);
   }
   if (t > T.antojo) {
     d = 6.8;
@@ -114,9 +118,14 @@ export const QueTiene: React.FC = () => {
   const flash = Math.max(0, 1 - Math.abs(t - 0.72) / 0.15) * 0.6 + Math.max(0, 1 - Math.abs(t - (T.adentro + 0.55)) / 0.15) * 0.5;
 
   // etiquetas de la vista explotada (posiciones 3D → pantalla)
-  const pCascara = aPantalla(new THREE.Vector3(0.9, 2.3 * explota + 0.6, 0), pos, foco, fov, w, h, tipo);
-  const pSemilla = aPantalla(new THREE.Vector3(0, 0.75 * parte, 0.3), pos, foco, fov, w, h, tipo);
-  const pPulpa = aPantalla(new THREE.Vector3(-0.8, 0.6 * parte, 0), pos, foco, fov, w, h, tipo);
+  const alza = explota * 1.7;
+  const pCascara = aPantalla(new THREE.Vector3(0.9, 2.3 * explota + 0.6 + alza, 0), pos, foco, fov, w, h, tipo);
+  const pSemilla = aPantalla(new THREE.Vector3(0, 0.75 * parte + alza, 0.3), pos, foco, fov, w, h, tipo);
+  const pPulpa = aPantalla(new THREE.Vector3(-0.8, 0.6 * parte + alza, 0), pos, foco, fov, w, h, tipo);
+  // fondo: la huerta vista desde el pasto, a la altura de la fruta (gira con la cámara)
+  const gB = Math.atan2(pos.x, pos.z);
+  const posB = new THREE.Vector3(Math.sin(gB) * 0.5, 0.22 + (alto - 0.9) * 0.05, Math.cos(gB) * 0.5);
+  const miraB = new THREE.Vector3(-Math.sin(gB) * 10, 1.4 + (foco.y - 0.1) * 0.15, -Math.cos(gB) * 10);
   const aEt = avance(t, T.ojo + 1.0, 0.5) * (1 - avance(t, T.antojo - 0.3, 0.3));
 
   const porciento = suave(t, T.agua + 0.4, T.agua + 1.8) * 0.8;
@@ -124,16 +133,41 @@ export const QueTiene: React.FC = () => {
   const panel = (k: number): React.CSSProperties => ({ opacity: k, transform: `translateY(${(1 - k) * 30 * u}px) scale(${0.9 + 0.1 * k})` });
 
   return (
-    <AbsoluteFill style={{ background: 'radial-gradient(ellipse at 50% 45%, #1c1012 0%, #08060a 55%, #020203 100%)' }}>
-      <ThreeCanvas width={w} height={h} style={{ position: 'absolute', inset: 0 }} gl={{ alpha: true, antialias: true }}>
+    <AbsoluteFill style={{ background: '#000' }}>
+      {/* fondo desenfocado: cielo, nubes y la huerta (como con lente macro) */}
+      <AbsoluteFill style={{ filter: `blur(${10 * u}px)`, transform: 'scale(1.04)' }}>
+        <FondoCielo c={cielo} t={t} w={w} h={h} sol={[0.8, 0.22]} bokeh={0} horizonte={0} />
+        <ThreeCanvas width={w} height={h} style={{ position: 'absolute', inset: 0 }} gl={{ alpha: true, antialias: false }}>
+          <Estudio />
+          <CamaraSerie pos={posB} mira={miraB} fov={fov} w={w} h={h} tipo={tipo} />
+          <hemisphereLight args={[cielo.amb, '#3a4a20', 0.9]} />
+          <directionalLight position={[8, 10, -6]} intensity={2.6} color={cielo.luz} />
+          <fog attach="fog" args={[cielo.abajo, 12, 60]} />
+          <SueloReal radio={80} rep={30} />
+          <Nubes t={t} n={8} altura={30} dist={70} ancho={160} vel={1.2} tam={0.7} />
+          {[0, 1, 2, 3, 4, 5, 6].map((i) => {
+            const a = i * 0.9 + 0.4;
+            const r = 6 + (i % 3) * 3.5;
+            return <Arbol key={i} position={[Math.cos(a) * r, 0, Math.sin(a) * r]} racimos={7} escala={0.9 + (i % 2) * 0.2} />;
+          })}
+        </ThreeCanvas>
+      </AbsoluteFill>
+      {/* círculos de luz desenfocada (bokeh) del sol entre las hojas */}
+      <AbsoluteFill style={{ opacity: 0.55 }}>
+        <FondoCielo c={{ ...cielo, arriba: 'transparent', medio: 'transparent', abajo: 'transparent', sol: 'transparent' }} t={t} w={w} h={h} bokeh={0.8} />
+      </AbsoluteFill>
+      <ThreeCanvas width={w} height={h} style={{ position: 'absolute', inset: 0 }} gl={{ alpha: true, antialias: true }} shadows="soft">
         <Estudio />
         <CamaraSerie pos={pos} mira={foco} fov={fov} w={w} h={h} tipo={tipo} />
-        <ambientLight intensity={0.14} />
-        <spotLight position={[2, 6, 5]} angle={0.5} penumbra={1} intensity={60} color="#fff3e8" />
-        <pointLight position={[Math.cos(barrido) * 5, 2.5, Math.sin(barrido) * 5 - 2]} intensity={45} distance={14} color="#ffffff" />
-        <pointLight position={[-4, 1, -3]} intensity={30 + golpe * 90} distance={12} color={ACENTO} />
-        <pointLight position={[4, -1, -3]} intensity={24} distance={12} color="#7fb6ff" />
-        <group position={[0, y0, 0]}>
+        <hemisphereLight args={[cielo.amb, '#4a5a28', 0.7]} />
+        <LuzSol position={[6, 9, -5]} color={cielo.luz} intensity={3.2} caja={7} />
+        <spotLight position={[2, 6, 5]} angle={0.5} penumbra={1} intensity={25} color="#fff3e8" />
+        <pointLight position={[Math.cos(barrido) * 5, 2.5, Math.sin(barrido) * 5 - 2]} intensity={18} distance={14} color="#ffffff" />
+        <pointLight position={[-4, 1, -3]} intensity={10 + golpe * 90} distance={12} color={ACENTO} />
+        <Sombras />
+        {/* el racimo de donde cae la fruta */}
+        <Racimo n={9} semilla={4} pelos={140} escala={3.3} position={[-3.4, 10.6, -3.2]} rotation={[Math.sin(t * 1.5) * 0.04, 0.6, Math.cos(t * 1.2) * 0.05]} />
+        <group position={[0, y0 + alza, 0]}>
           {abierto <= 0 ? (
             <Rambutan semilla={7} rotation={[0.15, t * 1.4, 0.05]} />
           ) : (
@@ -143,11 +177,10 @@ export const QueTiene: React.FC = () => {
         <Gotas s={splash * 0.6} />
         <Corona s={splash * 0.85} />
         <Gotas s={(t - T.agua - 0.6) * 0.5} />
-        <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -1.25 - explota * 1.7, 0]}>
-          <circleGeometry args={[8, 64]} />
-          <meshStandardMaterial color="#000000" roughness={0.75} />
-        </mesh>
+        <SueloReal radio={16} rep={5} y={-1.25} orilla />
+        <Pasto n={38000} radio={13} alto={0.95} ancho={2.6} centro={[0, -1.25, 0]} hueco={0.9} viento={0.18} />
       </ThreeCanvas>
+      <Destello x={w * 0.8} y={h * 0.22} w={w} h={h} fuerza={0.55} color={cielo.sol} />
 
       {flash > 0 && <AbsoluteFill style={{ background: '#fff', opacity: flash, mixBlendMode: 'screen' }} />}
 
