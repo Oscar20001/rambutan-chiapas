@@ -2,27 +2,28 @@ import React from 'react';
 import { AbsoluteFill, Audio, Img, staticFile, useCurrentFrame, useVideoConfig } from 'remotion';
 import { loadFont } from '@remotion/fonts';
 import { TEXTO, TITULO } from './comun';
-import { CORREO, TEL } from './marca';
 
 // Día de Muertos en papel recortado: diorama de papel con fibra, orillas cortadas a mano y sombra entre capas.
 // Animación a pasos (stop-motion, cambia cada 2 cuadros), cámara fija. Solo música, sin voz.
 
 loadFont({ family: TEXTO, url: staticFile('eb-garamond-italic.woff2'), style: 'italic' });
 
-export const DURACION_MUERTOS = 24;
+export const DURACION_MUERTOS = 30;
 
+// tiempos (s): cada cosa se posa con calma sobre la ofrenda
 const T = {
-  pan: 3.2,
-  abuela: 4.7,
-  velas: 6.1,
-  rambutan: 7.7,
-  abuelo: 9.2,
-  ola1: 10.6,
-  huerta: 11.05,
-  ola2: 14.6,
-  final: 15.05,
-  cierre: 18.7,
+  pan: 4.0,
+  abuela: 6.2,
+  velas: 8.4,
+  rambutan: 11.2,
+  abuelo: 13.2,
+  ola1: 14.6,
+  huerta: 15.3,
+  ola2: 19.4,
+  final: 20.1,
+  cierre: 25.0,
 };
+const OLA = 1.4; // duración de cada ola
 
 const rnd = (s: number) => {
   const x = Math.sin(s * 91.7 + 3.1) * 43758.5453;
@@ -311,13 +312,13 @@ const Maceta: React.FC<{ x: number; y: number }> = ({ x, y }) => (
   </g>
 );
 
-// caída con rebote corto, como pieza que se suelta sobre la mesa
-const cae = (t: number, t0: number) => {
-  const k = entre(t, t0, 0.5);
-  if (k <= 0) return { y: -1200, ok: false };
-  if (k < 0.6) return { y: -700 * (1 - Math.pow(k / 0.6, 2)), ok: true };
-  const b = (k - 0.6) / 0.4;
-  return { y: -Math.sin(b * Math.PI) * 26 * (1 - b), ok: true };
+// la pieza baja despacio y se posa sobre la mesa, con un asentamiento suave
+const suaveIO = (x: number) => (x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2);
+const cae = (t: number, t0: number, dura = 1.4) => {
+  const k = entre(t, t0, dura);
+  if (k <= 0) return { y: -1200, ok: false, a: 0 };
+  const y = -260 * (1 - suaveIO(k)) + Math.sin(clamp((k - 0.8) / 0.2) * Math.PI) * -6;
+  return { y, ok: true, a: ease(clamp(k * 2.5)) };
 };
 
 const Ofrenda: React.FC<{ t: number; completa: number }> = ({ t, completa }) => {
@@ -325,14 +326,14 @@ const Ofrenda: React.FC<{ t: number; completa: number }> = ({ t, completa }) => 
   const abuela = cae(t, T.abuela);
   const rambutan = cae(t, T.rambutan);
   const abuelo = cae(t, T.abuelo);
-  const velas = [0, 1, 2, 3].map((i) => cae(t, T.velas - 0.45 + i * 0.12));
-  const prende = (i: number) => (completa > 0 ? 1 : ease(entre(t, T.velas + i * 0.32, 0.25)));
+  const velas = [0, 1, 2, 3].map((i) => cae(t, T.velas - 0.9 + i * 0.25, 1.0));
+  const prende = (i: number) => (completa > 0 ? 1 : ease(entre(t, T.velas + 0.3 + i * 0.55, 0.6)));
   const lleno = completa > 0;
   // arco de cempasúchil que se arma flor por flor
   const nArco = 26;
   const arco = Array.from({ length: nArco }, (_, i) => {
     const a = Math.PI + (i / (nArco - 1)) * Math.PI;
-    const aparece = entre(t, T.final + 0.25 + (i % 13) * 0.07, 0.25);
+    const aparece = entre(t, T.final + 0.4 + (i % 13) * 0.14, 0.6);
     return { x: 500 + Math.cos(a) * 410, y: 800 + Math.sin(a) * 430, ok: lleno && aparece > 0, k: ease(aparece) };
   });
   return (
@@ -340,7 +341,7 @@ const Ofrenda: React.FC<{ t: number; completa: number }> = ({ t, completa }) => 
       {/* arco detrás de la ofrenda */}
       {lleno && (
         <g filter="url(#papel)">
-          <path d={`M 90 800 A 410 430 0 0 1 910 800`} stroke="#2a7a3a" strokeWidth={10} fill="none" strokeDasharray={`${2000 * ease(entre(t, T.final + 0.1, 1.2))} 3000`} />
+          <path d={`M 90 800 A 410 430 0 0 1 910 800`} stroke="#2a7a3a" strokeWidth={10} fill="none" strokeDasharray={`${2000 * ease(entre(t, T.final + 0.1, 2.2))} 3000`} />
           {arco.map((f, i) => f.ok && <Cempasuchil key={i} x={f.x} y={f.y} r={30 * f.k} s={i} />)}
         </g>
       )}
@@ -348,25 +349,25 @@ const Ofrenda: React.FC<{ t: number; completa: number }> = ({ t, completa }) => 
       <Escalon x0={190} x1={810} y={660} alto={130} semilla={1} />
       <Escalon x0={90} x1={910} y={790} alto={150} semilla={0} />
       {/* piezas */}
-      {abuela.ok && <g transform={`translate(0 ${abuela.y})`}><Retrato x={415} y={530} quien="abuela" etiqueta={ease(entre(t, T.abuela + 0.5, 0.3))} t={t} /></g>}
-      {abuelo.ok && <g transform={`translate(0 ${abuelo.y})`}><Retrato x={585} y={530} quien="abuelo" etiqueta={ease(entre(t, T.abuelo + 0.5, 0.3))} t={t} /></g>}
-      {pan.ok && <g transform={`translate(0 ${pan.y})`}><PanDeMuerto x={500} y={660} /></g>}
-      {rambutan.ok && <g transform={`translate(0 ${rambutan.y})`}><RacimoPapel x={500} y={790} /></g>}
+      {abuela.ok && <g opacity={abuela.a} transform={`translate(0 ${abuela.y})`}><Retrato x={415} y={530} quien="abuela" etiqueta={ease(entre(t, T.abuela + 0.5, 0.3))} t={t} /></g>}
+      {abuelo.ok && <g opacity={abuelo.a} transform={`translate(0 ${abuelo.y})`}><Retrato x={585} y={530} quien="abuelo" etiqueta={ease(entre(t, T.abuelo + 0.5, 0.3))} t={t} /></g>}
+      {pan.ok && <g opacity={pan.a} transform={`translate(0 ${pan.y})`}><PanDeMuerto x={500} y={660} /></g>}
+      {rambutan.ok && <g opacity={rambutan.a} transform={`translate(0 ${rambutan.y})`}><RacimoPapel x={500} y={790} /></g>}
       {/* la veladora que ya estaba prendida */}
       <Veladora x={160} y={790} t={t} prende={1} s={0} />
-      {velas[0].ok && <g transform={`translate(0 ${velas[0].y})`}><Veladora x={840} y={790} t={t} prende={prende(0)} s={1} /></g>}
-      {velas[1].ok && <g transform={`translate(0 ${velas[1].y})`}><Veladora x={250} y={660} t={t} prende={prende(1)} s={2} /></g>}
-      {velas[2].ok && <g transform={`translate(0 ${velas[2].y})`}><Veladora x={750} y={660} t={t} prende={prende(2)} s={3} /></g>}
-      {velas[3].ok && <g transform={`translate(0 ${velas[3].y})`}><Veladora x={330} y={530} t={t} prende={prende(3)} s={4} escala={0.85} /></g>}
+      {velas[0].ok && <g opacity={velas[0].a} transform={`translate(0 ${velas[0].y})`}><Veladora x={840} y={790} t={t} prende={prende(0)} s={1} /></g>}
+      {velas[1].ok && <g opacity={velas[1].a} transform={`translate(0 ${velas[1].y})`}><Veladora x={250} y={660} t={t} prende={prende(1)} s={2} /></g>}
+      {velas[2].ok && <g opacity={velas[2].a} transform={`translate(0 ${velas[2].y})`}><Veladora x={750} y={660} t={t} prende={prende(2)} s={3} /></g>}
+      {velas[3].ok && <g opacity={velas[3].a} transform={`translate(0 ${velas[3].y})`}><Veladora x={330} y={530} t={t} prende={prende(3)} s={4} escala={0.85} /></g>}
       {lleno && (
         <>
           <Veladora x={670} y={530} t={t} prende={1} s={5} escala={0.85} />
-          <g transform={`translate(0 ${cae(t, T.final + 0.6).y})`}><Maceta x={300} y={790} /></g>
-          <g transform={`translate(0 ${cae(t, T.final + 0.75).y})`}><Maceta x={700} y={790} /></g>
+          <g transform={`translate(0 ${cae(t, T.final + 0.8).y})`}><Maceta x={300} y={790} /></g>
+          <g transform={`translate(0 ${cae(t, T.final + 1.1).y})`}><Maceta x={700} y={790} /></g>
           {/* camino de pétalos */}
           <g filter="url(#papelSuave)">
             {Array.from({ length: 34 }, (_, i) => {
-              const k = entre(t, T.final + 0.9 + i * 0.03, 0.2);
+              const k = entre(t, T.final + 1.2 + i * 0.06, 0.4);
               if (k <= 0) return null;
               const y = 950 + (i / 34) * 220;
               const x = 500 + Math.sin(i * 0.9) * 40 + (rnd(i) - 0.5) * 60;
@@ -419,7 +420,7 @@ const HuertaNoche: React.FC<{ t: number; W: number; H: number }> = ({ t, W, H })
         <circle key={i} cx={rnd(i) * W} cy={rnd(i * 3) * H * 0.5} r={1.5 + rnd(i * 5) * 2} fill="#fff6dc" opacity={0.4 + 0.6 * Math.abs(Math.sin(t * 2 + i))} />
       ))}
       <g filter="url(#papel)">
-        <circle cx={W * 0.78} cy={H * 0.2} r={Math.min(W, H) * 0.09} fill="url(#luna)" />
+        <circle cx={W * 0.78} cy={H > W ? H * 0.27 : H * 0.2} r={Math.min(W, H) * 0.09} fill="url(#luna)" />
       </g>
       {/* volcán y lomas en capas */}
       <g filter="url(#papel)">
@@ -439,11 +440,11 @@ const HuertaNoche: React.FC<{ t: number; W: number; H: number }> = ({ t, W, H })
         {Array.from({ length: 50 }, (_, i) => {
           const x = (i / 50) * W;
           const y = H * 0.9 + Math.sin(i * 0.7) * 12;
-          return entre(k, i * 0.03, 0.2) > 0 ? <ellipse key={i} cx={x} cy={y} rx={10} ry={6} fill={i % 3 ? NARANJA : AMARILLO} transform={`rotate(${i * 37} ${x} ${y})`} /> : null;
+          return entre(k, i * 0.05, 0.3) > 0 ? <ellipse key={i} cx={x} cy={y} rx={10} ry={6} fill={i % 3 ? NARANJA : AMARILLO} transform={`rotate(${i * 37} ${x} ${y})`} /> : null;
         })}
       </g>
       {linternas.map((l, i) => (
-        <Veladora key={i} x={l.x} y={l.y} t={t} prende={ease(entre(k, 0.3 + i * 0.12, 0.3))} s={i + 7} escala={0.9} />
+        <Veladora key={i} x={l.x} y={l.y} t={t} prende={ease(entre(k, 0.5 + i * 0.22, 0.6))} s={i + 7} escala={0.9} />
       ))}
     </g>
   );
@@ -451,7 +452,7 @@ const HuertaNoche: React.FC<{ t: number; W: number; H: number }> = ({ t, W, H })
 
 // ola de papel de china con pétalos que barre la pantalla
 const Ola: React.FC<{ t: number; t0: number; W: number; H: number }> = ({ t, t0, W, H }) => {
-  const k = (t - t0) / 0.9;
+  const k = (t - t0) / OLA;
   if (k < 0 || k > 1) return null;
   const x = W * 1.05 - k * W * 3.3; // borde izquierdo de la ola
   const capa = (dx: number, col: string, amp: number, f: number) => {
@@ -493,7 +494,7 @@ const Texto: React.FC<{ t: number; desde: number; hasta: number; grande: React.R
 export const DiaMuertos: React.FC = () => {
   const frame = useCurrentFrame();
   const { fps, width: W, height: H } = useVideoConfig();
-  const t = (Math.floor(frame / 2) * 2) / fps; // stop-motion: la imagen cambia cada 2 cuadros
+  const t = frame / fps; // movimiento continuo y fluido
   const u = Math.min(W, H) / 1080;
   const vertical = H > W * 1.1;
   // escenario cuadrado de 1000 unidades
@@ -504,7 +505,7 @@ export const DiaMuertos: React.FC = () => {
   const enHuerta = t >= T.huerta && t < T.final;
   const completa = t >= T.final ? 1 : 0;
   const topTexto = vertical ? H * 0.17 : H * 0.15;
-  const cierre = entre(t, T.cierre, 0.6);
+  const cierre = entre(t, T.cierre, 1.2);
 
   return (
     <AbsoluteFill style={{ background: '#1a0826' }}>
@@ -538,13 +539,13 @@ export const DiaMuertos: React.FC = () => {
       </svg>
 
       {/* textos (capa aparte, encima de la animación) */}
-      <Texto t={t} desde={0.3} hasta={T.pan - 0.05} grande="Hoy regresan…" chico="y la ofrenda sigue vacía." top={topTexto} u={u} />
-      <Texto t={t} desde={T.pan} hasta={T.abuela - 0.05} grande="El pan de muerto…" top={topTexto} u={u} />
-      <Texto t={t} desde={T.abuela} hasta={T.velas - 0.05} grande="la foto de la abuela…" top={topTexto} u={u} />
-      <Texto t={t} desde={T.velas} hasta={T.rambutan - 0.05} grande="las veladoras…" top={topTexto} u={u} />
-      <Texto t={t} desde={T.rambutan} hasta={T.ola1} grande="y el rambután" chico="del árbol que sembró el abuelo." top={topTexto} u={u} />
-      <Texto t={t} desde={T.huerta + 0.3} hasta={T.ola2} grande="Cada cosecha…" chico="también es de ellos." top={vertical ? H * 0.22 : H * 0.08} u={u} />
-      <Texto t={t} desde={T.final + 0.4} hasta={T.cierre} grande="Que su recuerdo" chico="nunca se apague." top={topTexto} u={u} />
+      <Texto t={t} desde={0.5} hasta={T.pan - 0.1} grande="Hoy regresan…" chico="los que se fueron, pero nunca se van." top={topTexto} u={u} />
+      <Texto t={t} desde={T.pan + 0.2} hasta={T.abuela - 0.1} grande="El pan de muerto" chico="que tanto le gustaba al abuelo…" top={topTexto} u={u} />
+      <Texto t={t} desde={T.abuela + 0.2} hasta={T.velas - 0.1} grande="la foto de la abuela…" top={topTexto} u={u} />
+      <Texto t={t} desde={T.velas + 0.2} hasta={T.rambutan - 0.1} grande="y una veladora" chico="por cada nombre." top={topTexto} u={u} />
+      <Texto t={t} desde={T.rambutan + 0.2} hasta={T.ola1 + 0.2} grande="Lo mejor de la tierra" chico="que ellos sembraron…" top={topTexto} u={u} />
+      <Texto t={t} desde={T.huerta + 0.5} hasta={T.ola2 + 0.2} grande="Cada fruto que cosechamos…" chico="también es suyo." top={vertical ? H * 0.1 : H * 0.08} u={u} />
+      <Texto t={t} desde={T.final + 0.6} hasta={T.cierre} grande="Que su luz nos encuentre…" chico="y que su recuerdo nunca se apague." top={topTexto} u={u} />
 
       {/* cierre: marca con corona de cempasúchil y datos de contacto */}
       {cierre > 0 && (
@@ -554,18 +555,16 @@ export const DiaMuertos: React.FC = () => {
               <g filter="url(#papel)">
                 {Array.from({ length: 18 }, (_, i) => {
                   const a = (i / 18) * Math.PI * 2;
-                  const ok = entre(t, T.cierre + 0.2 + i * 0.04, 0.2) > 0;
-                  return ok ? <Cempasuchil key={i} x={190 + Math.cos(a) * 160} y={190 + Math.sin(a) * 160} r={28} s={i} /> : null;
+                  const kk = ease(entre(t, T.cierre + 0.3 + i * 0.08, 0.5));
+                  return kk > 0 ? <Cempasuchil key={i} x={190 + Math.cos(a) * 160} y={190 + Math.sin(a) * 160} r={28 * kk} s={i} /> : null;
                 })}
               </g>
             </svg>
             <Img src={staticFile('logo.svg')} style={{ position: 'absolute', left: 80 * u, top: 80 * u, width: 220 * u, height: 220 * u, background: '#fff4dc', borderRadius: '50%', padding: 12 * u, boxSizing: 'border-box' }} />
           </div>
-          <div style={{ opacity: entre(t, T.cierre + 0.5, 0.4), fontFamily: TEXTO, fontStyle: 'italic', fontSize: 52 * u, color: '#ffb0d0', textAlign: 'center', padding: `0 ${50 * u}px` }}>Honramos a quienes sembraron esta tierra.</div>
-          <div style={{ opacity: entre(t, T.cierre + 0.8, 0.4), fontFamily: TITULO, fontSize: 96 * u, letterSpacing: 6 * u, color: CREMA, lineHeight: 0.95, textAlign: 'center' }}>{vertical ? <>IXCHEL<br />FRUTAS DEL SOCONUSCO</> : 'IXCHEL · FRUTAS DEL SOCONUSCO'}</div>
-          <div style={{ opacity: entre(t, T.cierre + 1.1, 0.4), fontFamily: TITULO, fontSize: 60 * u, color: AMARILLO, textAlign: 'center', lineHeight: 1 }}>{vertical ? <>TRAE TU TRÁILER<br />VENTA POR TONELADA</> : 'TRAE TU TRÁILER · VENTA POR TONELADA'}</div>
-          <div style={{ opacity: entre(t, T.cierre + 1.4, 0.4), fontFamily: TITULO, fontSize: 92 * u, color: '#25d366', background: 'rgba(5,30,15,.85)', padding: `${8 * u}px ${40 * u}px 0`, borderRadius: 80 * u }}>{TEL} · WHATSAPP</div>
-          <div style={{ opacity: entre(t, T.cierre + 1.6, 0.4), fontFamily: TEXTO, fontSize: 40 * u, color: CREMA }}>{CORREO}</div>
+          <div style={{ opacity: entre(t, T.cierre + 1.0, 0.8), fontFamily: TITULO, fontSize: 120 * u, letterSpacing: 8 * u, color: CREMA, lineHeight: 0.9, textAlign: 'center' }}>IXCHEL</div>
+          <div style={{ opacity: entre(t, T.cierre + 1.3, 0.8), fontFamily: TITULO, fontSize: 46 * u, letterSpacing: 10 * u, color: AMARILLO, textAlign: 'center' }}>FRUTAS DEL SOCONUSCO</div>
+          <div style={{ opacity: entre(t, T.cierre + 2.0, 1.0), fontFamily: TEXTO, fontStyle: 'italic', fontSize: 60 * u, lineHeight: 1.15, color: '#ffb0d0', textAlign: 'center', padding: `0 ${70 * u}px`, marginTop: 10 * u }}>Honramos a quienes sembraron esta tierra.</div>
         </AbsoluteFill>
       )}
       {cierre > 0 && (
