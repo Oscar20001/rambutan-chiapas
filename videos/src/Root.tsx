@@ -12,6 +12,8 @@ import { VueloPrueba } from './VueloPrueba';
 import { Carrusel, DOMINGO, DURA, SABADO, COMPRAR, PREGUNTAS, SOCONUSCO } from './Carrusel';
 import comoSeCome from './guiones/como-se-come.json';
 import compradores from './guiones/compradores.json';
+import cacao from './guiones/cacao.json';
+import { Cacao } from './Cacao';
 
 const FPS = 30;
 const COLA = 1.6; // segundos que se queda la tarjeta final después de la última línea
@@ -62,6 +64,9 @@ export const Root: React.FC = () => (
     <Composition id="RambutanAbre" component={RambutanAbre} fps={FPS} width={1080} height={1920} durationInFrames={Math.round(DURACION_ABRE * FPS)} />
     <Composition id="Alto" component={Alto} fps={FPS} width={1080} height={1920} durationInFrames={Math.round(DURACION_ALTO * FPS)} />
     <Composition id="VueloPrueba" component={VueloPrueba} fps={FPS} width={1080} height={1920} durationInFrames={150} />
+    <Composition id="CacaoV" component={Cacao} {...vertical} calculateMetadata={tiemposDe(cacao)} />
+    <Composition id="CacaoF" component={Cacao} {...vertical} width={1080} height={1350} calculateMetadata={tiemposDe(cacao)} />
+    <Composition id="CacaoH" component={Cacao} {...vertical} width={1920} height={1080} calculateMetadata={tiemposDe(cacao)} />
     <Composition id="Viaje" component={Viaje} fps={60} width={1080} height={1920} durationInFrames={DURACION_VIAJE * 60} />
   </>
 );
