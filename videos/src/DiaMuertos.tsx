@@ -1,5 +1,5 @@
 import React from 'react';
-import { AbsoluteFill, Audio, Img, staticFile, useCurrentFrame, useVideoConfig } from 'remotion';
+import { AbsoluteFill, Audio, Img, Sequence, staticFile, useCurrentFrame, useVideoConfig } from 'remotion';
 import { loadFont } from '@remotion/fonts';
 import { TEXTO, TITULO } from './comun';
 
@@ -11,17 +11,19 @@ loadFont({ family: TEXTO, url: staticFile('eb-garamond-italic.woff2'), style: 'i
 export const DURACION_MUERTOS = 30;
 
 // tiempos (s): cada cosa se posa con calma sobre la ofrenda
+// sincronizado con la voz de Antonio (voz.mp3 empieza en VOZ s)
+const VOZ = 0.8;
 const T = {
-  pan: 4.0,
-  abuela: 6.2,
-  velas: 8.4,
-  rambutan: 11.2,
-  abuelo: 13.2,
-  ola1: 14.6,
-  huerta: 15.3,
-  ola2: 19.4,
-  final: 20.1,
-  cierre: 25.0,
+  pan: 4.9, // "El pan de muerto"
+  abuela: 8.2, // "la foto de la abuela"
+  velas: 9.9, // "y una veladora"
+  rambutan: 12.1, // "Ponemos lo mejor de la tierra"
+  abuelo: 13.3,
+  ola1: 14.3,
+  huerta: 15.0, // "porque cada fruto que cosechamos"
+  ola2: 17.6,
+  final: 18.3, // "Que su luz nos encuentre"
+  cierre: 22.6, // "Ixchel, frutas del Soconusco"
 };
 const OLA = 1.4; // duración de cada ola
 
@@ -539,13 +541,13 @@ export const DiaMuertos: React.FC = () => {
       </svg>
 
       {/* textos (capa aparte, encima de la animación) */}
-      <Texto t={t} desde={0.5} hasta={T.pan - 0.1} grande="Hoy regresan…" chico="los que se fueron, pero nunca se van." top={topTexto} u={u} />
-      <Texto t={t} desde={T.pan + 0.2} hasta={T.abuela - 0.1} grande="El pan de muerto" chico="que tanto le gustaba al abuelo…" top={topTexto} u={u} />
+      <Texto t={t} desde={VOZ} hasta={T.pan + 0.1} grande="Hoy regresan…" chico="los que se fueron, pero nunca se van." top={topTexto} u={u} />
+      <Texto t={t} desde={T.pan + 0.25} hasta={T.abuela - 0.05} grande="El pan de muerto" chico="que tanto le gustaba al abuelo…" top={topTexto} u={u} />
       <Texto t={t} desde={T.abuela + 0.2} hasta={T.velas - 0.1} grande="la foto de la abuela…" top={topTexto} u={u} />
       <Texto t={t} desde={T.velas + 0.2} hasta={T.rambutan - 0.1} grande="y una veladora" chico="por cada nombre." top={topTexto} u={u} />
       <Texto t={t} desde={T.rambutan + 0.2} hasta={T.ola1 + 0.2} grande="Lo mejor de la tierra" chico="que ellos sembraron…" top={topTexto} u={u} />
-      <Texto t={t} desde={T.huerta + 0.5} hasta={T.ola2 + 0.2} grande="Cada fruto que cosechamos…" chico="también es suyo." top={vertical ? H * 0.1 : H * 0.08} u={u} />
-      <Texto t={t} desde={T.final + 0.6} hasta={T.cierre} grande="Que su luz nos encuentre…" chico="y que su recuerdo nunca se apague." top={topTexto} u={u} />
+      <Texto t={t} desde={T.huerta + 0.05} hasta={T.ola2 + 0.6} grande="Cada fruto que cosechamos…" chico="también es suyo." top={vertical ? H * 0.1 : H * 0.08} u={u} />
+      <Texto t={t} desde={T.final + 0.3} hasta={T.cierre} grande="Que su luz nos encuentre…" chico="y que su recuerdo nunca se apague." top={topTexto} u={u} />
 
       {/* cierre: marca con corona de cempasúchil y datos de contacto */}
       {cierre > 0 && (
@@ -562,9 +564,9 @@ export const DiaMuertos: React.FC = () => {
             </svg>
             <Img src={staticFile('logo.svg')} style={{ position: 'absolute', left: 80 * u, top: 80 * u, width: 220 * u, height: 220 * u, background: '#fff4dc', borderRadius: '50%', padding: 12 * u, boxSizing: 'border-box' }} />
           </div>
-          <div style={{ opacity: entre(t, T.cierre + 1.0, 0.8), fontFamily: TITULO, fontSize: 120 * u, letterSpacing: 8 * u, color: CREMA, lineHeight: 0.9, textAlign: 'center' }}>IXCHEL</div>
-          <div style={{ opacity: entre(t, T.cierre + 1.3, 0.8), fontFamily: TITULO, fontSize: 46 * u, letterSpacing: 10 * u, color: AMARILLO, textAlign: 'center' }}>FRUTAS DEL SOCONUSCO</div>
-          <div style={{ opacity: entre(t, T.cierre + 2.0, 1.0), fontFamily: TEXTO, fontStyle: 'italic', fontSize: 60 * u, lineHeight: 1.15, color: '#ffb0d0', textAlign: 'center', padding: `0 ${70 * u}px`, marginTop: 10 * u }}>Honramos a quienes sembraron esta tierra.</div>
+          <div style={{ opacity: entre(t, T.cierre + 1.1, 0.6), fontFamily: TITULO, fontSize: 120 * u, letterSpacing: 8 * u, color: CREMA, lineHeight: 0.9, textAlign: 'center' }}>IXCHEL</div>
+          <div style={{ opacity: entre(t, T.cierre + 1.9, 0.6), fontFamily: TITULO, fontSize: 46 * u, letterSpacing: 10 * u, color: AMARILLO, textAlign: 'center' }}>FRUTAS DEL SOCONUSCO</div>
+          <div style={{ opacity: entre(t, T.cierre + 3.3, 0.8), fontFamily: TEXTO, fontStyle: 'italic', fontSize: 60 * u, lineHeight: 1.15, color: '#ffb0d0', textAlign: 'center', padding: `0 ${70 * u}px`, marginTop: 10 * u }}>Honramos a quienes sembraron esta tierra.</div>
         </AbsoluteFill>
       )}
       {cierre > 0 && (
@@ -574,6 +576,7 @@ export const DiaMuertos: React.FC = () => {
         </svg>
       )}
       <Audio src={staticFile('muertos/musica.wav')} volume={0.55} />
+      <Sequence from={Math.round(VOZ * 30)}><Audio src={staticFile('muertos/voz.mp3')} /></Sequence>
     </AbsoluteFill>
   );
 };

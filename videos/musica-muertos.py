@@ -16,14 +16,14 @@ while s<D-2.5:
     arp=[ch[0],ch[1],ch[2],ch[0]+12,ch[2],ch[1]]
     for i,x in enumerate(arp):
         add(gtr,s+i*b/2,pluck(mtof(x+12),1.2,2.5),0.32)
-    if s>4.0:  # la marimba entra cuando cae el pan
+    if s>4.9:  # la marimba entra cuando cae el pan
         for j in range(3):
             if j!=1 or k%2==0:
                 add(mar,s+j*b,marimba(mtof(mel[mi%len(mel)]),1.4),0.22); mi+=1
     s+=compas; k+=1
 # campanitas suaves cuando cae cada cosa y en las olas
-for c in [4.0,6.2,8.4,11.2,13.2]: add(fx,c+0.3,bell(mtof(88),1.4),0.08)
-for c in [14.6,19.4]: add(fx,c+0.2,whoosh(1.2),0.22)
+for c in [4.9,8.2,9.9,12.1,13.3]: add(fx,c+0.3,bell(mtof(88),1.4),0.08)
+for c in [14.3,17.6]: add(fx,c+0.2,whoosh(1.2),0.22)
 # final: acorde largo de La menor que se apaga
 fin=D-2.6
 for j,x in enumerate([57,60,64,69]): add(gtr,fin+j*0.09,pluck(mtof(x+12),2.4,1.5),0.35)
