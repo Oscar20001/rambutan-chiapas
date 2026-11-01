@@ -35,6 +35,7 @@ import { TresCosechas, DURACION_COSECHAS } from './TresCosechas';
 
 import { PrimerRambutan, DURACION_PRIMER } from './PrimerRambutan';
 import { QueTiene, DURACION_QUE } from './QueTiene';
+import { DiaMuertos, DURACION_MUERTOS } from './DiaMuertos';
 import { CORTOS, CortoAgua, CortoCosecha, CortoPela, CortoQuiz } from './Cortos';
 
 export const Root: React.FC = () => (
@@ -64,6 +65,8 @@ export const Root: React.FC = () => (
     <Composition id="PrimerRambutanV" component={PrimerRambutan} fps={30} width={1080} height={1920} durationInFrames={Math.round(DURACION_PRIMER * 30)} />
     <Composition id="PrimerRambutanH" component={PrimerRambutan} fps={30} width={1920} height={1080} durationInFrames={Math.round(DURACION_PRIMER * 30)} />
     <Composition id="PrimerRambutanC" component={PrimerRambutan} fps={30} width={1080} height={1080} durationInFrames={Math.round(DURACION_PRIMER * 30)} />
+    <Composition id="MuertosH" component={DiaMuertos} fps={30} width={1920} height={1080} durationInFrames={DURACION_MUERTOS * 30} />
+    <Composition id="MuertosV" component={DiaMuertos} fps={30} width={1080} height={1920} durationInFrames={DURACION_MUERTOS * 30} />
     <Composition id="CortoPela" component={CortoPela} fps={30} width={1080} height={1920} durationInFrames={CORTOS.pela * 30} />
     <Composition id="CortoAgua" component={CortoAgua} fps={30} width={1080} height={1920} durationInFrames={CORTOS.agua * 30} />
     <Composition id="CortoCosecha" component={CortoCosecha} fps={30} width={1080} height={1920} durationInFrames={CORTOS.cosecha * 30} />
