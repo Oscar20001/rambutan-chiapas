@@ -74,10 +74,11 @@ const Medidor: React.FC<{ v: number; tam: number; o: number }> = ({ v, tam, o })
   );
 };
 
-export const QueTiene: React.FC = () => {
+// limpio: sin rótulos, datos, cierre ni voz (para los cortos con música). reloj: cambia el tiempo de la escena.
+export const QueTiene: React.FC<{ limpio?: boolean; reloj?: (s: number) => number }> = ({ limpio, reloj }) => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
-  const t = frame / fps;
+  const t = reloj ? reloj(frame / fps) : frame / fps;
   const { w, h, u, tipo, fov } = useFormato();
   relojViento.value = t;
   const cielo = cieloEntre('dia', 'atardecer', 0.25 + suave(t, 0, 30) * 0.35);
@@ -184,6 +185,8 @@ export const QueTiene: React.FC = () => {
 
       {flash > 0 && <AbsoluteFill style={{ background: '#fff', opacity: flash, mixBlendMode: 'screen' }} />}
 
+      {!limpio && (
+        <>
       <Rotulo t={t} desde={0.1} hasta={T.adentro - 0.05} titulo={<>¡ABRE UN <span style={{ color: ACENTO }}>RAMBUTÁN</span><br />CONMIGO!</>} />
       <Rotulo t={t} desde={T.adentro} hasta={T.agua - 0.05} titulo={<>¿QUÉ TIENE<br />ADENTRO?</>} />
       <Rotulo t={t} desde={T.agua + 0.1} hasta={T.vitamina - 0.1} titulo={<>CASI TODO<br />ES <span style={{ color: '#5fd0ff' }}>AGUA</span></>} sub="Por eso es tan jugoso." />
@@ -213,12 +216,14 @@ export const QueTiene: React.FC = () => {
         )}
       </div>
 
+        </>
+      )}
       <Marca x={pCascara.x} y={pCascara.y} a={aEt} si={false} texto="CÁSCARA" lado={1} u={u} />
       <Marca x={pSemilla.x} y={pSemilla.y} a={avance(t, T.ojo + 1.4, 0.5) * (1 - avance(t, T.antojo - 0.3, 0.3))} si={false} texto="SEMILLA" lado={1} u={u} />
       <Marca x={pPulpa.x} y={pPulpa.y} a={avance(t, T.ojo + 2.4, 0.5) * (1 - avance(t, T.antojo - 0.3, 0.3))} si texto="PULPA" lado={-1} u={u} />
 
-      <CierreSerie t={t} desde={T.cierre} fondo="radial-gradient(circle at 50% 40%, #3a1218, #0a0406 75%)" />
-      <Audio src={staticFile('serie/voz5.mp3')} />
+      {!limpio && <CierreSerie t={t} desde={T.cierre} fondo="radial-gradient(circle at 50% 40%, #3a1218, #0a0406 75%)" />}
+      {!limpio && <Audio src={staticFile('serie/voz5.mp3')} />}
     </AbsoluteFill>
   );
 };

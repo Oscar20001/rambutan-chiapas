@@ -277,10 +277,10 @@ const COSECHA = 28.0;
 const REJA = P(1.7, 0, 1.3);
 const CORTES = [28.5, 29.4, 30.3, 31.3];
 
-export const PrimerRambutan: React.FC = () => {
+export const PrimerRambutan: React.FC<{ limpio?: boolean; reloj?: (s: number) => number }> = ({ limpio, reloj }) => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
-  const t = frame / fps;
+  const t = reloj ? reloj(frame / fps) : frame / fps;
   const { w, h, u, tipo, fov } = useFormato();
   relojViento.value = t;
 
@@ -420,6 +420,8 @@ export const PrimerRambutan: React.FC = () => {
         {rayo > 0 && <AbsoluteFill style={{ background: '#e8eeff', opacity: rayo, mixBlendMode: 'screen' }} />}
       </AbsoluteFill>
 
+      {!limpio && (
+        <>
       <Anio t={t} u={u} tipo={tipo} />
       <Rotulo t={t} desde={T.patio + 0.1} hasta={T.primer - 0.1} titulo={<>CAMPO EXPERIMENTAL<br /><span style={{ color: '#ffd84d' }}>ROSARIO IZAPA</span></>} sub="Tuxtla Chico, Chiapas. Alguien sembró un árbol que nadie conocía." />
       <Rotulo t={t} desde={T.primer} hasta={T.caso - 0.1} titulo={<>EL PRIMER<br /><span style={{ color: '#ff4a5a' }}>RAMBUTÁN</span> DE MÉXICO</>} />
@@ -430,6 +432,8 @@ export const PrimerRambutan: React.FC = () => {
 
       <CierreSerie t={t} desde={T.cierre} fondo="radial-gradient(circle at 50% 40%, #3a2a14, #120c04 75%)" />
       <Audio src={staticFile('serie/voz4.mp3')} />
+        </>
+      )}
     </AbsoluteFill>
   );
 };
