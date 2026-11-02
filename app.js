@@ -5,7 +5,7 @@
 // ---------- datos que cambia el dueño ----------
 
 // Números de WhatsApp con lada de país (52) y sin espacios. El primero recibe los mensajes de los botones.
-const WHATSAPP = ['529621707553', '529622699611'];
+const WHATSAPP = ['529621707553'];
 
 // Dirección del script de Google que guarda las citas en tu Google Calendar (ver agenda/LEEME.md).
 // Mientras esté vacía, la agenda funciona igual pero la cita se pide por WhatsApp.
@@ -215,6 +215,11 @@ const pesos = new Intl.NumberFormat(T.locale, { style: 'currency', currency: 'MX
 const $ = (sel, root = document) => root.querySelector(sel);
 const $$ = (sel, root = document) => [...root.querySelectorAll(sel)];
 const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+// sacudida corta para avisar qué falta (2 a 3 vaivenes, 360 ms)
+const sacudir = (nodes) => {
+  if (reduced) return;
+  nodes.filter(Boolean).forEach((n) => { n.classList.remove('is-shake'); void n.offsetWidth; n.classList.add('is-shake'); n.addEventListener('animationend', () => n.classList.remove('is-shake'), { once: true }); });
+};
 const SVG = 'http://www.w3.org/2000/svg';
 const el = (tag, attrs = {}) => { const n = document.createElementNS(SVG, tag); for (const k in attrs) n.setAttribute(k, attrs[k]); return n; };
 const html = (tag, attrs = {}, text) => { const n = document.createElement(tag); for (const k in attrs) n.setAttribute(k, attrs[k]); if (text !== undefined) n.textContent = text; return n; };
@@ -239,7 +244,7 @@ function openWhatsApp(text) {
 const OFFSET_CHIAPAS = -6;
 const ahoraChiapas = () => new Date(Date.now() + OFFSET_CHIAPAS * 3600e3);
 
-// ---------- animación de carga: corre una vez por visita y nunca tapa más de tres segundos ----------
+// ---------- animación de carga: corre una vez por visita, dura 1.5 s y se cierra con cualquier toque ----------
 (() => {
   const loader = $('#loader');
   if (!loader) return;
@@ -263,9 +268,8 @@ const ahoraChiapas = () => new Date(Date.now() + OFFSET_CHIAPAS * 3600e3);
     loader.classList.add('is-done');
     setTimeout(() => loader.remove(), 700);
   };
-  setTimeout(done, 2500);
-  loader.addEventListener('click', done);
-  window.addEventListener('keydown', done, { once: true });
+  setTimeout(done, 1500);
+  ['pointerdown', 'keydown', 'wheel', 'touchstart'].forEach((ev) => window.addEventListener(ev, done, { once: true, passive: true }));
 })();
 
 // ---------- guía de embarque: unidades, camión que se llena y mapa de la ruta ----------
@@ -279,6 +283,22 @@ const guia = (() => {
   select.value = '0';
 
   const out = (key, value) => $$(`[data-out="${key}"]`).forEach((n) => { n.textContent = value; });
+  // los números cuentan del valor anterior al nuevo y dan un pequeño salto
+  const ultimos = {}, cuentas = {};
+  const contar = (key, n, render) => {
+    const from = ultimos[key];
+    ultimos[key] = n;
+    if (reduced || from === undefined || from === n) { out(key, render(n)); return; }
+    cancelAnimationFrame(cuentas[key]);
+    $$(`[data-out="${key}"]`).forEach((node) => { node.classList.remove('is-tick'); void node.offsetWidth; node.classList.add('is-tick'); });
+    const t0 = performance.now(), dur = 420;
+    const step = (now) => {
+      const k = Math.min(1, (now - t0) / dur), e = 1 - Math.pow(1 - k, 3);
+      out(key, render(Math.round(from + (n - from) * e)));
+      if (k < 1) cuentas[key] = requestAnimationFrame(step);
+    };
+    cuentas[key] = requestAnimationFrame(step);
+  };
   let unidad = 't';
   const U = () => UNIDADES[unidad];
   const label = $('[data-unit-label]');
@@ -432,11 +452,11 @@ const guia = (() => {
     const d = datos();
     out('ciudad', d.nombre);
     out('ciudad-corta', d.corta);
-    out('cajas', T.cajas(d.cajasTxt));
+    contar('cajas', d.cajas, (v) => T.cajas(fmt.format(v)));
     out('vehiculo', d.veh.nombre);
     out('unidades', T.unidadesN(d.veh.unidades));
-    out('km', `${fmt.format(d.km)} km`);
-    out('horas', `${d.horas} h`);
+    contar('km', d.km, (v) => `${fmt.format(v)} km`);
+    contar('horas', d.horas, (v) => `${v} h`);
     out('dias', T.dias(d.dias));
     if (PRECIO_KG) out('precio', T.precio(pesos.format(d.t * 1000 * PRECIO_KG)));
     llenarCamion(d);
@@ -696,7 +716,7 @@ $$('[data-imprimir]').forEach((btn) => btn.addEventListener('click', () => {
     error.hidden = ok;
     if (!ok) {
       error.textContent = A.faltan;
-      if (enfocar) (faltan[0] || $('.agenda__day:not(:disabled)', diasBox))?.focus();
+      if (enfocar) { sacudir([...faltan, error]); (faltan[0] || $('.agenda__day:not(:disabled)', diasBox))?.focus(); }
     }
     return ok;
   }
@@ -786,6 +806,7 @@ $$('[data-imprimir]').forEach((btn) => btn.addEventListener('click', () => {
     required.forEach((f) => f.setAttribute('aria-invalid', String(missing.includes(f))));
     if (missing.length) {
       error.hidden = false;
+      sacudir([...missing, error]);
       missing[0].focus();
       return;
     }
@@ -959,3 +980,12 @@ $$('[data-imprimir]').forEach((btn) => btn.addEventListener('click', () => {
 })();
 
 $$('[data-year]').forEach((el) => { el.textContent = String(new Date().getFullYear()); });
+
+// ---------- las animaciones en bucle se detienen cuando su sección no se ve (ahorra batería) ----------
+(() => {
+  if (reduced || !('IntersectionObserver' in window)) return;
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach((e) => e.target.classList.toggle('is-off', !e.isIntersecting));
+  }, { rootMargin: '120px 0px' });
+  $$('.hero, main > section').forEach((s) => io.observe(s));
+})();

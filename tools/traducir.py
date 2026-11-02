@@ -67,7 +67,7 @@ PARES = [
     ('<div><dt>Vida de anaquel</dt><dd>Alrededor de dos semanas en frío; de tres a cinco días a temperatura ambiente</dd></div>', '<div><dt>Shelf life</dt><dd>About two weeks refrigerated; three to five days at room temperature</dd></div>'),
     ('<div><dt>Pedido mínimo</dt><dd>1 tonelada</dd></div>', '<div><dt>Minimum order</dt><dd>1 metric ton</dd></div>'),
     ('<div><dt>Temporada</dt><dd>Julio a octubre, pico en agosto y septiembre</dd></div>', '<div><dt>Season</dt><dd>July to October, peak in August and September</dd></div>'),
-    ('<div><dt>Contacto</dt><dd>WhatsApp +52 962 269 9611 · +52 962 170 7553</dd></div>', '<div><dt>Contact</dt><dd>WhatsApp +52 962 269 9611 · +52 962 170 7553</dd></div>'),
+    ('<div><dt>Contacto</dt><dd>WhatsApp +52 962 170 7553</dd></div>', '<div><dt>Contact</dt><dd>WhatsApp +52 962 170 7553</dd></div>'),
     ('data-imprimir>Guardar ficha en PDF</button>', 'data-imprimir>Save spec sheet as PDF</button>'),
     ('data-wa="ficha">Cotizar con esta ficha</a>', 'data-wa="ficha">Get a quote with this sheet</a>'),
     ('<h2 id="t-volumen" class="head" data-reveal>Pedidos por volumen</h2>', '<h2 id="t-volumen" class="head" data-reveal>Orders by volume</h2>'),

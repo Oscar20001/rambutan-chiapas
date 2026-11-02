@@ -7,8 +7,8 @@ rambután en todo México. Se abre directo con `index.html`.
 
 ## Lo que puedes cambiar
 
-1. **WhatsApp.** En `app.js`, `const WHATSAPP = ['529621707553', '529622699611'];`. El primer número
-   recibe los mensajes de todos los botones; los dos aparecen en el pie de página. Formato: 52 + 10 dígitos.
+1. **WhatsApp.** En `app.js`, `const WHATSAPP = ['529621707553'];`. Ese número
+   recibe los mensajes de todos los botones y aparece en el pie de página. Formato: 52 + 10 dígitos.
 2. **Agenda de llamadas.** Funciona desde ya: la cita se pide por WhatsApp. Para que se aparte sola en tu
    Google Calendar y el sitio marque las horas ocupadas, sigue [`agenda/LEEME.md`](agenda/LEEME.md) y pega
    la dirección en `const AGENDA_URL = '';`. El horario está en `const AGENDA` (7:00 a 18:30, cada 30 min; atención hasta las 19:00).
