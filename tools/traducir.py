@@ -1,9 +1,11 @@
-# Genera en/index.html a partir de index.html con las frases traducidas al inglés.
+# Genera tools/fuente/sitio-en.html a partir de tools/fuente/sitio.html con las frases traducidas al inglés.
+# Después corre tools/faq.py y tools/paginas.py, que arma las páginas del sitio.
 # Uso: python3 tools/traducir.py   (avisa si alguna frase ya no está en la página en español)
 import pathlib, sys
 
 raiz = pathlib.Path(__file__).resolve().parent.parent
-s = (raiz / 'index.html').read_text(encoding='utf-8')
+fuente = raiz / 'tools' / 'fuente'
+s = (fuente / 'sitio.html').read_text(encoding='utf-8')
 
 PARES = [
     ('<html lang="es-MX">', '<html lang="en">'),
@@ -237,9 +239,9 @@ for es, en in PARES:
         faltan.append(es[:90])
         continue
     s = s.replace(es, en)
-(raiz / 'en' / 'index.html').write_text(s, encoding='utf-8')
+(fuente / 'sitio-en.html').write_text(s, encoding='utf-8')
 if faltan:
-    print('Frases que ya no están en index.html (revisa su traducción):')
+    print('Frases que ya no están en sitio.html (revisa su traducción):')
     for f in faltan: print('  -', f)
     sys.exit(1)
-print('en/index.html listo')
+print('tools/fuente/sitio-en.html listo')

@@ -5,6 +5,25 @@ Sitio de venta de rambután por tonelada desde Tuxtla Chico, Chiapas.
 Sitio estático (HTML, CSS y JavaScript sin dependencias) para conectar con compradores mayoristas de
 rambután en todo México. Se abre directo con `index.html`.
 
+## Páginas
+
+El sitio está repartido en páginas: Inicio (`index.html`), La fruta (`fruta.html`), Pedidos y flete
+(`pedidos.html`), Agenda (`agenda.html`), Preguntas (`preguntas.html`), Cotizar (`cotizar.html`) y
+Contacto (`contacto.html`), y sus gemelas en inglés en `en/`. Cada página tiene una barra con el logo y una
+flecha que regresan al inicio, y un menú que en celular se abre en una hoja.
+
+**No edites esas páginas a mano: se generan.** Los textos viven en una sola fuente,
+`tools/fuente/sitio.html`. Después de cambiarla corre, en este orden:
+
+```bash
+python3 tools/traducir.py   # arma tools/fuente/sitio-en.html (inglés)
+python3 tools/faq.py        # preguntas frecuentes para Google
+python3 tools/paginas.py    # reparte todo en las páginas del sitio (es y en)
+```
+
+Qué sección va en qué página, los títulos de cada encabezado y las tarjetas de la portada están en
+`tools/paginas.py`.
+
 ## Lo que puedes cambiar
 
 1. **WhatsApp.** En `app.js`, `const WHATSAPP = ['529621707553'];`. Ese número
@@ -15,8 +34,8 @@ rambután en todo México. Se abre directo con `index.html`.
 3. **Precio de referencia.** `const PRECIO_KG = null;` en `app.js`. Si pones un número (pesos por kilo),
    la guía de embarque muestra el costo aproximado de la fruta del pedido.
 4. **Temporada.** `const COSECHA` en `app.js` marca los meses de cosecha y de pico en el calendario.
-5. **Inglés.** La página en inglés es `en/index.html` y se genera desde la de español con
-   `python3 tools/traducir.py` y luego `python3 tools/faq.py` (las preguntas frecuentes para Google). Si cambias un texto en `index.html`, agrega su traducción en
+5. **Inglés.** Las páginas en inglés (`en/`) se generan desde la fuente en español con
+   `python3 tools/traducir.py`, `python3 tools/faq.py` y `python3 tools/paginas.py`. Si cambias un texto en `tools/fuente/sitio.html`, agrega su traducción en
    `tools/traducir.py` y vuelve a correrlo; el script avisa qué frases ya no encontró.
    Los textos que arma `app.js` (mensajes de WhatsApp, agenda, guía) están en `TEXTOS.es` y `TEXTOS.en`.
 6. **Contenido de muestra que debes confirmar** (está escrito para que el diseño se vea completo):
@@ -30,7 +49,7 @@ rambután en todo México. Se abre directo con `index.html`.
    - Los rangos de "Pedidos por volumen" (1–3 t, 4–10 t, 11–22 t) y las capacidades de cada vehículo.
    - Los cinco "Compromisos con tu carga" (por ejemplo, mandar fotos y video antes de salir).
    - "Más frutas del Soconusco, pronto": mango, cacao y zapote mamey son ejemplos.
-   - El nombre de la marca "Ixchel" aparece en `index.html` (título, etiqueta, carga, sello y pie).
+   - El nombre de la marca "Ixchel" aparece en `tools/fuente/sitio.html` (título, etiqueta, carga, sello y pie).
 7. **Fotos.** Las imágenes son ilustraciones hechas en código. Fotos reales de tu huerta, la cosecha,
    las cajas y el camión cargando harán el sitio mucho más creíble. Los lugares para cambiarlas:
    el fondo del inicio (`.hero__art`), el cuadro de "La fruta" (`.plate__pic`) y las dos imágenes de
@@ -48,11 +67,11 @@ Para verlo en tu computadora, abre `index.html` en el navegador.
 
 `img/logo.svg` es el logo: la luna con el conejo blanco (en la tradición maya acompaña a Ixchel, diosa
 de la luna), la pirámide escalonada y un perfil maya con penacho. El mismo dibujo está dentro de
-`index.html` como `<symbol id="logo">` para usarlo en la etiqueta, el sello y el pie.
+`tools/fuente/sitio.html` como `<symbol id="logo">` para usarlo en la etiqueta, el sello y el pie.
 
 ## Archivos
 
-- `index.html`: estructura y textos en español. `en/index.html`: la misma página en inglés (generada).
+- `tools/fuente/sitio.html`: estructura y textos en español (la fuente). `tools/paginas.py` la reparte en las páginas; `en/`: las mismas páginas en inglés (generadas).
 - `agenda/Codigo.gs` y `agenda/LEEME.md`: el script de Google que guarda las citas en tu calendario.
 - `tools/traducir.py`: genera la página en inglés.
 - `styles.css`: diseño (tres tintas: verde hoja, oro y rojo rambután).

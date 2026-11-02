@@ -989,3 +989,31 @@ $$('[data-year]').forEach((el) => { el.textContent = String(new Date().getFullYe
   }, { rootMargin: '120px 0px' });
   $$('.hero, main > section').forEach((s) => io.observe(s));
 })();
+
+// ---------- barra de las páginas: sombra al bajar y menú en hoja para celular ----------
+(() => {
+  const bar = $('[data-bar]');
+  if (!bar) return;
+  const pintar = () => bar.classList.toggle('is-scrolled', window.scrollY > 8);
+  window.addEventListener('scroll', pintar, { passive: true });
+  pintar();
+
+  const boton = $('.bar__toggle', bar);
+  const nav = $('.bar__nav', bar);
+  if (!boton || !nav) return;
+  $$(':scope > *', nav).forEach((a, k) => a.style.setProperty('--k', String(k)));
+  const etiqueta = $('.bar__label', boton);
+  const movil = matchMedia('(max-width: 960px)');
+  const poner = (abierto, devolver) => {
+    bar.classList.toggle('is-open', abierto);
+    document.documentElement.classList.toggle('is-locked', abierto);
+    boton.setAttribute('aria-expanded', String(abierto));
+    etiqueta.textContent = abierto ? boton.dataset.cerrar : boton.dataset.abrir;
+    if (abierto) $('a', nav)?.focus({ preventScroll: true });
+    else if (devolver) boton.focus({ preventScroll: true });
+  };
+  boton.addEventListener('click', () => poner(!bar.classList.contains('is-open'), true));
+  nav.addEventListener('click', (e) => { if (e.target.closest('a:not(.drop-btn)')) poner(false, false); });
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && bar.classList.contains('is-open')) poner(false, true); });
+  movil.addEventListener('change', () => poner(false, false));
+})();
