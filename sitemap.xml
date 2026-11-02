@@ -12,6 +12,78 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://oscar20001.github.io/rambutan-chiapas/en/"/>
     <changefreq>weekly</changefreq>
   </url>
+  <url>
+    <loc>https://oscar20001.github.io/rambutan-chiapas/fruta.html</loc>
+    <xhtml:link rel="alternate" hreflang="es-MX" href="https://oscar20001.github.io/rambutan-chiapas/fruta.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://oscar20001.github.io/rambutan-chiapas/en/fruit.html"/>
+    <changefreq>weekly</changefreq>
+  </url>
+  <url>
+    <loc>https://oscar20001.github.io/rambutan-chiapas/en/fruit.html</loc>
+    <xhtml:link rel="alternate" hreflang="es-MX" href="https://oscar20001.github.io/rambutan-chiapas/fruta.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://oscar20001.github.io/rambutan-chiapas/en/fruit.html"/>
+    <changefreq>weekly</changefreq>
+  </url>
+  <url>
+    <loc>https://oscar20001.github.io/rambutan-chiapas/pedidos.html</loc>
+    <xhtml:link rel="alternate" hreflang="es-MX" href="https://oscar20001.github.io/rambutan-chiapas/pedidos.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://oscar20001.github.io/rambutan-chiapas/en/orders.html"/>
+    <changefreq>weekly</changefreq>
+  </url>
+  <url>
+    <loc>https://oscar20001.github.io/rambutan-chiapas/en/orders.html</loc>
+    <xhtml:link rel="alternate" hreflang="es-MX" href="https://oscar20001.github.io/rambutan-chiapas/pedidos.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://oscar20001.github.io/rambutan-chiapas/en/orders.html"/>
+    <changefreq>weekly</changefreq>
+  </url>
+  <url>
+    <loc>https://oscar20001.github.io/rambutan-chiapas/agenda.html</loc>
+    <xhtml:link rel="alternate" hreflang="es-MX" href="https://oscar20001.github.io/rambutan-chiapas/agenda.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://oscar20001.github.io/rambutan-chiapas/en/schedule.html"/>
+    <changefreq>weekly</changefreq>
+  </url>
+  <url>
+    <loc>https://oscar20001.github.io/rambutan-chiapas/en/schedule.html</loc>
+    <xhtml:link rel="alternate" hreflang="es-MX" href="https://oscar20001.github.io/rambutan-chiapas/agenda.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://oscar20001.github.io/rambutan-chiapas/en/schedule.html"/>
+    <changefreq>weekly</changefreq>
+  </url>
+  <url>
+    <loc>https://oscar20001.github.io/rambutan-chiapas/preguntas.html</loc>
+    <xhtml:link rel="alternate" hreflang="es-MX" href="https://oscar20001.github.io/rambutan-chiapas/preguntas.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://oscar20001.github.io/rambutan-chiapas/en/faq.html"/>
+    <changefreq>weekly</changefreq>
+  </url>
+  <url>
+    <loc>https://oscar20001.github.io/rambutan-chiapas/en/faq.html</loc>
+    <xhtml:link rel="alternate" hreflang="es-MX" href="https://oscar20001.github.io/rambutan-chiapas/preguntas.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://oscar20001.github.io/rambutan-chiapas/en/faq.html"/>
+    <changefreq>weekly</changefreq>
+  </url>
+  <url>
+    <loc>https://oscar20001.github.io/rambutan-chiapas/cotizar.html</loc>
+    <xhtml:link rel="alternate" hreflang="es-MX" href="https://oscar20001.github.io/rambutan-chiapas/cotizar.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://oscar20001.github.io/rambutan-chiapas/en/quote.html"/>
+    <changefreq>weekly</changefreq>
+  </url>
+  <url>
+    <loc>https://oscar20001.github.io/rambutan-chiapas/en/quote.html</loc>
+    <xhtml:link rel="alternate" hreflang="es-MX" href="https://oscar20001.github.io/rambutan-chiapas/cotizar.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://oscar20001.github.io/rambutan-chiapas/en/quote.html"/>
+    <changefreq>weekly</changefreq>
+  </url>
+  <url>
+    <loc>https://oscar20001.github.io/rambutan-chiapas/contacto.html</loc>
+    <xhtml:link rel="alternate" hreflang="es-MX" href="https://oscar20001.github.io/rambutan-chiapas/contacto.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://oscar20001.github.io/rambutan-chiapas/en/contact.html"/>
+    <changefreq>weekly</changefreq>
+  </url>
+  <url>
+    <loc>https://oscar20001.github.io/rambutan-chiapas/en/contact.html</loc>
+    <xhtml:link rel="alternate" hreflang="es-MX" href="https://oscar20001.github.io/rambutan-chiapas/contacto.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://oscar20001.github.io/rambutan-chiapas/en/contact.html"/>
+    <changefreq>weekly</changefreq>
+  </url>
   <url><loc>https://oscar20001.github.io/rambutan-chiapas/privacidad.html</loc><changefreq>yearly</changefreq></url>
   <url><loc>https://oscar20001.github.io/rambutan-chiapas/en/privacy.html</loc><changefreq>yearly</changefreq></url>
 </urlset>

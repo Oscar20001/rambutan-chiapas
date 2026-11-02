@@ -1,9 +1,11 @@
-# Genera en/index.html a partir de index.html con las frases traducidas al inglés.
+# Genera tools/fuente/sitio-en.html a partir de tools/fuente/sitio.html con las frases traducidas al inglés.
+# Después corre tools/faq.py y tools/paginas.py, que arma las páginas del sitio.
 # Uso: python3 tools/traducir.py   (avisa si alguna frase ya no está en la página en español)
 import pathlib, sys
 
 raiz = pathlib.Path(__file__).resolve().parent.parent
-s = (raiz / 'index.html').read_text(encoding='utf-8')
+fuente = raiz / 'tools' / 'fuente'
+s = (fuente / 'sitio.html').read_text(encoding='utf-8')
 
 PARES = [
     ('<html lang="es-MX">', '<html lang="en">'),
@@ -67,7 +69,7 @@ PARES = [
     ('<div><dt>Vida de anaquel</dt><dd>Alrededor de dos semanas en frío; de tres a cinco días a temperatura ambiente</dd></div>', '<div><dt>Shelf life</dt><dd>About two weeks refrigerated; three to five days at room temperature</dd></div>'),
     ('<div><dt>Pedido mínimo</dt><dd>1 tonelada</dd></div>', '<div><dt>Minimum order</dt><dd>1 metric ton</dd></div>'),
     ('<div><dt>Temporada</dt><dd>Julio a octubre, pico en agosto y septiembre</dd></div>', '<div><dt>Season</dt><dd>July to October, peak in August and September</dd></div>'),
-    ('<div><dt>Contacto</dt><dd>WhatsApp +52 962 269 9611 · +52 962 170 7553</dd></div>', '<div><dt>Contact</dt><dd>WhatsApp +52 962 269 9611 · +52 962 170 7553</dd></div>'),
+    ('<div><dt>Contacto</dt><dd>WhatsApp +52 962 170 7553</dd></div>', '<div><dt>Contact</dt><dd>WhatsApp +52 962 170 7553</dd></div>'),
     ('data-imprimir>Guardar ficha en PDF</button>', 'data-imprimir>Save spec sheet as PDF</button>'),
     ('data-wa="ficha">Cotizar con esta ficha</a>', 'data-wa="ficha">Get a quote with this sheet</a>'),
     ('<h2 id="t-volumen" class="head" data-reveal>Pedidos por volumen</h2>', '<h2 id="t-volumen" class="head" data-reveal>Orders by volume</h2>'),
@@ -237,9 +239,9 @@ for es, en in PARES:
         faltan.append(es[:90])
         continue
     s = s.replace(es, en)
-(raiz / 'en' / 'index.html').write_text(s, encoding='utf-8')
+(fuente / 'sitio-en.html').write_text(s, encoding='utf-8')
 if faltan:
-    print('Frases que ya no están en index.html (revisa su traducción):')
+    print('Frases que ya no están en sitio.html (revisa su traducción):')
     for f in faltan: print('  -', f)
     sys.exit(1)
-print('en/index.html listo')
+print('tools/fuente/sitio-en.html listo')

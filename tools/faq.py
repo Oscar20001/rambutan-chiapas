@@ -3,7 +3,7 @@
 import html, json, pathlib, re
 
 raiz = pathlib.Path(__file__).resolve().parent.parent
-for ruta in [raiz / 'index.html', raiz / 'en' / 'index.html']:
+for ruta in [raiz / 'tools' / 'fuente' / 'sitio.html', raiz / 'tools' / 'fuente' / 'sitio-en.html']:
     s = ruta.read_text(encoding='utf-8')
     lista = s[s.index('<div class="faq__list"'):s.index('<div class="faq__actions"')]
     preguntas = []
