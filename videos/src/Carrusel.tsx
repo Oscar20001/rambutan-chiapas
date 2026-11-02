@@ -27,6 +27,7 @@ export type Lamina = {
   fuente?: string;
   medallon?: 'esquina' | 'centro' | 'arriba' | 'logo';
   centrado?: boolean;
+  escena?: 'piramide' | 'luna' | 'selva' | 'volcan';
 };
 
 const pinta = (trozos: Trozo[]) =>
@@ -42,7 +43,7 @@ const Medallon: React.FC<{ t: number; fps: number; fg: string; donde: Lamina['me
     arriba: { width: 520, height: 520, left: 280, top: 230 },
     logo: { width: 0, height: 0 },
   };
-  if (donde === 'logo') return null;
+  if (donde !== 'arriba') return null;
   return (
     <div
       style={{
@@ -58,6 +59,87 @@ const Medallon: React.FC<{ t: number; fps: number; fg: string; donde: Lamina['me
     >
       <Img src={staticFile('fruta.svg')} style={{ width: '78%' }} />
     </div>
+  );
+};
+
+
+// Escenas de fondo: pirámide maya, luna con conejo, selva y volcán (se alternan por lámina).
+const ESCENAS = ['piramide', 'luna', 'selva', 'volcan'] as const;
+const Conejo: React.FC<{ x: number; y: number; k: number; c: string }> = ({ x, y, k, c }) => (
+  <g transform={`translate(${x} ${y}) scale(${k})`} fill={c}>
+    <ellipse cx="-8" cy="-62" rx="9" ry="34" transform="rotate(-16 -8 -62)" />
+    <ellipse cx="14" cy="-60" rx="8" ry="32" transform="rotate(14 14 -60)" />
+    <circle cx="4" cy="-18" r="22" />
+    <ellipse cx="0" cy="26" rx="34" ry="38" />
+    <circle cx="-34" cy="44" r="12" />
+    <ellipse cx="22" cy="60" rx="22" ry="9" />
+  </g>
+);
+const Estrellas: React.FC<{ c: string; t: number }> = ({ c, t }) => (
+  <g fill={c}>
+    {Array.from({ length: 34 }, (_, i) => {
+      const x = (i * 337) % 1000 + 40, y = (i * 211) % 1100 + 260;
+      return <circle key={i} cx={x} cy={y} r={2 + (i % 3) * 1.6} opacity={0.35 + 0.35 * Math.abs(Math.sin(t * 2 + i))} />;
+    })}
+  </g>
+);
+const Fondo: React.FC<{ tipo: (typeof ESCENAS)[number]; c: string; luz: string; t: number }> = ({ tipo, c, luz, t }) => {
+  const sombra = 'rgba(0,0,0,.22)';
+  return (
+    <svg viewBox="0 0 1080 1920" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%' }}>
+      {tipo === 'piramide' && (
+        <g>
+          <Estrellas c={luz} t={t} />
+          <circle cx="760" cy="1060" r="210" fill={luz} opacity=".45" />
+          <Conejo x={760} y={1070} k={1.5} c={c} />
+          {[0, 1, 2, 3, 4, 5, 6].map((k) => (
+            <rect key={k} x={140 + k * 55} y={1820 - (k + 1) * 85} width={800 - k * 110} height="86" fill={k % 2 ? c : sombra} opacity={k % 2 ? 0.9 : 1} />
+          ))}
+          <rect x="455" y="1140" width="170" height="110" fill={c} />
+          <rect x="505" y="1180" width="70" height="70" fill={sombra} />
+          <polygon points="490,1820 590,1820 570,1260 510,1260" fill={sombra} />
+          <path d="M0 1820 Q200 1700 120 1920 Z M1080 1800 Q880 1690 960 1920 Z" fill={c} />
+        </g>
+      )}
+      {tipo === 'luna' && (
+        <g>
+          <Estrellas c={luz} t={t} />
+          <circle cx="540" cy="1230" r="380" fill={luz} opacity=".42" />
+          <circle cx="540" cy="1230" r="440" fill="none" stroke={luz} strokeWidth="6" opacity=".25" />
+          <Conejo x={540} y={1250} k={3.2} c={c} />
+          <path d="M0 1700 Q270 1600 540 1700 T1080 1680 V1920 H0 Z" fill={c} opacity=".85" />
+        </g>
+      )}
+      {tipo === 'selva' && (
+        <g>
+          {[[-60, 1500, 30, 1.6], [1140, 1450, 150, 1.5], [-40, 900, 60, 1.1], [1120, 900, 125, 1.0], [300, 1950, -10, 1.4], [800, 1980, 10, 1.3]].map(([x, y, r, k], i) => (
+            <g key={i} transform={`translate(${x} ${y}) rotate(${r + Math.sin(t * 1.3 + i) * 3}) scale(${k})`} fill={i % 2 ? c : sombra}>
+              <path d="M0 0 C60 -160 200 -260 340 -250 C300 -120 180 -20 0 0 Z" />
+              <path d="M0 0 C-20 -170 40 -330 150 -400 C170 -250 110 -90 0 0 Z" />
+              <path d="M0 0 C120 -60 280 -60 380 20 C260 80 120 60 0 0 Z" />
+            </g>
+          ))}
+          <circle cx="540" cy="1150" r="160" fill={luz} opacity=".35" />
+        </g>
+      )}
+      {tipo === 'volcan' && (
+        <g>
+          <circle cx="820" cy="900" r="120" fill={luz} opacity=".45" />
+          {[0, 1, 2].map((k) => (
+            <circle key={k} cx={560 + k * 40 + Math.sin(t + k) * 10} cy={1010 - k * 70 - (t * 12) % 30} r={60 + k * 25} fill={luz} opacity={0.22 - k * 0.05} />
+          ))}
+          <polygon points="80,1700 470,1080 650,1080 1040,1700" fill={c} opacity=".9" />
+          <polygon points="470,1080 650,1080 600,1160 560,1130 520,1170" fill={luz} opacity=".5" />
+          <path d="M0 1640 Q270 1540 540 1640 T1080 1600 V1920 H0 Z" fill={sombra} />
+          {[120, 300, 480, 660, 840, 1000].map((x, i) => (
+            <g key={i}>
+              <rect x={x - 8} y={1700 - (i % 2) * 30} width="16" height="70" fill={c} />
+              <circle cx={x} cy={1680 - (i % 2) * 30} r={55} fill={c} />
+            </g>
+          ))}
+        </g>
+      )}
+    </svg>
   );
 };
 
@@ -89,14 +171,7 @@ const LaminaVista: React.FC<{ l: Lamina; t: number; i: number; total: number }> 
         clipPath: i === 0 ? undefined : `circle(${abre * 130}% at 50% 55%)`,
       }}
     >
-      <div
-        style={{
-          position: 'absolute',
-          inset: -900,
-          background: `repeating-conic-gradient(from ${t * 9}deg at 50% 50%, ${l.ray} 0 6deg, transparent 6deg 12deg)`,
-          opacity: 0.55,
-        }}
-      />
+<Fondo tipo={l.escena ?? (l.medallon === 'logo' || l.medallon === 'arriba' ? 'selva' : ESCENAS[i % ESCENAS.length])} c={l.ray} luz={CREMA} t={t} />
       <div
         style={{
           position: 'absolute',
@@ -329,14 +404,14 @@ export const PREGUNTAS: Lamina[] = [
 ];
 
 export const SOCONUSCO: Lamina[] = [
-  { ...V('#14301a', CREMA, '#24502c'), arriba: 'ORIGEN', titulo: [['¿SABÍAS QUE'], [['NACE JUNTO', '#b8f02e']], [['A UN VOLCÁN?', '#ff5a6e']]], tam: 175, centrado: true, medallon: 'centro' },
-  { ...V('#ff5a1f', '#2b0a3d', '#ff8a3d'), arriba: 'EL VOLCÁN', grande: { texto: '4,060 M', cuenta: [0, 4060, ' M'], tam: 260 }, titulo: [['VOLCÁN TACANÁ']], tam: 120,
+  { ...V('#14301a', CREMA, '#24502c'), escena: 'luna', arriba: 'ORIGEN', titulo: [['¿SABÍAS QUE'], [['NACE JUNTO', '#b8f02e']], [['A UN VOLCÁN?', '#ff5a6e']]], tam: 175, centrado: true, medallon: 'centro' },
+  { ...V('#ff5a1f', '#2b0a3d', '#ff8a3d'), escena: 'volcan', arriba: 'EL VOLCÁN', grande: { texto: '4,060 M', cuenta: [0, 4060, ' M'], tam: 260 }, titulo: [['VOLCÁN TACANÁ']], tam: 120,
     cuerpo: ['Mide 4,060 metros y marca la frontera entre México y Guatemala. Sus faldas bajan hasta las huertas del Soconusco.'] },
-  { ...V('#00a6a6', '#062a2a', '#25c4c4'), arriba: 'LA ALTURA', grande: { texto: '100–700 M', color: CREMA, tam: 230 },
+  { ...V('#00a6a6', '#062a2a', '#25c4c4'), escena: 'selva', arriba: 'LA ALTURA', grande: { texto: '100–700 M', color: CREMA, tam: 230 },
     cuerpo: ['Es la altura donde se da el rambután en el Soconusco: tierra caliente, húmeda y fértil.'], fuente: 'Revista Chapingo, 2011.' },
-  { ...V('#e6007e', CREMA, '#ff3ca0'), arriba: 'LA HISTORIA', titulo: [['ZONA ARQUEOLÓGICA'], [['IZAPA', ORO]]], tam: 170,
+  { ...V('#e6007e', CREMA, '#ff3ca0'), escena: 'piramide', arriba: 'LA HISTORIA', titulo: [['ZONA ARQUEOLÓGICA'], [['IZAPA', ORO]]], tam: 170,
     cuerpo: ['Tuxtla Chico guarda Izapa, uno de los sitios más antiguos de Mesoamérica, hoy rodeado de huertas.'], fuente: 'INAH.' },
-  { ...V('#ffc21a', '#3a0d0d', '#ffd75a'), arriba: 'LA PRODUCCIÓN', titulo: [['CHIAPAS ES EL'], [['CENTRO', '#c8202b']], ['DEL RAMBUTÁN']], tam: 180,
+  { ...V('#ffc21a', '#3a0d0d', '#ffd75a'), escena: 'luna', arriba: 'LA PRODUCCIÓN', titulo: [['CHIAPAS ES EL'], [['CENTRO', '#c8202b']], ['DEL RAMBUTÁN']], tam: 180,
     cuerpo: ['Tuxtla Chico, Metapa y Cacahoatán están en el corazón de la producción de México.'], fuente: 'Revista Chapingo, 2011; FreshPlaza, 2019.' },
   { ...V('#b8f02e', '#14301a', '#d2ff5c'), arriba: 'IXCHEL', titulo: [['DEL SOCONUSCO'], ['A TU BODEGA']], tam: 160, centrado: true, medallon: 'arriba',
     cuerpo: ['Por tonelada o por cajas. WhatsApp 962 170 7553 · ventasixchelfrutas@gmail.com · oscar20001.github.io/rambutan-chiapas'] },
