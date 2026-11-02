@@ -9,6 +9,7 @@ import { AnuncioCamion, AnuncioProducto } from './Anuncio3D';
 import { DURACION_ABRE, RambutanAbre } from './RambutanAbre';
 import { Alto, DURACION_ALTO } from './Alto';
 import { VueloPrueba } from './VueloPrueba';
+import { FichaVista, LOTERIA, MAYAS, IXCHEL, ADIVINA } from './Fichas';
 import { Carrusel, DOMINGO, DURA, SABADO, COMPRAR, PREGUNTAS, SOCONUSCO } from './Carrusel';
 import comoSeCome from './guiones/como-se-come.json';
 import compradores from './guiones/compradores.json';
@@ -43,6 +44,10 @@ export const Root: React.FC = () => (
     <Composition id="ComoSeCome" component={ComoSeCome} {...vertical} calculateMetadata={tiemposDe(comoSeCome)} />
     <Composition id="Huerta" component={Huerta} {...vertical} calculateMetadata={tiemposDe(compradores)} />
     <Composition id="Compradores" component={Compradores} {...vertical} calculateMetadata={tiemposDe(compradores)} />
+    <Composition id="FichaLoteria" component={FichaVista} fps={30} width={1080} height={1920} durationInFrames={1} defaultProps={{ ...LOTERIA, i: 0 }} />
+    <Composition id="FichaMayas" component={FichaVista} fps={30} width={1080} height={1920} durationInFrames={1} defaultProps={{ ...MAYAS, i: 0 }} />
+    <Composition id="FichaIxchel" component={FichaVista} fps={30} width={1080} height={1920} durationInFrames={1} defaultProps={{ ...IXCHEL, i: 0 }} />
+    <Composition id="FichaAdivina" component={FichaVista} fps={30} width={1080} height={1920} durationInFrames={1} defaultProps={{ ...ADIVINA, i: 0 }} />
     <Composition id="CarruselSabado" component={Carrusel} fps={FPS} width={1080} height={1920}
       durationInFrames={Math.round(SABADO.length * DURA * FPS + FPS)} defaultProps={{ laminas: SABADO }} />
     <Composition id="CarruselDomingo" component={Carrusel} fps={FPS} width={1080} height={1920}
