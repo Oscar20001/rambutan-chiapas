@@ -24,6 +24,10 @@ python3 tools/paginas.py    # reparte todo en las páginas del sitio (es y en)
 Qué sección va en qué página, los títulos de cada encabezado y las tarjetas de la portada están en
 `tools/paginas.py`.
 
+**Sin internet.** `sw.js` guarda el sitio en el celular de quien lo visita: si se va la señal, las páginas ya
+vistas siguen abriendo y aparece un aviso con el logo; las que no estén guardadas muestran `offline.html`, con el
+logo animado y el teléfono. Cuando cambies archivos del sitio, sube `VERSION` en `sw.js` para que bajen lo nuevo.
+
 ## Lo que puedes cambiar
 
 1. **WhatsApp.** En `app.js`, `const WHATSAPP = ['529621707553'];`. Ese número

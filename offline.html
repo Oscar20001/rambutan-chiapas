@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="es-MX">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#133621">
+<title>Sin conexión · Ixchel, Frutas del Soconusco</title>
+<style>
+  /* página que se ve cuando no hay internet: todo va aquí dentro para que funcione sin red */
+  @font-face { font-family: 'Bebas Neue'; font-display: swap; src: url(/rambutan-chiapas/fonts/bebas-neue.woff2) format('woff2'), url(/fonts/bebas-neue.woff2) format('woff2'); }
+  @font-face { font-family: 'EB Garamond'; font-display: swap; src: url(/rambutan-chiapas/fonts/eb-garamond-normal.woff2) format('woff2'), url(/fonts/eb-garamond-normal.woff2) format('woff2'); }
+  :root { --bg: #133621; --ink: #f4d96c; --red: #9b1c23; --hair: #e0473a; --skin: #c8202b; --ease-out: cubic-bezier(0.22, 1, 0.36, 1); --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1); }
+  *, *::before, *::after { box-sizing: border-box; }
+  html, body { height: 100%; }
+  body { margin: 0; display: grid; place-items: center; padding: max(1.5rem, env(safe-area-inset-top)) max(1rem, env(safe-area-inset-right)) max(1.5rem, env(safe-area-inset-bottom)) max(1rem, env(safe-area-inset-left)); background: var(--bg); color: var(--ink); font-family: "EB Garamond", Georgia, serif; text-align: center; overflow-x: hidden; }
+  main { display: grid; justify-items: center; gap: 0.75rem; max-width: 26rem; }
+  .stage { position: relative; width: min(64vw, 15rem); aspect-ratio: 1; margin-bottom: 0.75rem; }
+  .ring, .logo { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+  .ring path { fill: none; stroke: var(--hair); stroke-width: 3; stroke-linecap: round; }
+  .logo { inset: 16%; width: 68%; height: 68%; }
+  h1 { margin: 0; font-family: "Bebas Neue", "Arial Narrow", Impact, sans-serif; font-weight: 400; font-size: clamp(2rem, 9vw, 2.75rem); letter-spacing: 0.03em; line-height: 0.95; text-transform: uppercase; }
+  p { margin: 0; font-size: 1.125rem; line-height: 1.45; }
+  .muted { color: #d8c477; font-size: 1rem; }
+  .dots { display: inline-flex; gap: 6px; margin: 0.25rem 0 0.5rem; }
+  .dots i { width: 9px; height: 9px; border-radius: 50%; background: var(--skin); }
+  button { margin-top: 0.5rem; min-height: 3.25rem; padding: 0 1.75rem; border: 0; background: var(--ink); color: var(--bg); font: 400 1.25rem/1 "Bebas Neue", "Arial Narrow", Impact, sans-serif; letter-spacing: 0.06em; text-transform: uppercase; cursor: pointer; transition: transform 140ms var(--ease-out), background-color 180ms ease; }
+  button:active { transform: scale(0.96); }
+  button:focus-visible, a:focus-visible { outline: 3px solid var(--ink); outline-offset: 3px; }
+  a { color: var(--ink); text-underline-offset: 0.22em; }
+  .contact { display: grid; gap: 0.35rem; margin-top: 1rem; font-size: 1rem; }
+  .contact a { display: inline-flex; align-items: center; justify-content: center; min-height: 2.75rem; }
+  .back { position: fixed; inset: 0; display: grid; place-items: center; background: var(--bg); opacity: 0; visibility: hidden; transition: opacity 320ms var(--ease-out), visibility 0s linear 320ms; }
+  .back.is-on { opacity: 1; visibility: visible; transition: opacity 320ms var(--ease-out); }
+  @media (hover: hover) { button:hover { background: #fbe896; } }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .ring { animation: spin 14s linear infinite; }
+    .ring path { animation: hair 2.4s var(--ease-in-out) infinite; animation-delay: calc(var(--d) * 1ms); }
+    .moon { transform-box: fill-box; transform-origin: 50% 50%; animation: glow 3.2s var(--ease-in-out) infinite; }
+    .rabbit { transform-box: fill-box; transform-origin: 50% 100%; animation: hop 2.4s var(--ease-out) infinite; }
+    .dots i { animation: dot 1.4s var(--ease-in-out) infinite; }
+    .dots i:nth-child(2) { animation-delay: 160ms; }
+    .dots i:nth-child(3) { animation-delay: 320ms; }
+    main > * { animation: rise 600ms var(--ease-out) both; }
+    main > :nth-child(2) { animation-delay: 80ms; }
+    main > :nth-child(3) { animation-delay: 140ms; }
+    main > :nth-child(4) { animation-delay: 200ms; }
+    main > :nth-child(5) { animation-delay: 260ms; }
+    main > :nth-child(6) { animation-delay: 320ms; }
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  @keyframes hair { 0%, 100% { opacity: 1; } 50% { opacity: 0.25; } }
+  @keyframes glow { 50% { transform: scale(1.05); filter: brightness(1.12); } }
+  @keyframes hop { 0%, 55%, 100% { transform: translateY(0) scaleY(1); } 62% { transform: translateY(1px) scaleY(0.9); } 72% { transform: translateY(-9px) scaleY(1.05); } 84% { transform: translateY(0) scaleY(0.95); } }
+  @keyframes dot { 0%, 100% { transform: translateY(0); opacity: 0.45; } 40% { transform: translateY(-6px); opacity: 1; } }
+  @keyframes rise { from { opacity: 0; transform: translateY(14px); } }
+</style>
+</head>
+<body>
+<main>
+  <div class="stage" aria-hidden="true">
+    <svg class="ring" viewBox="0 0 200 200" data-ring></svg>
+    <svg class="logo" viewBox="0 0 120 120">
+      <circle class="moon" cx="64" cy="44" r="34" fill="#f4d96c"/>
+      <g class="rabbit">
+        <g fill="#fffaf0" stroke="#133621" stroke-width="2" stroke-linejoin="round">
+          <ellipse cx="60" cy="25" rx="3.6" ry="10" transform="rotate(-18 60 25)"/>
+          <ellipse cx="67" cy="26" rx="3.4" ry="9.5" transform="rotate(14 67 26)"/>
+          <path d="M56 40c0-6 5-10 10-9 5 1 8 6 6 11l9 4c6 3 8 10 4 14-3 3-9 3-16 3h-9c-3 0-4-3-2-5l3-2c-4-3-5-9-5-16z"/>
+          <circle cx="88" cy="55" r="3.4"/>
+        </g>
+        <circle cx="62.5" cy="38" r="1.6" fill="#133621"/>
+      </g>
+      <path d="M8 116h104l-8-10H16zM20 106h80l-7-9H27zM31 97h58l-6-8H37zM41 89h38l-5-7H46z" fill="#1f5a35"/>
+      <path d="M48 82h24v-9H48z" fill="#1f5a35"/>
+      <path d="M55 82h10v-6h-10z" fill="#133621"/>
+      <path d="M46 73h28l-3-4H49z" fill="#9b1c23"/>
+      <path d="M55 116h10l-2-34h-6z" fill="#f4d96c"/>
+      <g transform="translate(2 44)">
+        <path d="M8 -8C10 -20 4 -28 -2 -32 8 -30 15 -22 15 -10M15 -10C18 -22 16 -32 12 -38 21 -32 24 -20 21 -8M21 -8C26 -18 28 -26 27 -33 33 -24 31 -13 26 -5" fill="#2b6b40"/>
+        <path d="M2 20C1 9 6 1 15 -1l21 23-5 3 2 4-3 2 1 3-4 6h-6v10H8v-9C4 37 2 29 2 20z" fill="#9b1c23" stroke="#f4d96c" stroke-width="2.4" stroke-linejoin="round"/>
+        <path d="M4 7C7 -2 14 -6 22 -5l5 7C19 -1 11 2 7 11z" fill="#f4d96c"/>
+        <path d="M20 15c2-2 5-2 7 0-2 2-5 2-7 0z" fill="#f4d96c"/>
+        <circle cx="11" cy="24" r="5" fill="#f4d96c"/>
+        <circle cx="11" cy="24" r="2" fill="#9b1c23"/>
+      </g>
+    </svg>
+  </div>
+  <h1 data-t="titulo">Sin conexión</h1>
+  <span class="dots" aria-hidden="true"><i></i><i></i><i></i></span>
+  <p data-t="texto">Se fue el internet, pero la huerta sigue aquí. En cuanto vuelva la señal, la página se abre sola.</p>
+  <button type="button" data-t="boton" data-retry>Reintentar</button>
+  <p class="contact muted"><span data-t="llama">También puedes llamarnos:</span>
+    <a href="tel:+529621707553">(962) 170-7553</a>
+    <a href="mailto:ventasixchelfrutas@gmail.com">ventasixchelfrutas@gmail.com</a>
+  </p>
+</main>
+<div class="back" data-back aria-live="polite"><p data-t="volvio">Volvió la conexión…</p></div>
+<script>
+  (function () {
+    // pelos de rambután alrededor del logo
+    var ring = document.querySelector('[data-ring]'), n = 36, ns = 'http://www.w3.org/2000/svg';
+    for (var i = 0; i < n; i++) {
+      var a = (i / n) * Math.PI * 2, r0 = 90, r1 = 99;
+      var p = document.createElementNS(ns, 'path');
+      var x0 = 100 + Math.cos(a) * r0, y0 = 100 + Math.sin(a) * r0;
+      var cx = 100 + Math.cos(a + 0.12) * (r0 + 6), cy = 100 + Math.sin(a + 0.12) * (r0 + 6);
+      var x1 = 100 + Math.cos(a + 0.2) * r1, y1 = 100 + Math.sin(a + 0.2) * r1;
+      p.setAttribute('d', 'M' + x0.toFixed(1) + ' ' + y0.toFixed(1) + 'Q' + cx.toFixed(1) + ' ' + cy.toFixed(1) + ' ' + x1.toFixed(1) + ' ' + y1.toFixed(1));
+      p.style.setProperty('--d', String(Math.round((i / n) * 2400)));
+      ring.appendChild(p);
+    }
+    // inglés para quien venía de la versión en inglés
+    var en = /\/en\//.test(location.pathname);
+    if (en) {
+      document.documentElement.lang = 'en';
+      document.title = 'Offline · Ixchel, Soconusco Fruit';
+      var T = { titulo: 'You are offline', texto: 'The internet dropped, but the orchard is still here. As soon as the signal is back, the page opens by itself.', boton: 'Try again', llama: 'You can also call us:', volvio: 'Back online…' };
+      Array.prototype.forEach.call(document.querySelectorAll('[data-t]'), function (el) { el.textContent = T[el.getAttribute('data-t')]; });
+    }
+    var volver = function () {
+      document.querySelector('[data-back]').classList.add('is-on');
+      setTimeout(function () { location.reload(); }, 450);
+    };
+    window.addEventListener('online', volver);
+    document.querySelector('[data-retry]').addEventListener('click', function () { if (navigator.onLine) volver(); else location.reload(); });
+  })();
+</script>
+</body>
+</html>

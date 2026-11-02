@@ -1017,3 +1017,34 @@ $$('[data-year]').forEach((el) => { el.textContent = String(new Date().getFullYe
   document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && bar.classList.contains('is-open')) poner(false, true); });
   movil.addEventListener('change', () => poner(false, false));
 })();
+
+// ---------- sin internet: el sitio queda guardado y avisa con el logo cuando se va o vuelve la señal ----------
+(() => {
+  if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost')) {
+    const raiz = document.documentElement.lang === 'en' ? '../' : './';
+    window.addEventListener('load', () => navigator.serviceWorker.register(`${raiz}sw.js`, { scope: `${raiz}` }).catch(() => {}));
+  }
+  const en = document.documentElement.lang === 'en';
+  const aviso = document.createElement('div');
+  aviso.className = 'net';
+  aviso.setAttribute('role', 'status');
+  aviso.setAttribute('aria-live', 'polite');
+  aviso.hidden = true;
+  aviso.innerHTML = '<svg class="net__logo" viewBox="0 0 120 120" aria-hidden="true"><use href="#logo"/></svg><span class="net__text"></span><span class="net__dots" aria-hidden="true"><i></i><i></i><i></i></span>';
+  document.body.append(aviso);
+  const texto = $('.net__text', aviso);
+  let quitar = 0;
+  const mostrar = (enLinea) => {
+    clearTimeout(quitar);
+    aviso.hidden = false;
+    aviso.classList.toggle('is-back', enLinea);
+    texto.textContent = enLinea
+      ? (en ? 'Back online' : 'Volvió la conexión')
+      : (en ? 'No internet. You can keep browsing the site' : 'Sin internet. Puedes seguir viendo el sitio');
+    requestAnimationFrame(() => aviso.classList.add('is-on'));
+    if (enLinea) quitar = setTimeout(() => { aviso.classList.remove('is-on'); setTimeout(() => { aviso.hidden = true; }, 400); }, 2600);
+  };
+  window.addEventListener('offline', () => mostrar(false));
+  window.addEventListener('online', () => mostrar(true));
+  if (navigator.onLine === false) mostrar(false);
+})();
