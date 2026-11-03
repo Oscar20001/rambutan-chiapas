@@ -438,7 +438,7 @@ const MapaTributo: React.FC<{ t: number; desde: number; ruta: [number, number]; 
 };
 
 // ---------- video ----------
-export const Cacao: React.FC<Tiempos> = ({ voz, inicios, palabras }) => {
+export const Cacao: React.FC<Tiempos & { musica?: string }> = ({ voz, inicios, palabras, musica }) => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
   const t = frame / fps;
@@ -512,7 +512,7 @@ export const Cacao: React.FC<Tiempos> = ({ voz, inicios, palabras }) => {
   } else if (t < s2) {
     // 2 · +500 AÑOS y vista explotada de la mazorca: los granos con su baba blanca
     const abre = suave(t, tCacao - 0.3, tCacao + 1.4);
-    const anos = Math.round(interpolate(t, [tQuin - 0.1, tQuin + 0.8], [0, 500], { extrapolateLeft: 'clamp', extrapolateRight: 'clamp', easing: Easing.out(Easing.cubic) }));
+    const anos = Math.round(interpolate(t, [Math.min(tQuin - 0.1, s1 + 0.15), Math.min(tQuin + 0.8, s1 + 1.1)], [0, 500], { extrapolateLeft: 'clamp', extrapolateRight: 'clamp', easing: Easing.out(Easing.cubic) }));
     escena = (
       <>
         <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(circle at 50% 60%, #3a1d0c 0%, #120804 55%, #040201 100%)' }} />
@@ -669,6 +669,7 @@ export const Cacao: React.FC<Tiempos> = ({ voz, inicios, palabras }) => {
       )}
       <Pelicula frame={frame} w={w} h={h} />
       {voz && <Audio src={staticFile(`voz/${voz}/toma.mp3`)} />}
+      {musica && <Audio src={staticFile(musica)} />}
     </AbsoluteFill>
   );
 };

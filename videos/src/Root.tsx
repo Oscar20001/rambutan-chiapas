@@ -89,6 +89,10 @@ export const Root: React.FC = () => (
     <Composition id="CacaoV" component={Cacao} {...vertical} calculateMetadata={tiemposDe(cacao)} />
     <Composition id="CacaoF" component={Cacao} {...vertical} width={1080} height={1350} calculateMetadata={tiemposDe(cacao)} />
     <Composition id="CacaoH" component={Cacao} {...vertical} width={1920} height={1080} calculateMetadata={tiemposDe(cacao)} />
+    <Composition id="CacaoMusicaV" component={Cacao} {...vertical} durationInFrames={31 * FPS} calculateMetadata={async () => {
+      const d = await fetch(staticFile('soconusco/cacao-musica.json')).then((r) => r.json());
+      return { props: { voz: '', inicios: d.inicios, palabras: d.palabras, musica: 'soconusco/cacao-musica.wav' } };
+    }} />
     <Composition id="Viaje" component={Viaje} fps={60} width={1080} height={1920} durationInFrames={DURACION_VIAJE * 60} />
   </>
 );
