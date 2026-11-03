@@ -13,17 +13,18 @@ import { TITULO } from './comun';
 // Datos del Soconusco (Pérez Romero y Pohlan, LEISA 2004): temprana mayo–junio, normal finales de julio–agosto,
 // tardía agosto–octubre; un árbol adulto da de 100 a 300 kg.
 
-export const DURACION_COSECHAS = 22.5;
-const S = { temprana: 3, normal: 7, tardia: 11, kilos: 15, cierre: 18.6 };
+export const DURACION_COSECHAS = 40;
+// tiempos de la voz de Antonio
+const S = { tres: 8.2, temprana: 10.9, normal: 13.1, tardia: 15.8, kilos: 19.0, noche: 23.7, cierre: 29.1 };
 
 // cielo según la hora del video
 const cieloEn = (t: number) => {
   const tramos: [number, Hora][] = [
     [0, 'amanecer'],
-    [5, 'dia'],
-    [10, 'dia'],
-    [13, 'atardecer'],
-    [16, 'noche'],
+    [8, 'dia'],
+    [15, 'dia'],
+    [19.5, 'atardecer'],
+    [24, 'noche'],
   ];
   let i = 0;
   while (i < tramos.length - 1 && t > tramos[i + 1][0]) i++;
@@ -113,7 +114,7 @@ export const TresCosechas: React.FC = () => {
   const { c: cielo, noche } = cieloEn(t);
 
   // el sol cruza el cielo y se pone; luego sale la luna
-  const ks = Math.min(1, t / 15.5);
+  const ks = Math.min(1, t / 24);
   const sol: [number, number] = noche > 0.6 ? [0.22, 0.2] : [0.12 + ks * 0.76, 0.62 - Math.sin(ks * Math.PI) * 0.5];
   const ang = -0.6 + t * 0.075;
   const lejos = tipo === 'vertical' ? 1.4 : tipo === 'cuadrado' ? 1.3 : 1.55;
@@ -146,11 +147,13 @@ export const TresCosechas: React.FC = () => {
         {noche > 0 && <Chispas n={90} centro={new THREE.Vector3(0, 2.4, 0)} radio={5.5} t={t} color="#d8ff6a" fuerza={noche} tam={0.05} />}
       </ThreeCanvas>
 
-      <Rotulo t={t} desde={0.3} hasta={S.temprana - 0.1} titulo={<>¿CUÁNDO HAY<br /><span style={{ color: '#ff4a5a' }}>RAMBUTÁN</span>?</>} sub="Así se dan las cosechas en el Soconusco." />
+      <Rotulo t={t} desde={1.0} hasta={S.tres - 0.1} titulo={<>¿CUÁNDO HAY<br /><span style={{ color: '#ff4a5a' }}>RAMBUTÁN</span>?</>} sub="Primeros rayos de sol sobre el Soconusco." />
+      <Rotulo t={t} desde={S.tres + 0.1} hasta={S.temprana - 0.1} titulo={<>¡HAY <span style={{ color: '#ffd84d' }}>TRES</span><br />COSECHAS!</>} />
       <Rotulo t={t} desde={S.temprana + 0.2} hasta={S.normal - 0.1} titulo={<>COSECHA<br /><span style={{ color: '#b8f02e' }}>TEMPRANA</span></>} sub="De mayo a junio." />
       <Rotulo t={t} desde={S.normal + 0.2} hasta={S.tardia - 0.1} titulo={<>COSECHA<br /><span style={{ color: '#ffd84d' }}>NORMAL</span></>} sub="De finales de julio a agosto." />
       <Rotulo t={t} desde={S.tardia + 0.2} hasta={S.kilos - 0.1} titulo={<>COSECHA<br /><span style={{ color: '#ff5a4a' }}>TARDÍA</span></>} sub="De agosto a octubre." />
-      <Rotulo t={t} desde={S.kilos + 0.2} hasta={S.cierre - 0.05} titulo={<>UN ÁRBOL ADULTO<br />DA DE <span style={{ color: '#ffd84d' }}>100 A 300 KG</span></>} sub="De fruta, según estudios en el Soconusco." />
+      <Rotulo t={t} desde={S.kilos + 0.2} hasta={S.noche - 0.05} titulo={<>UN ÁRBOL ADULTO<br />DA DE <span style={{ color: '#ffd84d' }}>100 A 300 KG</span></>} sub="De fruta, según estudios en el Soconusco." />
+      <Rotulo t={t} desde={S.noche + 0.1} hasta={S.cierre - 0.05} titulo={<>LA HUERTA<br />DESCANSA</>} sub="Así que ya sabes cuándo venir." />
 
       <div
         style={
@@ -163,7 +166,7 @@ export const TresCosechas: React.FC = () => {
       </div>
 
       <CierreSerie t={t} desde={S.cierre} fondo="radial-gradient(circle at 50% 40%, #1a2a4a, #050a1c 75%)" />
-      <Audio src={staticFile('cosechas/musica.wav')} />
+      <Audio src={staticFile('serie/voz3.mp3')} />
     </AbsoluteFill>
   );
 };

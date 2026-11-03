@@ -13,8 +13,9 @@ import { Arbol } from './Racimo';
 // Datos: Tacaná 4,060 m en la frontera México–Guatemala; el rambután se da en el Soconusco
 // de 100 a 650 m (LEISA 2004); Izapa, zona arqueológica con más de 2,000 años (INAH).
 
-export const DURACION_VOLCAN = 22.5;
-const S = { frontera: 4, faldas: 7.5, izapa: 11.5, huerta: 15, cierre: 18.6 };
+export const DURACION_VOLCAN = 39.5;
+// tiempos de la voz de Antonio
+const S = { frontera: 6.2, faldas: 9.1, altura: 14.6, izapa: 18.7, huerta: 24.5, cierre: 28.2 };
 const P = (x: number, y: number, z: number) => new THREE.Vector3(x, y, z);
 const T = TACANA;
 
@@ -298,7 +299,7 @@ export const TierraVolcan: React.FC = () => {
   const flash = t >= S.huerta && t < S.huerta + 0.45 ? 1 - (t - S.huerta) / 0.45 : 0;
   // atardecer que se va apagando hacia el final
   const cielo = cieloEntre('atardecer', 'noche', suave(t, S.huerta, S.cierre + 2) * 0.35);
-  const metros = Math.round(4060 * suave(t, 0.4, 2.6));
+  const metros = Math.round(4060 * suave(t, 1.7, 3.6));
 
   // parvada en V cruzando el atardecer
   const parvada = Array.from({ length: 7 }, (_, i) => {
@@ -339,12 +340,13 @@ export const TierraVolcan: React.FC = () => {
       {flash > 0 && <div style={{ position: 'absolute', inset: 0, background: '#ffe2b0', opacity: flash }} />}
       <Rotulo t={t} desde={0.3} hasta={S.frontera - 0.1} titulo={<>ESTE VOLCÁN<br />MIDE <span style={{ color: '#ffcf70' }}>{metros.toLocaleString('en-US')} M</span></>} sub="Volcán Tacaná, Chiapas." />
       <Rotulo t={t} desde={S.frontera + 0.2} hasta={S.faldas - 0.1} titulo={<>Y MARCA LA<br />FRONTERA</>} sub="Entre México y Guatemala." />
-      <Rotulo t={t} desde={S.faldas + 0.2} hasta={S.izapa - 0.1} titulo={<>EN SUS FALDAS<br />ESTÁ EL SOCONUSCO</>} sub="Tierra caliente y fértil: aquí el rambután se da de 100 a 650 metros de altura." />
+      <Rotulo t={t} desde={S.faldas + 0.2} hasta={S.altura - 0.1} titulo={<>EN SUS FALDAS<br />ESTÁ EL SOCONUSCO</>} sub="Tierra caliente, húmeda y fértil." />
+      <Rotulo t={t} desde={S.altura + 0.1} hasta={S.izapa - 0.1} titulo={<>DE <span style={{ color: '#ffcf70' }}>100 A 650</span><br />METROS</>} sub="La altura donde se da el rambután." />
       <Rotulo t={t} desde={S.izapa + 0.2} hasta={S.huerta - 0.1} titulo={<>IZAPA</>} sub="Zona arqueológica de Tuxtla Chico, con más de 2,000 años de historia." />
       <Rotulo t={t} desde={S.huerta + 0.2} hasta={S.cierre - 0.05} titulo={<>AQUÍ CRECE<br />NUESTRO <span style={{ color: '#ff4a5a' }}>RAMBUTÁN</span></>} sub="Tuxtla Chico, Chiapas." />
 
       <CierreSerie t={t} desde={S.cierre} fondo="radial-gradient(circle at 50% 40%, #4a2a3a, #120a14 75%)" />
-      <Audio src={staticFile('volcan/musica.wav')} />
+      <Audio src={staticFile('serie/voz2.mp3')} />
     </AbsoluteFill>
   );
 };

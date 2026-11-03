@@ -50,7 +50,7 @@ export const CamaraAbre: React.FC<{ pos: THREE.Vector3; mira: THREE.Vector3; fov
 const N_GOTAS = 70;
 const gotaMat = new THREE.MeshPhysicalMaterial({ color: '#ffffff', roughness: 0, metalness: 0.1, transparent: true, opacity: 0.6, emissive: new THREE.Color('#9fb8d8'), emissiveIntensity: 0.35, clearcoat: 1, envMapIntensity: 3, specularIntensity: 1 });
 const gotaGeo = new THREE.SphereGeometry(1, 24, 16);
-const Gotas: React.FC<{ s: number }> = ({ s }) => {
+export const Gotas: React.FC<{ s: number }> = ({ s }) => {
   const malla = useMemo(() => new THREE.InstancedMesh(gotaGeo, gotaMat, N_GOTAS), []);
   const m = new THREE.Matrix4();
   for (let i = 0; i < N_GOTAS; i++) {
@@ -68,7 +68,7 @@ const Gotas: React.FC<{ s: number }> = ({ s }) => {
 };
 
 // corona de agua que se rompe alrededor de la fruta
-const Corona: React.FC<{ s: number }> = ({ s }) => {
+export const Corona: React.FC<{ s: number }> = ({ s }) => {
   if (s <= 0 || s > 1.4) return null;
   const k = Math.min(1, s / 1.4);
   return (
