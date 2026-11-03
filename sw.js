@@ -1,6 +1,6 @@
 // Ixchel: guarda el sitio para que abra sin internet y muestra offline.html si una página no está guardada.
 // Al cambiar archivos del sitio, sube la versión para que los celulares bajen lo nuevo.
-const VERSION = 'ixchel-2026-11-03b';
+const VERSION = 'ixchel-2026-11-03c';
 const BASICOS = [
   './', 'index.html', 'fruta.html', 'pedidos.html', 'agenda.html', 'preguntas.html', 'cotizar.html', 'contacto.html', 'privacidad.html',
   'en/', 'en/index.html', 'en/fruit.html', 'en/orders.html', 'en/schedule.html', 'en/faq.html', 'en/quote.html', 'en/contact.html', 'en/privacy.html',
@@ -23,12 +23,12 @@ self.addEventListener('fetch', (e) => {
   const url = new URL(req.url);
   if (url.origin !== location.origin) return; // WhatsApp, mapas y agenda van directo a internet
 
-  // páginas: primero internet (para ver lo más nuevo), si no hay, la copia guardada, y si no, la pantalla sin conexión
-  if (req.mode === 'navigate') {
+  // páginas, estilos y código: primero internet (para ver lo más nuevo), si no hay, la copia guardada, y si no, la pantalla sin conexión
+  if (req.mode === 'navigate' || /\.(css|js)$/.test(url.pathname)) {
     e.respondWith(
       fetch(req)
         .then((res) => { const copia = res.clone(); caches.open(VERSION).then((c) => c.put(req, copia)); return res; })
-        .catch(() => caches.match(req, { ignoreSearch: true }).then((r) => r || caches.match('offline.html')))
+        .catch(() => caches.match(req, { ignoreSearch: true }).then((r) => r || (req.mode === 'navigate' ? caches.match('offline.html') : undefined)))
     );
     return;
   }
