@@ -14,7 +14,7 @@ BASE = 'https://oscar20001.github.io/rambutan-chiapas/'
 SECCION = {
     'inicio': 'index', 'origen': 'index', 'confianza': 'index', 'mas-frutas': 'index',
     'fruta': 'fruta', 'ficha': 'fruta',
-    'volumen': 'pedidos', 'envio': 'pedidos', 'ruta': 'pedidos', 'precio': 'pedidos',
+    'volumen': 'pedidos', 'envio': 'pedidos', 'ruta': 'pedidos', 'precio': 'pedidos', 'condiciones': 'pedidos',
     'agenda': 'agenda', 'preguntas': 'preguntas', 'cotizar': 'cotizar', 'contacto': 'contacto',
 }
 ORDEN = ['index', 'fruta', 'pedidos', 'agenda', 'preguntas', 'cotizar', 'contacto']
