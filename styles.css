@@ -723,8 +723,8 @@ select.field option { background: var(--red); color: var(--paper); }
 /* ---------- contacto en el pie ---------- */
 
 /* ---------- botón flotante de WhatsApp ----------
-   Círculo chico que no tapa el texto: se esconde al bajar, vuelve al subir o al detenerse.
-   En compu muestra "Cotiza por WhatsApp" la primera vez y al pasar el ratón.
+   Siempre a la vista en la misma esquina, en todas las páginas.
+   En compu muestra "Cotiza por WhatsApp" al abrir la página y al pasar el ratón.
    La X lo guarda en una pestaña en la orilla derecha; la pestaña lo vuelve a abrir. */
 .fabbox { --fab-size: 3.5rem; position: fixed; right: max(1.25rem, env(safe-area-inset-right)); bottom: max(1.25rem, env(safe-area-inset-bottom)); z-index: 30; pointer-events: none; }
 .fab { position: relative; display: flex; align-items: center; height: var(--fab-size); padding: 0; border-radius: 999px; background: var(--ink); color: var(--bg); box-shadow: 0 0 0 3px rgba(19, 54, 33, 0.9), 0 0.75rem 1.75rem rgba(0, 0, 0, 0.35); text-decoration: none; transform: translateY(calc(100% + 2rem)) scale(0.9); opacity: 0; transition: transform var(--t-slow) var(--ease-out), opacity var(--t-std) ease, background-color var(--t-quick) ease; }
@@ -733,7 +733,7 @@ select.field option { background: var(--red); color: var(--paper); }
 .fab__ico::after { content: ""; position: absolute; top: 18%; right: 18%; width: 0.6rem; height: 0.6rem; border-radius: 50%; background: var(--red); box-shadow: 0 0 0 2px var(--ink); }
 .fab__txt { max-width: 0; overflow: hidden; white-space: nowrap; font-family: var(--font-display); font-size: 1.2rem; letter-spacing: 0.04em; line-height: 1; text-transform: uppercase; transition: max-width var(--t-slow) var(--ease-out), padding var(--t-slow) var(--ease-out); }
 .fabbox.is-on .fab { transform: none; opacity: 1; pointer-events: auto; }
-.fabbox.is-on.is-away .fab, .fabbox.is-guardado .fab { transform: translateY(calc(100% + 2rem)) scale(0.9); opacity: 0; pointer-events: none; }
+.fabbox.is-guardado .fab { transform: translateY(calc(100% + 2rem)) scale(0.9); opacity: 0; pointer-events: none; }
 .fabbox.is-open .fab__txt, .fab:focus-visible .fab__txt { max-width: 14rem; padding-right: 1.35rem; }
 .fab:focus-visible { transform: none; opacity: 1; outline: 3px solid var(--ink); outline-offset: 4px; }
 
@@ -741,14 +741,15 @@ select.field option { background: var(--red); color: var(--paper); }
 .fab__hide { position: absolute; top: -0.55rem; left: -0.55rem; display: grid; place-items: center; width: 1.75rem; height: 1.75rem; padding: 0; border: 2px solid var(--ink); border-radius: 50%; background: var(--bg); color: var(--ink); cursor: pointer; opacity: 0; transform: scale(0.6); transition: opacity var(--t-std) ease, transform var(--t-std) var(--ease-pop), background-color var(--t-quick) ease; }
 .fab__hide svg { width: 0.8rem; height: 0.8rem; }
 .fab__hide::before { content: ""; position: absolute; inset: -0.5rem; } /* área de toque más grande */
-.fabbox.is-on:not(.is-away):not(.is-guardado) .fab__hide { opacity: 1; transform: none; pointer-events: auto; }
+.fabbox.is-on:not(.is-guardado) .fab__hide { opacity: 1; transform: none; pointer-events: auto; }
 .fab__hide:focus-visible { outline: 3px solid var(--ink); outline-offset: 2px; }
 
 /* la pestaña para volver a abrirlo */
-.fab__tab { position: fixed; right: 0; bottom: max(5.5rem, calc(env(safe-area-inset-bottom) + 4.5rem)); display: flex; align-items: center; gap: 0.15rem; height: 3rem; padding: 0 0.55rem 0 0.4rem; border: 0; border-radius: 0.9rem 0 0 0.9rem; background: var(--ink); color: var(--bg); box-shadow: 0 0 0 2px rgba(19, 54, 33, 0.9), 0 0.5rem 1.25rem rgba(0, 0, 0, 0.3); cursor: pointer; transform: translateX(110%); transition: transform var(--t-slow) var(--ease-out), padding var(--t-std) var(--ease-out), background-color var(--t-quick) ease; }
-.fab__tab-ico { display: grid; width: 1.6rem; height: 1.6rem; }
+.fab__tab { position: fixed; right: 0; bottom: max(5.5rem, calc(env(safe-area-inset-bottom) + 4.5rem)); display: flex; align-items: center; gap: 0.3rem; min-height: 3.25rem; padding: 0.4rem 0.6rem 0.4rem 0.55rem; border: 2px solid var(--ink); border-right: 0; border-radius: 1rem 0 0 1rem; background: rgba(19, 54, 33, 0.62); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); color: var(--ink); box-shadow: 0 0.4rem 1rem rgba(0, 0, 0, 0.18); cursor: pointer; transform: translateX(110%); transition: transform var(--t-slow) var(--ease-out), padding var(--t-std) var(--ease-out), background-color var(--t-quick) ease; }
+.fab__tab-ico { display: grid; width: 1.35rem; height: 1.35rem; filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.6)); }
 .fab__tab-ico svg { width: 100%; height: 100%; }
-.fab__tab-flecha { width: 0.9rem; height: 0.9rem; }
+.fab__tab-flecha { order: -1; width: 1.6rem; height: 1.6rem; filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.6)); }
+.fab__tab-flecha path { stroke-width: 3; }
 .fabbox.is-guardado .fab__tab { transform: none; pointer-events: auto; }
 .fab__tab:focus-visible { outline: 3px solid var(--ink); outline-offset: 3px; }
 
@@ -756,17 +757,21 @@ select.field option { background: var(--red); color: var(--paper); }
   .fab:hover { background: #fbe896; }
   .fab:hover .fab__txt { max-width: 14rem; padding-right: 1.35rem; }
   .fab__hide:hover { background: var(--red); }
-  .fab__tab:hover { background: #fbe896; padding-right: 0.9rem; }
+  .fab__tab:hover { background: rgba(19, 54, 33, 0.8); padding-left: 0.9rem; }
 }
 @media (max-width: 760px) {
   .fabbox { --fab-size: 3.125rem; right: max(0.875rem, env(safe-area-inset-right)); bottom: max(0.875rem, env(safe-area-inset-bottom)); }
   .fab__txt { display: none; }
-  .fab__tab { height: 2.75rem; bottom: max(5rem, calc(env(safe-area-inset-bottom) + 4rem)); }
+  .fab__tab { min-height: 3rem; bottom: max(5rem, calc(env(safe-area-inset-bottom) + 4rem)); }
 }
 @media (prefers-reduced-motion: no-preference) {
   .fabbox.is-on .fab__ico::before { content: ""; position: absolute; inset: 0; border-radius: 50%; border: 2px solid var(--ink); animation: fab-ring 2.6s var(--ease-out) 1s 3; opacity: 0; }
 }
 @media (prefers-reduced-motion: reduce) { .fab, .fab__txt, .fab__hide, .fab__tab { transition: opacity var(--t-std) ease; } }
+@media (prefers-reduced-motion: no-preference) {
+  .fabbox.is-guardado .fab__tab-flecha { animation: fab-flecha 1.6s var(--ease-in-out) 0.6s 3; }
+}
+@keyframes fab-flecha { 0%, 100% { transform: translateX(0); } 50% { transform: translateX(-5px); } }
 @keyframes fab-ring { from { transform: scale(1); opacity: 0.8; } to { transform: scale(1.7); opacity: 0; } }
 
 /* ---------- impresión: la ficha técnica sola ---------- */

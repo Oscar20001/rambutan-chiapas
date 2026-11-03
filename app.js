@@ -863,8 +863,7 @@ $$('[data-imprimir]').forEach((btn) => btn.addEventListener('click', () => {
   document.fonts?.ready.then(place);
 })();
 
-// ---------- botón flotante de WhatsApp: se esconde arriba, junto a los formularios y sobre el pie ----------
-// y se quita del camino mientras lees hacia abajo; vuelve al subir o al dejar de mover la página.
+// ---------- botón flotante de WhatsApp: siempre a la vista en la misma esquina ----------
 // Con la X se guarda en una pestaña de la orilla y se recuerda; la pestaña lo vuelve a abrir.
 (() => {
   const box = $('[data-fab]');
@@ -877,37 +876,16 @@ $$('[data-imprimir]').forEach((btn) => btn.addEventListener('click', () => {
     escribir(v);
     if (enfocar) (v ? $('[data-fab-abrir]', box) : $('.fab', box))?.focus({ preventScroll: true });
   };
+  const saludar = () => {
+    if (box.classList.contains('is-guardado') || !matchMedia('(min-width: 761px)').matches) return;
+    box.classList.add('is-open');
+    setTimeout(() => box.classList.remove('is-open'), 3200);
+  };
   guardar(leer(), false);
   $('[data-fab-guardar]', box).addEventListener('click', () => guardar(true, true));
-  $('[data-fab-abrir]', box).addEventListener('click', () => { guardar(false, true); box.classList.remove('is-away'); pintar(); });
-
-  const formas = $$('#envio .slip, #cotizar, #agenda, #contacto, .foot');
-  const visibles = new Set();
-  let ultimoY = window.scrollY, quieto = 0, saludado = false;
-  const pintar = () => {
-    const on = window.scrollY > window.innerHeight * 0.6 && !visibles.size;
-    box.classList.toggle('is-on', on);
-    // la primera vez que aparece en compu, enseña la etiqueta unos segundos
-    if (on && !saludado && !box.classList.contains('is-guardado') && matchMedia('(min-width: 761px)').matches) {
-      saludado = true;
-      box.classList.add('is-open');
-      setTimeout(() => box.classList.remove('is-open'), 3200);
-    }
-  };
-  const alMover = () => {
-    const y = window.scrollY;
-    if (Math.abs(y - ultimoY) > 6) box.classList.toggle('is-away', y > ultimoY);
-    ultimoY = y;
-    clearTimeout(quieto);
-    quieto = setTimeout(() => box.classList.remove('is-away'), 900);
-    pintar();
-  };
-  if ('IntersectionObserver' in window) {
-    const io = new IntersectionObserver((es) => { es.forEach((x) => (x.isIntersecting ? visibles.add(x.target) : visibles.delete(x.target))); pintar(); }, { threshold: 0.15 });
-    formas.forEach((f) => io.observe(f));
-  }
-  window.addEventListener('scroll', alMover, { passive: true });
-  pintar();
+  $('[data-fab-abrir]', box).addEventListener('click', () => { guardar(false, true); saludar(); });
+  // aparece en cuanto carga la página y se queda ahí
+  requestAnimationFrame(() => { box.classList.add('is-on'); setTimeout(saludar, 900); });
 })();
 
 // ---------- menú desplegable de contacto ----------
