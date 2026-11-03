@@ -195,6 +195,8 @@ PARES = [
     ('href="img/icono-', 'href="../img/icono-'),
     ('aria-label="Escribir por WhatsApp">', 'aria-label="Message us on WhatsApp">'),
     ('<span class="fab__txt">Cotiza por WhatsApp</span>', '<span class="fab__txt">Quote on WhatsApp</span>'),
+    ('aria-label="Guardar el botón de WhatsApp"', 'aria-label="Hide the WhatsApp button"'),
+    ('aria-label="Mostrar el botón de WhatsApp"', 'aria-label="Show the WhatsApp button"'),
     ('href="#contacto" aria-controls="menu-contacto" aria-haspopup="true">Contacto <svg', 'href="#contacto" aria-controls="menu-contacto" aria-haspopup="true">Contact <svg'),
     ('<p class="drop__title">Contacto</p>', '<p class="drop__title">Contact</p>'),
     ('aria-label="Cerrar menú de contacto"', 'aria-label="Close contact menu"'),

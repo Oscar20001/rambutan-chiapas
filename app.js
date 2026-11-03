@@ -864,29 +864,42 @@ $$('[data-imprimir]').forEach((btn) => btn.addEventListener('click', () => {
 })();
 
 // ---------- botón flotante de WhatsApp: se esconde arriba, junto a los formularios y sobre el pie ----------
-// y se quita del camino mientras lees hacia abajo; vuelve al subir o al dejar de mover la página
+// y se quita del camino mientras lees hacia abajo; vuelve al subir o al dejar de mover la página.
+// Con la X se guarda en una pestaña de la orilla y se recuerda; la pestaña lo vuelve a abrir.
 (() => {
-  const fab = $('.fab');
-  if (!fab) return;
+  const box = $('[data-fab]');
+  if (!box) return;
+  const CLAVE = 'ixchel-wa-guardado';
+  const leer = () => { try { return localStorage.getItem(CLAVE) === '1'; } catch (e) { return false; } };
+  const escribir = (v) => { try { v ? localStorage.setItem(CLAVE, '1') : localStorage.removeItem(CLAVE); } catch (e) { /* sin almacenamiento */ } };
+  const guardar = (v, enfocar) => {
+    box.classList.toggle('is-guardado', v);
+    escribir(v);
+    if (enfocar) (v ? $('[data-fab-abrir]', box) : $('.fab', box))?.focus({ preventScroll: true });
+  };
+  guardar(leer(), false);
+  $('[data-fab-guardar]', box).addEventListener('click', () => guardar(true, true));
+  $('[data-fab-abrir]', box).addEventListener('click', () => { guardar(false, true); box.classList.remove('is-away'); pintar(); });
+
   const formas = $$('#envio .slip, #cotizar, #agenda, #contacto, .foot');
   const visibles = new Set();
   let ultimoY = window.scrollY, quieto = 0, saludado = false;
   const pintar = () => {
     const on = window.scrollY > window.innerHeight * 0.6 && !visibles.size;
-    fab.classList.toggle('is-on', on);
+    box.classList.toggle('is-on', on);
     // la primera vez que aparece en compu, enseña la etiqueta unos segundos
-    if (on && !saludado && matchMedia('(min-width: 761px)').matches) {
+    if (on && !saludado && !box.classList.contains('is-guardado') && matchMedia('(min-width: 761px)').matches) {
       saludado = true;
-      fab.classList.add('is-open');
-      setTimeout(() => fab.classList.remove('is-open'), 3200);
+      box.classList.add('is-open');
+      setTimeout(() => box.classList.remove('is-open'), 3200);
     }
   };
   const alMover = () => {
     const y = window.scrollY;
-    if (Math.abs(y - ultimoY) > 6) fab.classList.toggle('is-away', y > ultimoY);
+    if (Math.abs(y - ultimoY) > 6) box.classList.toggle('is-away', y > ultimoY);
     ultimoY = y;
     clearTimeout(quieto);
-    quieto = setTimeout(() => fab.classList.remove('is-away'), 900);
+    quieto = setTimeout(() => box.classList.remove('is-away'), 900);
     pintar();
   };
   if ('IntersectionObserver' in window) {
