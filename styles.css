@@ -722,17 +722,31 @@ select.field option { background: var(--red); color: var(--paper); }
 
 /* ---------- contacto en el pie ---------- */
 
-/* ---------- botón flotante de WhatsApp ---------- */
-.fab { --fab-ink: var(--red); position: fixed; right: max(1rem, env(safe-area-inset-right)); bottom: max(1rem, env(safe-area-inset-bottom)); z-index: 30; display: grid; place-items: center; width: 3.75rem; height: 3.75rem; padding: 0; background: var(--ink); color: var(--bg); box-shadow: 0 0.6rem 1.6rem rgba(0, 0, 0, 0.35); text-decoration: none; transform: translateY(160%); transition: transform 420ms var(--ease-out), background-color var(--t-hover) ease; }
-.fab svg { width: 2.1rem; height: 2.1rem; }
-.fab span { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
-.fab.is-on { transform: none; }
-.fab:focus-visible { transform: none; outline-color: var(--ink); }
-@media (hover: hover) and (pointer: fine) { .fab:hover { background: #fbe896; } }
-@media (prefers-reduced-motion: no-preference) {
-  .fab.is-on svg { animation: nudge 4s ease-in-out 1.5s infinite; }
+/* ---------- botón flotante de WhatsApp ----------
+   Círculo chico que no tapa el texto: se esconde al bajar, vuelve al subir o al detenerse.
+   En compu muestra "Cotiza por WhatsApp" la primera vez y al pasar el ratón. */
+.fab { --fab-size: 3.5rem; position: fixed; right: max(1.25rem, env(safe-area-inset-right)); bottom: max(1.25rem, env(safe-area-inset-bottom)); z-index: 30; display: flex; align-items: center; height: var(--fab-size); padding: 0; border-radius: 999px; background: var(--ink); color: var(--bg); box-shadow: 0 0 0 3px rgba(19, 54, 33, 0.9), 0 0.75rem 1.75rem rgba(0, 0, 0, 0.35); text-decoration: none; transform: translateY(calc(100% + 2rem)) scale(0.9); opacity: 0; transition: transform var(--t-slow) var(--ease-out), opacity var(--t-std) ease, background-color var(--t-quick) ease; }
+.fab__ico { position: relative; flex: none; display: grid; place-items: center; width: var(--fab-size); height: var(--fab-size); border-radius: 50%; }
+.fab__ico svg { width: 56%; height: 56%; }
+.fab__ico::after { content: ""; position: absolute; top: 18%; right: 18%; width: 0.6rem; height: 0.6rem; border-radius: 50%; background: var(--red); box-shadow: 0 0 0 2px var(--ink); }
+.fab__txt { max-width: 0; overflow: hidden; white-space: nowrap; font-family: var(--font-display); font-size: 1.2rem; letter-spacing: 0.04em; line-height: 1; text-transform: uppercase; transition: max-width var(--t-slow) var(--ease-out), padding var(--t-slow) var(--ease-out); }
+.fab.is-on { transform: none; opacity: 1; }
+.fab.is-on.is-away { transform: translateY(calc(100% + 2rem)) scale(0.9); opacity: 0; pointer-events: none; }
+.fab.is-open .fab__txt, .fab:focus-visible .fab__txt { max-width: 14rem; padding-right: 1.35rem; }
+.fab:focus-visible { transform: none; opacity: 1; outline: 3px solid var(--ink); outline-offset: 4px; }
+@media (hover: hover) and (pointer: fine) {
+  .fab:hover { background: #fbe896; }
+  .fab:hover .fab__txt { max-width: 14rem; padding-right: 1.35rem; }
 }
-@keyframes nudge { 0%, 86%, 100% { transform: rotate(0); } 90% { transform: rotate(-12deg); } 94% { transform: rotate(10deg); } }
+@media (max-width: 760px) {
+  .fab { --fab-size: 3.125rem; right: max(0.875rem, env(safe-area-inset-right)); bottom: max(0.875rem, env(safe-area-inset-bottom)); }
+  .fab__txt { display: none; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .fab.is-on .fab__ico::before { content: ""; position: absolute; inset: 0; border-radius: 50%; border: 2px solid var(--ink); animation: fab-ring 2.6s var(--ease-out) 1s 3; opacity: 0; }
+}
+@media (prefers-reduced-motion: reduce) { .fab, .fab__txt { transition: opacity var(--t-std) ease; } }
+@keyframes fab-ring { from { transform: scale(1); opacity: 0.8; } to { transform: scale(1.7); opacity: 0; } }
 
 /* ---------- impresión: la ficha técnica sola ---------- */
 @media print {

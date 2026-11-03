@@ -864,18 +864,36 @@ $$('[data-imprimir]').forEach((btn) => btn.addEventListener('click', () => {
 })();
 
 // ---------- botón flotante de WhatsApp: se esconde arriba, junto a los formularios y sobre el pie ----------
+// y se quita del camino mientras lees hacia abajo; vuelve al subir o al dejar de mover la página
 (() => {
   const fab = $('.fab');
   if (!fab) return;
-  // se quita del camino donde ya hay un formulario a la vista
   const formas = $$('#envio .slip, #cotizar, #agenda, #contacto, .foot');
   const visibles = new Set();
-  const pintar = () => fab.classList.toggle('is-on', window.scrollY > window.innerHeight * 0.6 && !visibles.size);
+  let ultimoY = window.scrollY, quieto = 0, saludado = false;
+  const pintar = () => {
+    const on = window.scrollY > window.innerHeight * 0.6 && !visibles.size;
+    fab.classList.toggle('is-on', on);
+    // la primera vez que aparece en compu, enseña la etiqueta unos segundos
+    if (on && !saludado && matchMedia('(min-width: 761px)').matches) {
+      saludado = true;
+      fab.classList.add('is-open');
+      setTimeout(() => fab.classList.remove('is-open'), 3200);
+    }
+  };
+  const alMover = () => {
+    const y = window.scrollY;
+    if (Math.abs(y - ultimoY) > 6) fab.classList.toggle('is-away', y > ultimoY);
+    ultimoY = y;
+    clearTimeout(quieto);
+    quieto = setTimeout(() => fab.classList.remove('is-away'), 900);
+    pintar();
+  };
   if ('IntersectionObserver' in window) {
     const io = new IntersectionObserver((es) => { es.forEach((x) => (x.isIntersecting ? visibles.add(x.target) : visibles.delete(x.target))); pintar(); }, { threshold: 0.15 });
     formas.forEach((f) => io.observe(f));
   }
-  window.addEventListener('scroll', pintar, { passive: true });
+  window.addEventListener('scroll', alMover, { passive: true });
   pintar();
 })();
 
