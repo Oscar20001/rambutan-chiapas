@@ -290,6 +290,29 @@ h1, h2, h3 { font-family: var(--font-display); font-weight: 400; text-transform:
 }
 
 /* ---------- preguntas ---------- */
+/* condiciones de venta: la etiqueta de cuidado va en papel, las cláusulas numeradas al lado */
+.terms__intro { display: grid; gap: 1.25rem; max-width: 46rem; margin-bottom: clamp(2rem, 4vw, 3.5rem); }
+.terms__lead { font-size: var(--step-lead); line-height: 1.3; }
+.terms__grid { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: var(--gutter); align-items: start; }
+.care { grid-column: 1 / span 5; position: sticky; top: 5.5rem; background: var(--paper); color: var(--paper-ink); padding: clamp(1.5rem, 3vw, 2.25rem) clamp(1.25rem, 2.6vw, 2rem); border-top: 10px solid var(--red); }
+.care__title { font-size: var(--step-lead); line-height: 1.05; }
+.care__sub { margin-top: 0.6rem; }
+.care h4 { margin-top: 1.6rem; font-size: var(--step-body); font-weight: 600; }
+.care__list { margin-top: 0.5rem; display: grid; gap: 0.45rem; padding-left: 1.15rem; list-style: square; }
+.care__list li::marker { color: var(--red); }
+.care__note { margin-top: 1.25rem; padding-top: 1rem; border-top: 1px solid rgba(19, 54, 33, 0.3); }
+.care a { color: inherit; }
+.terms__list { grid-column: 7 / -1; display: grid; gap: 1.15rem; counter-reset: cl; list-style: none; padding: 0; }
+.terms__list li { counter-increment: cl; position: relative; padding-left: 3.25rem; line-height: 1.5; }
+.terms__list li::before { content: counter(cl, decimal-leading-zero); position: absolute; left: 0; top: 0.05em; font-family: var(--font-display); font-size: 1.6rem; line-height: 1; color: var(--ink); opacity: 0.75; font-variant-numeric: tabular-nums; }
+.terms__list b { font-weight: 600; }
+.terms__list a, .terms__foot a { color: inherit; text-underline-offset: 0.2em; }
+.terms__foot { margin-top: clamp(2rem, 4vw, 3rem); max-width: 46rem; opacity: 0.9; }
+@media (max-width: 900px) {
+  .care, .terms__list { grid-column: 1 / -1; }
+  .care { position: static; }
+  .terms__list { margin-top: 1.5rem; }
+}
 .faq { background: var(--surface); padding-bottom: calc(var(--section) / 2 + 2rem); }
 .faq__grid { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: var(--gutter); align-items: start; }
 .faq__text { grid-column: 1 / span 5; display: grid; gap: 2rem; }
@@ -699,17 +722,31 @@ select.field option { background: var(--red); color: var(--paper); }
 
 /* ---------- contacto en el pie ---------- */
 
-/* ---------- botón flotante de WhatsApp ---------- */
-.fab { --fab-ink: var(--red); position: fixed; right: max(1rem, env(safe-area-inset-right)); bottom: max(1rem, env(safe-area-inset-bottom)); z-index: 30; display: grid; place-items: center; width: 3.75rem; height: 3.75rem; padding: 0; background: var(--ink); color: var(--bg); box-shadow: 0 0.6rem 1.6rem rgba(0, 0, 0, 0.35); text-decoration: none; transform: translateY(160%); transition: transform 420ms var(--ease-out), background-color var(--t-hover) ease; }
-.fab svg { width: 2.1rem; height: 2.1rem; }
-.fab span { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
-.fab.is-on { transform: none; }
-.fab:focus-visible { transform: none; outline-color: var(--ink); }
-@media (hover: hover) and (pointer: fine) { .fab:hover { background: #fbe896; } }
-@media (prefers-reduced-motion: no-preference) {
-  .fab.is-on svg { animation: nudge 4s ease-in-out 1.5s infinite; }
+/* ---------- botón flotante de WhatsApp ----------
+   Círculo chico que no tapa el texto: se esconde al bajar, vuelve al subir o al detenerse.
+   En compu muestra "Cotiza por WhatsApp" la primera vez y al pasar el ratón. */
+.fab { --fab-size: 3.5rem; position: fixed; right: max(1.25rem, env(safe-area-inset-right)); bottom: max(1.25rem, env(safe-area-inset-bottom)); z-index: 30; display: flex; align-items: center; height: var(--fab-size); padding: 0; border-radius: 999px; background: var(--ink); color: var(--bg); box-shadow: 0 0 0 3px rgba(19, 54, 33, 0.9), 0 0.75rem 1.75rem rgba(0, 0, 0, 0.35); text-decoration: none; transform: translateY(calc(100% + 2rem)) scale(0.9); opacity: 0; transition: transform var(--t-slow) var(--ease-out), opacity var(--t-std) ease, background-color var(--t-quick) ease; }
+.fab__ico { position: relative; flex: none; display: grid; place-items: center; width: var(--fab-size); height: var(--fab-size); border-radius: 50%; }
+.fab__ico svg { width: 56%; height: 56%; }
+.fab__ico::after { content: ""; position: absolute; top: 18%; right: 18%; width: 0.6rem; height: 0.6rem; border-radius: 50%; background: var(--red); box-shadow: 0 0 0 2px var(--ink); }
+.fab__txt { max-width: 0; overflow: hidden; white-space: nowrap; font-family: var(--font-display); font-size: 1.2rem; letter-spacing: 0.04em; line-height: 1; text-transform: uppercase; transition: max-width var(--t-slow) var(--ease-out), padding var(--t-slow) var(--ease-out); }
+.fab.is-on { transform: none; opacity: 1; }
+.fab.is-on.is-away { transform: translateY(calc(100% + 2rem)) scale(0.9); opacity: 0; pointer-events: none; }
+.fab.is-open .fab__txt, .fab:focus-visible .fab__txt { max-width: 14rem; padding-right: 1.35rem; }
+.fab:focus-visible { transform: none; opacity: 1; outline: 3px solid var(--ink); outline-offset: 4px; }
+@media (hover: hover) and (pointer: fine) {
+  .fab:hover { background: #fbe896; }
+  .fab:hover .fab__txt { max-width: 14rem; padding-right: 1.35rem; }
 }
-@keyframes nudge { 0%, 86%, 100% { transform: rotate(0); } 90% { transform: rotate(-12deg); } 94% { transform: rotate(10deg); } }
+@media (max-width: 760px) {
+  .fab { --fab-size: 3.125rem; right: max(0.875rem, env(safe-area-inset-right)); bottom: max(0.875rem, env(safe-area-inset-bottom)); }
+  .fab__txt { display: none; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .fab.is-on .fab__ico::before { content: ""; position: absolute; inset: 0; border-radius: 50%; border: 2px solid var(--ink); animation: fab-ring 2.6s var(--ease-out) 1s 3; opacity: 0; }
+}
+@media (prefers-reduced-motion: reduce) { .fab, .fab__txt { transition: opacity var(--t-std) ease; } }
+@keyframes fab-ring { from { transform: scale(1); opacity: 0.8; } to { transform: scale(1.7); opacity: 0; } }
 
 /* ---------- impresión: la ficha técnica sola ---------- */
 @media print {

@@ -73,6 +73,7 @@ const TEXTOS = {
       fruta: (f) => `Hola, me interesa el ${f.toLowerCase()}. ¿Qué disponibilidad y precio tienen?`,
       precio: 'Hola, ¿me pueden pasar el precio por kilo de esta semana para un pedido mayorista de rambután?',
       faq: 'Hola, tengo una pregunta sobre su rambután:',
+      condiciones: 'Hola, tengo una duda sobre sus condiciones de venta:',
       ficha: 'Hola, revisé su ficha técnica y quiero cotizar rambután. ¿Qué calibres tienen esta semana?',
       flotante: 'Hola, vi su sitio de rambután y quiero información.',
     },
@@ -147,6 +148,7 @@ const TEXTOS = {
       fruta: (f) => `Hello, I am interested in ${f.toLowerCase()}. What availability and price do you have?`,
       precio: 'Hello, could you send me this week\'s price per kilo for a wholesale rambutan order?',
       faq: 'Hello, I have a question about your rambutan:',
+      condiciones: 'Hello, I have a question about your terms of sale:',
       ficha: 'Hello, I read your spec sheet and would like a quote. Which sizes do you have this week?',
       flotante: 'Hello, I saw your rambutan website and would like more information.',
     },
@@ -862,18 +864,36 @@ $$('[data-imprimir]').forEach((btn) => btn.addEventListener('click', () => {
 })();
 
 // ---------- botón flotante de WhatsApp: se esconde arriba, junto a los formularios y sobre el pie ----------
+// y se quita del camino mientras lees hacia abajo; vuelve al subir o al dejar de mover la página
 (() => {
   const fab = $('.fab');
   if (!fab) return;
-  // se quita del camino donde ya hay un formulario a la vista
   const formas = $$('#envio .slip, #cotizar, #agenda, #contacto, .foot');
   const visibles = new Set();
-  const pintar = () => fab.classList.toggle('is-on', window.scrollY > window.innerHeight * 0.6 && !visibles.size);
+  let ultimoY = window.scrollY, quieto = 0, saludado = false;
+  const pintar = () => {
+    const on = window.scrollY > window.innerHeight * 0.6 && !visibles.size;
+    fab.classList.toggle('is-on', on);
+    // la primera vez que aparece en compu, enseña la etiqueta unos segundos
+    if (on && !saludado && matchMedia('(min-width: 761px)').matches) {
+      saludado = true;
+      fab.classList.add('is-open');
+      setTimeout(() => fab.classList.remove('is-open'), 3200);
+    }
+  };
+  const alMover = () => {
+    const y = window.scrollY;
+    if (Math.abs(y - ultimoY) > 6) fab.classList.toggle('is-away', y > ultimoY);
+    ultimoY = y;
+    clearTimeout(quieto);
+    quieto = setTimeout(() => fab.classList.remove('is-away'), 900);
+    pintar();
+  };
   if ('IntersectionObserver' in window) {
     const io = new IntersectionObserver((es) => { es.forEach((x) => (x.isIntersecting ? visibles.add(x.target) : visibles.delete(x.target))); pintar(); }, { threshold: 0.15 });
     formas.forEach((f) => io.observe(f));
   }
-  window.addEventListener('scroll', pintar, { passive: true });
+  window.addEventListener('scroll', alMover, { passive: true });
   pintar();
 })();
 
