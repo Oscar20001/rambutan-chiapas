@@ -1,8 +1,11 @@
 // Ixchel: medición de visitas. Cuenta cuántas personas entran, de dónde vienen, qué páginas ven
 // y qué botones tocan (WhatsApp, llamar, correo, agenda, cotizar).
 //
-// Para encenderla solo pega aquí tus códigos (ver README, sección "Estadísticas de visitas").
-// Mientras estén vacíos, el sitio no carga nada de afuera y no mide nada.
+// Metricool ya está encendido. Para Clarity y Google Analytics pega aquí tus códigos
+// (ver README, sección "Estadísticas de visitas"). Un código vacío no carga nada.
+
+// Metricool: visitas de la web dentro del mismo panel de Metricool donde ves las redes. Ya está puesto.
+const METRICOOL_HASH = '73a69efa0c08b2a05b29631feab54a7a';
 
 // Microsoft Clarity: mapas de calor y grabaciones de cómo se mueve la gente en la página. Ejemplo: 'abc123xyz9'
 const CLARITY_ID = '';
@@ -18,9 +21,12 @@ const GA_ID = '';
 
   const clarity = /^[a-z0-9]{6,20}$/i.test(CLARITY_ID);
   const ga = /^G-[A-Z0-9]{4,16}$/i.test(GA_ID);
-  if (!clarity && !ga) return;
+  const metricool = /^[a-f0-9]{32}$/.test(METRICOOL_HASH);
+  if (!clarity && !ga && !metricool) return;
 
-  const cargar = (src) => { const s = document.createElement('script'); s.async = true; s.src = src; document.head.appendChild(s); };
+  const cargar = (src, listo) => { const s = document.createElement('script'); s.async = true; s.src = src; if (listo) s.onload = listo; document.head.appendChild(s); };
+
+  if (metricool) cargar('https://tracker.metricool.com/resources/be.js', () => { try { window.beTracker.t({ hash: METRICOOL_HASH }); } catch (e) { /* sin Metricool */ } });
 
   if (clarity) {
     window.clarity = window.clarity || function () { (window.clarity.q = window.clarity.q || []).push(arguments); };

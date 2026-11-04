@@ -61,8 +61,9 @@ logo animado y el teléfono. Cuando cambies archivos del sitio, sube `VERSION` e
 
 ## Estadísticas de visitas
 
-El archivo `medicion.js` mide las visitas con dos herramientas gratuitas. Mientras sus códigos estén vacíos no mide nada.
+El archivo `medicion.js` mide las visitas. Una herramienta vacía no se carga.
 
+- **Metricool** (ya encendido con `METRICOOL_HASH`): visitas de la web en el mismo panel de las redes, en Analítica → Web.
 - **Microsoft Clarity** (https://clarity.microsoft.com): mapas de calor (dónde dan clic y hasta dónde bajan) y grabaciones de cómo usa la gente cada página. Pega el código del proyecto en `CLARITY_ID`.
 - **Google Analytics 4** (https://analytics.google.com): cuántas personas entran, de qué ciudad, desde qué red social y qué páginas ven. Pega el "ID de medición" (empieza con `G-`) en `GA_ID`.
 
