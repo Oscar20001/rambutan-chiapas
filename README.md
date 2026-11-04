@@ -59,6 +59,15 @@ logo animado y el teléfono. Cuando cambies archivos del sitio, sube `VERSION` e
    el fondo del inicio (`.hero__art`), el cuadro de "La fruta" (`.plate__pic`) y las dos imágenes de
    preguntas (`.faq__tall`, `.faq__square`).
 
+## Estadísticas de visitas
+
+El archivo `medicion.js` mide las visitas con dos herramientas gratuitas. Mientras sus códigos estén vacíos no mide nada.
+
+- **Microsoft Clarity** (https://clarity.microsoft.com): mapas de calor (dónde dan clic y hasta dónde bajan) y grabaciones de cómo usa la gente cada página. Pega el código del proyecto en `CLARITY_ID`.
+- **Google Analytics 4** (https://analytics.google.com): cuántas personas entran, de qué ciudad, desde qué red social y qué páginas ven. Pega el "ID de medición" (empieza con `G-`) en `GA_ID`.
+
+Eventos que se cuentan: `clic_whatsapp` (con el botón que tocaron), `clic_llamar`, `clic_correo`, `clic_mapa`, `clic_red_social`, `agenda_enviada` y `bajo_pagina` (25, 50, 75 y 100 %). No se mide nada al abrir el sitio en la propia computadora (localhost).
+
 ## Publicación
 
 El sitio se publica con GitHub Pages desde la rama `main`, carpeta `/ (root)`, en
