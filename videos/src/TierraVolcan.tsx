@@ -46,7 +46,7 @@ const alturaSuelo = (x: number, z: number) => {
   const hacia = Math.max(0, 1 - Math.hypot(x - T.x, z - T.z) / 24); // sube hacia el volcán
   return 0.6 * hacia * hacia + 0.05 * Math.sin(x * 1.3 + Math.sin(z * 0.7)) * Math.cos(z * 1.1 - x * 0.4) + 0.025 * Math.sin(x * 3.1 + z * 2.3);
 };
-const sueloGeo = (() => {
+export const sueloGeo = (() => {
   const g = new THREE.PlaneGeometry(70, 70, 260, 260);
   g.rotateX(-Math.PI / 2);
   g.translate(0, 0, -10);
@@ -71,7 +71,7 @@ const sueloGeo = (() => {
 })();
 
 // copa de la selva vista desde el aire: textura pintada con miles de copas y su sombra, con parcelas y claros
-const selvaTex = (() => {
+export const selvaTex = (() => {
   const c = document.createElement('canvas');
   c.width = c.height = 2048;
   const x = c.getContext('2d')!;
@@ -113,7 +113,7 @@ const selvaTex = (() => {
 })();
 
 // el Tacaná con colores más reales: selva espesa abajo, pastizal de altura, roca y cima gris, con manchas que rompen las cañadas
-const volcanReal = (() => {
+export const volcanReal = (() => {
   const g = volcanGeo.clone();
   const pos = g.attributes.position;
   // suavizar las cañadas (3 pasadas de promedio con los vecinos de la malla 221 × 221)
@@ -148,7 +148,7 @@ const volcanReal = (() => {
   return g;
 })();
 // capa de roca y pinar en lo alto (color con transparencia por vértice, encima de la selva)
-const rocaGeo = (() => {
+export const rocaGeo = (() => {
   const g = new THREE.BufferGeometry();
   g.setAttribute('position', volcanReal.attributes.position);
   g.setAttribute('normal', volcanReal.attributes.normal);
@@ -172,7 +172,7 @@ const rocaGeo = (() => {
   return g;
 })();
 
-const volcanTex = (() => {
+export const volcanTex = (() => {
   const t = selvaTex.clone();
   t.repeat.set(7, 7);
   t.needsUpdate = true;

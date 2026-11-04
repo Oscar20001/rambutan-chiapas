@@ -19,6 +19,8 @@ import { Monterrey } from './Monterrey';
 import monterrey from './guiones/monterrey.json';
 import { Acertijo } from './Acertijo';
 import acertijo from './guiones/acertijo-arbol7.json';
+import { Tacana } from './Tacana';
+import tacana from './guiones/tacana.json';
 
 const FPS = 30;
 const COLA = 1.6; // segundos que se queda la tarjeta final después de la última línea
@@ -102,6 +104,9 @@ export const Root: React.FC = () => (
     <Composition id="MonterreyV" component={Monterrey} {...vertical} calculateMetadata={tiemposDe(monterrey, 5)} />
     <Composition id="MonterreyC" component={Monterrey} {...vertical} width={1080} height={1080} calculateMetadata={tiemposDe(monterrey, 5)} />
     <Composition id="MonterreyH" component={Monterrey} {...vertical} width={1920} height={1080} calculateMetadata={tiemposDe(monterrey, 5)} />
+    <Composition id="TacanaV" component={Tacana} {...vertical} calculateMetadata={tiemposDe(tacana, 5)} />
+    <Composition id="TacanaC" component={Tacana} {...vertical} width={1080} height={1080} calculateMetadata={tiemposDe(tacana, 5)} />
+    <Composition id="TacanaH" component={Tacana} {...vertical} width={1920} height={1080} calculateMetadata={tiemposDe(tacana, 5)} />
     <Composition id="Viaje" component={Viaje} fps={60} width={1080} height={1920} durationInFrames={DURACION_VIAJE * 60} />
   </>
 );
