@@ -15,6 +15,10 @@ import comoSeCome from './guiones/como-se-come.json';
 import compradores from './guiones/compradores.json';
 import cacao from './guiones/cacao.json';
 import { Cacao } from './Cacao';
+import { Monterrey } from './Monterrey';
+import monterrey from './guiones/monterrey.json';
+import { Acertijo } from './Acertijo';
+import acertijo from './guiones/acertijo-arbol7.json';
 
 const FPS = 30;
 const COLA = 1.6; // segundos que se queda la tarjeta final después de la última línea
@@ -22,10 +26,10 @@ const COLA = 1.6; // segundos que se queda la tarjeta final después de la últi
 // La duración del video y el momento de cada escena salen de la voz
 // (tiempos.json, que escribe `npm run voz`): si cambias el guion, todo se acomoda solo.
 const tiemposDe =
-  (guion: { id: string }): CalculateMetadataFunction<Tiempos> =>
+  (guion: { id: string }, cola = COLA): CalculateMetadataFunction<Tiempos> =>
   async () => {
     const { inicios, fin, palabras = [] } = await fetch(staticFile(`voz/${guion.id}/tiempos.json`)).then((r) => r.json());
-    return { durationInFrames: Math.ceil((fin + COLA) * FPS), props: { voz: guion.id, inicios, palabras } };
+    return { durationInFrames: Math.ceil((fin + cola) * FPS), props: { voz: guion.id, inicios, palabras } };
   };
 
 const vertical = { fps: FPS, width: 1080, height: 1920, durationInFrames: 600, defaultProps: { voz: '', inicios: [], palabras: [] } };
@@ -93,6 +97,11 @@ export const Root: React.FC = () => (
       const d = await fetch(staticFile('soconusco/cacao-musica.json')).then((r) => r.json());
       return { props: { voz: '', inicios: d.inicios, palabras: d.palabras, musica: 'soconusco/cacao-musica.wav' } };
     }} />
+    <Composition id="AcertijoV" component={Acertijo} {...vertical} calculateMetadata={tiemposDe(acertijo)} />
+    <Composition id="AcertijoH" component={Acertijo} {...vertical} width={1920} height={1080} calculateMetadata={tiemposDe(acertijo)} />
+    <Composition id="MonterreyV" component={Monterrey} {...vertical} calculateMetadata={tiemposDe(monterrey, 5)} />
+    <Composition id="MonterreyC" component={Monterrey} {...vertical} width={1080} height={1080} calculateMetadata={tiemposDe(monterrey, 5)} />
+    <Composition id="MonterreyH" component={Monterrey} {...vertical} width={1920} height={1080} calculateMetadata={tiemposDe(monterrey, 5)} />
     <Composition id="Viaje" component={Viaje} fps={60} width={1080} height={1920} durationInFrames={DURACION_VIAJE * 60} />
   </>
 );
