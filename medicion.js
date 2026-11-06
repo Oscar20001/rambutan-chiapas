@@ -11,7 +11,7 @@ const METRICOOL_HASH = '73a69efa0c08b2a05b29631feab54a7a';
 const CLARITY_ID = 'z9m7y76m8q';
 
 // Google Analytics 4: número de visitas, ciudades, de qué red social llegan y qué páginas ven. Ejemplo: 'G-AB12CD34EF'
-const GA_ID = '';
+const GA_ID = 'G-JLHVD9CCSC';
 
 // ---------- de aquí para abajo no hace falta cambiar nada ----------
 
