@@ -8,7 +8,7 @@
 const METRICOOL_HASH = '73a69efa0c08b2a05b29631feab54a7a';
 
 // Microsoft Clarity: mapas de calor y grabaciones de cómo se mueve la gente en la página. Ejemplo: 'abc123xyz9'
-const CLARITY_ID = '';
+const CLARITY_ID = 'z9m7y76m8q';
 
 // Google Analytics 4: número de visitas, ciudades, de qué red social llegan y qué páginas ven. Ejemplo: 'G-AB12CD34EF'
 const GA_ID = '';
