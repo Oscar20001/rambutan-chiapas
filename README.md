@@ -47,7 +47,7 @@ logo animado y el teléfono. Cuando cambies archivos del sitio, sube `VERSION` e
    - Pedido mínimo de 1 tonelada y caja de 10 kg (también en `KG_POR_CAJA` de `app.js`).
    - Rambután amarillo y la separación por calibres (pestañas de "La fruta").
    - Ficha técnica: temperatura, humedad, vida de anaquel y cajas por tráiler.
-   - Respuestas de preguntas frecuentes: muestra por paquetería, forma de pago, exportación.
+   - Respuestas de preguntas frecuentes: forma de pago, exportación (la muestra ya está confirmada: se prueba en la huerta, no se envía).
    - La firma "La familia productora".
    - Distancias por carretera en `CIUDADES` (`app.js`): son aproximadas, ajústalas con tu transportista.
    - Los rangos de "Pedidos por volumen" (1–3 t, 4–10 t, 11–22 t) y las capacidades de cada vehículo.
