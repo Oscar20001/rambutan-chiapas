@@ -20,6 +20,7 @@ import monterrey from './guiones/monterrey.json';
 import { Acertijo } from './Acertijo';
 import acertijo from './guiones/acertijo-arbol7.json';
 import { Tacana } from './Tacana';
+import { Vitrina, DURA_VITRINA } from './Modelos';
 import tacana from './guiones/tacana.json';
 
 const FPS = 30;
@@ -107,6 +108,7 @@ export const Root: React.FC = () => (
     <Composition id="TacanaV" component={Tacana} {...vertical} calculateMetadata={tiemposDe(tacana, 5)} />
     <Composition id="TacanaC" component={Tacana} {...vertical} width={1080} height={1080} calculateMetadata={tiemposDe(tacana, 5)} />
     <Composition id="TacanaH" component={Tacana} {...vertical} width={1920} height={1080} calculateMetadata={tiemposDe(tacana, 5)} />
+    <Composition id="Vitrina" component={Vitrina} fps={FPS} width={1080} height={1920} durationInFrames={DURA_VITRINA * 5 * FPS} />
     <Composition id="Viaje" component={Viaje} fps={60} width={1080} height={1920} durationInFrames={DURACION_VIAJE * 60} />
   </>
 );
