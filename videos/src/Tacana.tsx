@@ -8,7 +8,8 @@ import { Estudio } from './RambutanAbre';
 import { ALTO_TACANA } from './Croquis';
 import { CamaraSerie, FondoCielo, cieloEntre, rnd, suave, AUREO } from './Naturaleza';
 import { Lluvia, Nubes, nublar } from './Realismo';
-import { volcanReal, rocaGeo, volcanTex, selvaTex } from './TierraVolcan';
+import { selvaTex } from './TierraVolcan';
+import { TACANA_DEM } from './tacanaDem';
 import { CHIAPAS } from './chiapasDatos';
 
 // "Tacaná, la casa de fuego". Voz de Antonio, sin música, subtítulos palabra por palabra.
@@ -89,15 +90,75 @@ const bandera = (cual: 'mx' | 'gt') =>
       g.fillRect(190, 108, 40, 34);
     }
   });
-const capaTex = lienzo(16, 512, (g) => {
-  // manto: rojo profundo abajo, naranja oscuro arriba
+const capaTex = lienzo(512, 512, (g) => {
+  // manto: rojo profundo abajo, naranja arriba, con corrientes de convección
   const r = g.createLinearGradient(0, 0, 0, 512);
-  r.addColorStop(0, '#6a2a12');
-  r.addColorStop(0.5, '#a33a12');
+  r.addColorStop(0, '#5a200e');
+  r.addColorStop(0.5, '#9a3412');
   r.addColorStop(1, '#e0561a');
   g.fillStyle = r;
-  g.fillRect(0, 0, 16, 512);
+  g.fillRect(0, 0, 512, 512);
+  g.globalCompositeOperation = 'overlay';
+  for (let i = 0; i < 60; i++) {
+    const y0 = rnd(i * 5) * 512;
+    g.strokeStyle = i % 2 ? 'rgba(255,190,90,0.25)' : 'rgba(40,0,0,0.3)';
+    g.lineWidth = 4 + rnd(i * 7) * 14;
+    g.beginPath();
+    for (let x = 0; x <= 512; x += 16) g.lineTo(x, y0 + Math.sin(x * 0.012 + i) * 30 + Math.sin(x * 0.04 + i * 2) * 8);
+    g.stroke();
+  }
+  g.globalCompositeOperation = 'source-over';
 });
+// roca con estratos y granos (corteza y losa del corte)
+const estratos = (base: string[], grano: string, semilla: number) => {
+  const t = lienzo(512, 512, (g) => {
+    g.fillStyle = base[0];
+    g.fillRect(0, 0, 512, 512);
+    let y = 0;
+    let k = 0;
+    while (y < 512) {
+      const alto = 10 + rnd(semilla + k * 3) * 40;
+      g.fillStyle = base[k % base.length];
+      g.globalAlpha = 0.55 + rnd(semilla + k * 5) * 0.45;
+      g.beginPath();
+      g.moveTo(0, y);
+      for (let x = 0; x <= 512; x += 32) g.lineTo(x, y + Math.sin(x * 0.02 + k) * 4);
+      for (let x = 512; x >= 0; x -= 32) g.lineTo(x, y + alto + Math.sin(x * 0.017 + k * 2) * 5);
+      g.fill();
+      y += alto;
+      k++;
+    }
+    g.globalAlpha = 1;
+    for (let i = 0; i < 6000; i++) {
+      g.fillStyle = i % 3 ? grano : 'rgba(0,0,0,0.25)';
+      const r = 0.6 + rnd(semilla + i * 13) * 2.2;
+      g.fillRect(rnd(semilla + i * 7) * 512, rnd(semilla + i * 11) * 512, r, r);
+    }
+  });
+  if (t) {
+    t.wrapS = t.wrapT = THREE.RepeatWrapping;
+    t.repeat.set(0.18, 0.18);
+  }
+  return t;
+};
+const cortezaTex = estratos(['#7a5a3e', '#8a6a48', '#6a4c34', '#94744e', '#5e4430'], 'rgba(230,210,170,0.35)', 11);
+const losaTex = estratos(['#353c46', '#3e4652', '#2c323a', '#46505c'], 'rgba(170,190,210,0.3)', 23);
+const lavaTex = estratos(['#3a2a26', '#4a3028', '#2e2220'], 'rgba(255,120,60,0.25)', 37);
+const cenizaTex = estratos(['#a09080', '#b4a490', '#8e8070'], 'rgba(255,255,255,0.3)', 41);
+const brilloTex = lienzo(128, 128, (g) => {
+  const r = g.createRadialGradient(64, 64, 0, 64, 64, 64);
+  r.addColorStop(0, 'rgba(255,255,255,1)');
+  r.addColorStop(0.25, 'rgba(255,255,255,0.55)');
+  r.addColorStop(1, 'rgba(255,255,255,0)');
+  g.fillStyle = r;
+  g.fillRect(0, 0, 128, 128);
+});
+const Brillo: React.FC<{ p: [number, number, number]; tam: number; color: string; o: number }> = ({ p, tam, color, o }) =>
+  brilloTex && o > 0.01 ? (
+    <sprite position={p} scale={[tam, tam, 1]}>
+      <spriteMaterial map={brilloTex} color={color} transparent opacity={o} blending={THREE.AdditiveBlending} depthWrite={false} toneMapped={false} />
+    </sprite>
+  ) : null;
 
 const Etiqueta: React.FC<{ tex: THREE.Texture | null; position: THREE.Vector3 | [number, number, number]; alto?: number; o: number }> = ({ tex, position, alto = 0.6, o }) =>
   tex && o > 0.01 ? (
@@ -149,6 +210,35 @@ const chiapas = (() => {
       const ok = dentro(i) || dentro(i + 1) || dentro(i + n) || dentro(i + n + 1);
       if (ok) idx.push(i, i + n, i + 1, i + 1, i + n, i + n + 1);
     }
+  // los vértices de afuera se pegan a la orilla real del estado: así el borde queda liso, sin escalones
+  const cont = CHIAPAS.contorno.map(([u, v]) => [(u - 0.5) * MAPA_W, (v - 0.5) * D] as [number, number]);
+  const usados = new Set(idx);
+  usados.forEach((i) => {
+    if (dentro(i)) return;
+    const x = pos[i * 3];
+    const z = pos[i * 3 + 2];
+    let mejor = Infinity;
+    let bx = x;
+    let bz = z;
+    for (let j = 0; j < cont.length; j++) {
+      const [ax, az] = cont[j];
+      const [cx, cz] = cont[(j + 1) % cont.length];
+      const dx = cx - ax;
+      const dz = cz - az;
+      const l2 = dx * dx + dz * dz || 1;
+      const k = Math.max(0, Math.min(1, ((x - ax) * dx + (z - az) * dz) / l2));
+      const px = ax + dx * k;
+      const pz = az + dz * k;
+      const d = (px - x) ** 2 + (pz - z) ** 2;
+      if (d < mejor) {
+        mejor = d;
+        bx = px;
+        bz = pz;
+      }
+    }
+    pos[i * 3] = bx;
+    pos[i * 3 + 2] = bz;
+  });
   const g = new THREE.BufferGeometry();
   g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
   g.setAttribute('color', new THREE.Float32BufferAttribute(col, 3));
@@ -197,7 +287,7 @@ const ChiapasRelieve: React.FC<{ t: number; brilloSoconusco?: number }> = ({ t, 
       {/* el Soconusco se ilumina de verde */}
       {brilloSoconusco > 0 && (
         <mesh position={soc.clone().add(P(-0.25, 0.04, 0.25))} rotation={[-Math.PI / 2, 0, -0.75]}>
-          <circleGeometry args={[1.2, 48]} />
+          <circleGeometry args={[0.8, 48]} />
           <meshBasicMaterial color="#8dff7a" transparent opacity={0.28 * brilloSoconusco} depthWrite={false} toneMapped={false} />
         </mesh>
       )}
@@ -354,16 +444,16 @@ const Diorama: React.FC<{ t: number; fundir: number; subir: number; crece: numbe
   return (
     <group>
       <mesh geometry={mantoGeo}>
-        <meshStandardMaterial map={capaTex} emissiveMap={capaTex} emissive="#ffffff" emissiveIntensity={0.55} roughness={0.9} />
+        <meshStandardMaterial map={capaTex} emissiveMap={capaTex} emissive="#ffffff" emissiveIntensity={0.7} roughness={0.9} />
       </mesh>
       <mesh geometry={losaGeo}>
-        <meshStandardMaterial color="#39414c" roughness={0.85} />
+        <meshStandardMaterial map={losaTex} roughness={0.8} />
       </mesh>
       <mesh geometry={cortezaGeo}>
-        <meshStandardMaterial color="#7a5c40" roughness={0.95} />
+        <meshStandardMaterial map={cortezaTex} roughness={0.95} />
       </mesh>
       <mesh geometry={pastoDiorama}>
-        <meshStandardMaterial color="#3d6a2c" roughness={0.95} />
+        <meshStandardMaterial map={selvaTex} color="#7aa060" roughness={0.95} />
       </mesh>
       <mesh geometry={aguaGeo}>
         <meshPhysicalMaterial color="#1d6a9a" transparent opacity={0.72} roughness={0.15} transmission={0} />
@@ -386,14 +476,19 @@ const Diorama: React.FC<{ t: number; fundir: number; subir: number; crece: numbe
           <meshBasicMaterial color="#ff8a2a" transparent opacity={0.75 * pulso} toneMapped={false} />
         </mesh>
       )}
+      {fundir > 0 && <Brillo p={[3.8, -4.2, 0.3]} tam={5 * fundir} color="#ff6a1a" o={0.8 * pulso} />}
       {gotas.map((g, i) =>
         g.o ? (
-          <mesh key={i} position={[g.x, g.y, 0.04]}>
-            <circleGeometry args={[g.r, 20]} />
-            <meshBasicMaterial color="#ffcf5a" transparent opacity={0.9} toneMapped={false} />
-          </mesh>
+          <group key={i}>
+            <mesh position={[g.x, g.y, 0.04]}>
+              <circleGeometry args={[g.r, 20]} />
+              <meshBasicMaterial color="#ffd27a" transparent opacity={0.95} toneMapped={false} />
+            </mesh>
+            <Brillo p={[g.x, g.y, 0.06]} tam={g.r * 7} color="#ff8a2a" o={0.7} />
+          </group>
         ) : null,
       )}
+      {subir > 0 && <Brillo p={[VX, -2.0, 0.08]} tam={3.2} color="#ff7a1a" o={0.9 * pulso * subir} />}
       {/* grietas y conducto */}
       {subir > 0 && (
         <>
@@ -428,7 +523,7 @@ const Diorama: React.FC<{ t: number; fundir: number; subir: number; crece: numbe
             capasGeo.map((g, k) =>
               k >= exterior ? (
                 <mesh key={k} geometry={g} position={[0, 0, 0.004 + (k - exterior) * 0.002]} scale={[R_V, 3.6, 1]}>
-                  <meshStandardMaterial color={k % 2 ? '#8e8172' : '#4a3a30'} roughness={0.95} transparent opacity={corte} side={THREE.DoubleSide} />
+                  <meshStandardMaterial map={k % 2 ? cenizaTex : lavaTex} roughness={0.95} transparent opacity={corte} side={THREE.DoubleSide} />
                 </mesh>
               ) : null,
             )}
@@ -456,17 +551,96 @@ const Diorama: React.FC<{ t: number; fundir: number; subir: number; crece: numbe
 };
 
 // ---------- el Tacaná real (alturas del modelo de la serie) ----------
-// línea de frontera: vértices de la malla que pasan por la cima de norte a sur
-const fronteraPts = (() => {
-  const pos = volcanReal.attributes.position;
-  const l: THREE.Vector3[] = [];
-  for (let i = 0; i < pos.count; i++) if (Math.abs(pos.getX(i) - 0.06) < 0.06 && Math.abs(pos.getZ(i)) < 9) l.push(P(pos.getX(i), pos.getY(i) + 0.03, pos.getZ(i)));
-  return l.sort((a, b) => a.z - b.z);
+// relieve real (AWS Terrain Tiles z12): 18 km de lado = 22 unidades; 1 unidad ≈ 820 m, sin exagerar la altura
+const DEM_L = 22;
+const dem = (() => {
+  const n = TACANA_DEM.n;
+  const b = atob(TACANA_DEM.alt);
+  const a = new Uint16Array(n * n);
+  for (let i = 0; i < n * n; i++) a[i] = b.charCodeAt(i * 2) | (b.charCodeAt(i * 2 + 1) << 8);
+  const max = a.reduce((m, v) => Math.max(m, v), 0);
+  const base = 700;
+  // las orillas bajan suave hasta la selva para que no se vea el corte de la maqueta
+  const borde = (x: number, z: number) => {
+    const r = Math.max(Math.abs(x), Math.abs(z)) / (DEM_L / 2);
+    const rr = Math.hypot(x, z) / (DEM_L / 2);
+    const k = Math.min(1, Math.max(0, (1 - Math.max(r, rr * 0.92)) / 0.3));
+    return k * k * (3 - 2 * k);
+  };
+  const altura = (x: number, z: number) => {
+    const fx = (x / DEM_L + 0.5) * (n - 1);
+    const fz = (z / DEM_L + 0.5) * (n - 1);
+    if (fx < 0 || fz < 0 || fx > n - 1 || fz > n - 1) return 0;
+    const c = Math.min(n - 2, Math.floor(fx));
+    const r = Math.min(n - 2, Math.floor(fz));
+    const u = fx - c;
+    const v = fz - r;
+    const m = (rr: number, cc: number) => a[rr * n + cc];
+    const hm = m(r, c) * (1 - u) * (1 - v) + m(r, c + 1) * u * (1 - v) + m(r + 1, c) * (1 - u) * v + m(r + 1, c + 1) * u * v;
+    return (Math.max(0, hm - base) / (max - base)) * ALTO_TACANA * borde(x, z);
+  };
+  const g = new THREE.PlaneGeometry(DEM_L, DEM_L, n - 1, n - 1);
+  g.rotateX(-Math.PI / 2);
+  const pos = g.attributes.position;
+  for (let i = 0; i < pos.count; i++) pos.setY(i, altura(pos.getX(i), pos.getZ(i)));
+  g.computeVertexNormals();
+  const nor = g.attributes.normal;
+  const col: number[] = [];
+  const C = (h: string) => new THREE.Color(h);
+  const selvaBaja = C('#2c4a22');
+  const selvaAlta = C('#3a5a2c');
+  const niebla = C('#4a6236');
+  const pino = C('#46553a');
+  const pasto = C('#7a7350');
+  const roca = C('#5a514a');
+  const cumbre = C('#7a7068');
+  for (let i = 0; i < pos.count; i++) {
+    const x = pos.getX(i);
+    const z = pos.getZ(i);
+    const y = pos.getY(i);
+    const k = y / ALTO_TACANA;
+    const inc = 1 - nor.getY(i); // 0 plano, más = empinado
+    const ruido = rnd(Math.floor(x * 9) * 131 + Math.floor(z * 9)) * 0.5 + (Math.sin(x * 7.3 + z * 2.1) * Math.cos(z * 6.1 - x * 1.7) * 0.5 + 0.5) * 0.5;
+    let c = selvaBaja.clone().lerp(selvaAlta, Math.min(1, k / 0.35));
+    if (k > 0.35) c = selvaAlta.clone().lerp(niebla, Math.min(1, (k - 0.35) / 0.2));
+    if (k > 0.55) c = niebla.clone().lerp(pino, Math.min(1, (k - 0.55) / 0.15));
+    if (k > 0.72) c = pino.clone().lerp(pasto, Math.min(1, (k - 0.72) / 0.1));
+    if (k > 0.82) c = pasto.clone().lerp(roca, Math.min(1, (k - 0.82) / 0.08));
+    if (k > 0.92) c = roca.clone().lerp(cumbre, Math.min(1, (k - 0.92) / 0.08));
+    // laderas empinadas: roca y tierra expuesta
+    c.lerp(roca, Math.min(0.55, Math.max(0, inc - 0.18) * 1.6) * (k > 0.25 ? 1 : 0.4));
+    c.multiplyScalar(0.82 + ruido * 0.32);
+    col.push(c.r, c.g, c.b);
+  }
+  g.setAttribute('color', new THREE.Float32BufferAttribute(col, 3));
+  return { g, altura };
 })();
-const alturaVolcan = (x: number, z: number) => {
-  const r = Math.hypot(x, z);
-  return ALTO_TACANA * Math.pow(Math.max(0, 1 - r / 11), 1.6);
-};
+// textura fina de copas de árboles y piedras para que de cerca no se vea liso
+const detalleTex = lienzo(512, 512, (g) => {
+  g.fillStyle = '#d8d8d8';
+  g.fillRect(0, 0, 512, 512);
+  for (let i = 0; i < 9000; i++) {
+    const x = rnd(i) * 512;
+    const y = rnd(i * 3 + 1) * 512;
+    const r = 1 + rnd(i * 7 + 2) * 4;
+    const l = 150 + Math.floor(rnd(i * 11 + 3) * 105);
+    g.fillStyle = `rgb(${l},${l},${l})`;
+    g.beginPath();
+    g.arc(x, y, r, 0, Math.PI * 2);
+    g.fill();
+  }
+});
+if (detalleTex) {
+  detalleTex.wrapS = detalleTex.wrapT = THREE.RepeatWrapping;
+  detalleTex.repeat.set(40, 40);
+}
+const alturaVolcan = dem.altura;
+// línea de frontera: de norte a sur por la cima (aproximada)
+const fronteraPts = Array.from({ length: 160 }, (_, i) => {
+  const z = -8 + (i / 159) * 16;
+  const x = 0.04 + Math.sin(z * 0.5) * 0.25;
+  return P(x, alturaVolcan(x, z) + 0.03, z);
+});
 
 const Humo: React.FC<{ t: number; desde: THREE.Vector3; n: number; color: string; sube: number; abre: number; vida: number; o: number; tam: number; viento?: number }> = ({ t, desde, n, color, sube, abre, vida, o, tam, viento = 0.3 }) => {
   if (!humoTex || o <= 0) return null;
@@ -515,24 +689,19 @@ const VolcanReal: React.FC<{ t: number; brasa: number; frontera: number; nube: n
   const cima = P(0, ALTO_TACANA, 0);
   return (
     <group>
-      <mesh geometry={volcanReal}>
-        <meshStandardMaterial vertexColors map={volcanTex} roughness={0.95} envMapIntensity={0.2} />
-      </mesh>
-      <mesh geometry={rocaGeo} position={[0, 0.002, 0]}>
-        <meshStandardMaterial vertexColors transparent roughness={0.9} envMapIntensity={0.2} polygonOffset polygonOffsetFactor={-2} depthWrite={false} />
+      <mesh geometry={dem.g} castShadow receiveShadow>
+        <meshStandardMaterial vertexColors map={detalleTex} roughness={0.95} envMapIntensity={0.2} />
       </mesh>
       {/* la selva alrededor */}
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.01, 0]}>
         <circleGeometry args={[80, 64]} />
-        <meshStandardMaterial map={selvaTex} color="#c8d8a8" roughness={0.95} />
+        <meshStandardMaterial map={selvaTex} color="#9ab080" roughness={0.95} />
       </mesh>
       {/* brasa en el cráter: está vivo */}
       {brasa > 0 && (
         <>
-          <mesh position={[0, ALTO_TACANA - 0.2, 0]}>
-            <sphereGeometry args={[0.32, 24, 16]} />
-            <meshBasicMaterial color="#ff7a2a" transparent opacity={brasa * (0.7 + Math.sin(t * 5) * 0.3)} toneMapped={false} />
-          </mesh>
+          <Brillo p={[0, ALTO_TACANA + 0.05, 0]} tam={1.1} color="#ff5a12" o={brasa * (0.55 + Math.sin(t * 5) * 0.2)} />
+          <Humo t={t} desde={P(0, ALTO_TACANA, 0)} n={10} color="#d8d0c8" sube={1.4} abre={0.3} vida={3} o={brasa * 0.5} tam={0.6} viento={0.5} />
           <pointLight position={[0, ALTO_TACANA + 0.4, 0]} color="#ff6a1a" intensity={brasa * 25} distance={6} />
         </>
       )}
@@ -589,8 +758,8 @@ const VolcanReal: React.FC<{ t: number; brasa: number; frontera: number; nube: n
           });
           return (
             <mesh key={j}>
-              <tubeGeometry args={[new THREE.CatmullRomCurve3(pts), 40, 0.05 + rnd(j) * 0.04, 5, false]} />
-              <meshStandardMaterial color="#6a4a30" roughness={0.6} />
+              <tubeGeometry args={[new THREE.CatmullRomCurve3(pts), 60, 0.025 + rnd(j) * 0.02, 5, false]} />
+              <meshStandardMaterial color="#5a4632" roughness={0.4} transparent opacity={0.85} />
             </mesh>
           );
         })}
@@ -773,8 +942,8 @@ export const Tacana: React.FC<Tiempos> = ({ voz, inicios, palabras }) => {
       mira = lerp(P(0, 0, 0.3), tac, x);
     } else if (esc === 11) {
       const x = k(s[11], s[12]);
-      pos = lerp(soc.clone().add(P(-1.5, 1.4, 3)), soc.clone().add(P(0.6, 0.7, 1.6)), x);
-      mira = lerp(soc.clone().add(P(0, 0, 0)), tac.clone().lerp(soc, 0.6), x);
+      pos = lerp(soc.clone().add(P(-0.8, 4.6, 5.2)), soc.clone().add(P(0.4, 3.0, 3.6)), x);
+      mira = lerp(soc.clone().add(P(-0.3, 0, 0)), tac.clone().lerp(soc, 0.7), x);
     } else {
       const g = 0.4 + (t - s[12]) * 0.08;
       pos = P(Math.sin(g) * 9, 7.5, Math.cos(g) * 9).add(P(0, 0, 0.5));
@@ -804,22 +973,22 @@ export const Tacana: React.FC<Tiempos> = ({ voz, inicios, palabras }) => {
   } else if (real) {
     if (esc === 0) {
       const x = k(tTacana, s[1]);
-      pos = lerp(P(-5, 3.6, 9), P(-3.2, 4.2, 6.6), x);
+      pos = lerp(P(-9, 3.2, 13), P(-5.5, 4.6, 9), x);
       mira = P(0, 3.2, 0);
     } else if (esc === 1) {
       const x = k(s[1], s[2]);
       const latido = 1 + Math.max(0, Math.sin((t - tVivo) * 6)) * 0.03 * (t > tVivo ? 1 : 0);
-      pos = lerp(P(-3.2, 4.2, 6.6), P(-1.2, 5.0, 2.6), x).multiplyScalar(1 / latido);
+      pos = lerp(P(-5.5, 4.6, 9), P(-2.6, 5.2, 4.2), x).multiplyScalar(1 / latido);
       mira = P(0, ALTO_TACANA - 0.3, 0);
     } else if (esc === 6) {
       // sube por la ladera hasta la cima mientras corre el contador
       const x = k(s[6], tMil + 0.6);
-      pos = lerp(P(-8, 0.8, 9), P(-2.2, ALTO_TACANA + 0.8, 3.2), Easing.inOut(Easing.cubic)(x));
+      pos = lerp(P(-12, 1.2, 13), P(-3.4, ALTO_TACANA + 1.2, 4.6), Easing.inOut(Easing.cubic)(x));
       mira = lerp(P(0, 2, 0), P(0.6, ALTO_TACANA - 0.2, -1), x);
       fovE = fov * 1.05;
     } else if (esc === 7) {
       const g = -0.4 + k(s[7], s[8]) * 0.9;
-      pos = P(Math.sin(g) * 6.5, ALTO_TACANA + 2.6, Math.cos(g) * 6.5);
+      pos = P(Math.sin(g) * 9, ALTO_TACANA + 3.4, Math.cos(g) * 9);
       mira = P(0, ALTO_TACANA - 0.6, 0);
     } else if (esc === 8) {
       const x = k(s[8], s[9]);
@@ -827,7 +996,7 @@ export const Tacana: React.FC<Tiempos> = ({ voz, inicios, palabras }) => {
       mira = P(0, 4.5, 0);
     } else if (esc === 9) {
       const x = k(s[9], s[10]);
-      pos = lerp(P(-4, ALTO_TACANA + 1, 4), P(-2.6, ALTO_TACANA + 0.4, 3.0), x);
+      pos = lerp(P(-6, ALTO_TACANA + 1.6, 6), P(-4.2, ALTO_TACANA + 0.9, 4.4), x);
       mira = P(-0.4, ALTO_TACANA * 0.9, 0);
     } else {
       const x = k(s[10], s[11]);
@@ -846,7 +1015,7 @@ export const Tacana: React.FC<Tiempos> = ({ voz, inicios, palabras }) => {
       const r = Math.sqrt(i / 70) * 0.09;
       const uv = [base[0] - 0.02 + Math.cos(a) * r * 1.2, base[1] - 0.03 + Math.sin(a) * r * 0.8];
       return { p: chiapas.punto(uv), esp: ESPECIES[i % 4], sem: rnd(i * 7), orden: i / 70 };
-    });
+    }).filter((a) => a.p.y > 0.004);
   }, []);
   const tEspecie = ESPECIES.map((e, i) => W(['cacao', 'café', 'mango', 'rambután'][i], s[11], s[11] + 1 + i * 1.2));
   const brotan = (i: number, orden: number) => (esc >= 11 ? suave(t, tEspecie[i] - 0.3 + orden * 0.8, tEspecie[i] + 0.4 + orden * 0.8) : 0);
@@ -879,7 +1048,7 @@ export const Tacana: React.FC<Tiempos> = ({ voz, inicios, palabras }) => {
               <>
                 <Etiqueta tex={etiquetas.tacana} position={chiapas.punto(CHIAPAS.puntos.tacana, 0.75)} alto={esc === 0 ? 0.32 : 0.45} o={esc === 0 ? k(0.6, 1.4) : 1} />
                 {esc === 0 && <Etiqueta tex={etiquetas.chiapas} position={P(0, 2.2, -1.2)} alto={0.8} o={k(0.1, 0.6) * (1 - k(1.6, 2.4))} />}
-                {esc >= 11 && <Etiqueta tex={etiquetas.soconusco} position={chiapas.punto(CHIAPAS.puntos.tapachula, 0.35).add(P(-0.6, 0, 0.5))} alto={0.3} o={k(s[11] + 0.5, s[11] + 1.5)} />}
+                {esc >= 11 && <Etiqueta tex={etiquetas.soconusco} position={chiapas.punto(CHIAPAS.puntos.tapachula, 0.6).add(P(-0.2, 0, 0.3))} alto={0.3} o={k(s[11] + 0.5, s[11] + 1.5)} />}
                 {arboles.map((a, i) => (
                   <Arbolito key={i} p={a.p} e={brotan(i % 4, a.orden)} esp={a.esp} sem={a.sem} />
                 ))}
