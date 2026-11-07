@@ -141,6 +141,20 @@ const estratos = (base: string[], grano: string, semilla: number) => {
   }
   return t;
 };
+if (capaTex) capaTex.wrapS = capaTex.wrapT = THREE.RepeatWrapping;
+// lava que corre: franjas amarillas y naranjas que se desplazan
+const lavaFlujoTex = lienzo(64, 512, (g) => {
+  g.fillStyle = '#ff7a12';
+  g.fillRect(0, 0, 64, 512);
+  for (let i = 0; i < 40; i++) {
+    g.fillStyle = i % 3 ? 'rgba(255,220,120,0.8)' : 'rgba(150,30,0,0.7)';
+    const y = rnd(i * 17) * 512;
+    g.beginPath();
+    g.ellipse(32 + (rnd(i * 5) - 0.5) * 30, y, 6 + rnd(i * 3) * 18, 10 + rnd(i * 7) * 40, 0, 0, Math.PI * 2);
+    g.fill();
+  }
+});
+if (lavaFlujoTex) lavaFlujoTex.wrapS = lavaFlujoTex.wrapT = THREE.RepeatWrapping;
 const cortezaTex = estratos(['#7a5a3e', '#8a6a48', '#6a4c34', '#94744e', '#5e4430'], 'rgba(230,210,170,0.35)', 11);
 const losaTex = estratos(['#353c46', '#3e4652', '#2c323a', '#46505c'], 'rgba(170,190,210,0.3)', 23);
 const lavaTex = estratos(['#3a2a26', '#4a3028', '#2e2220'], 'rgba(255,120,60,0.25)', 37);
@@ -255,9 +269,29 @@ const chiapas = (() => {
     return (alt[Math.min(m - 1, Math.max(0, r)) * n + Math.min(n - 1, Math.max(0, c))] / 4200) * MAPA_EXAG;
   };
   const punto = (uv: number[], sobre = 0) => P((uv[0] - 0.5) * MAPA_W, altura(uv[0], uv[1]) + sobre, (uv[1] - 0.5) * D);
-  return { g, base, punto, D };
+  const dentroUV = (u: number, v: number) => dentro(Math.round(v * (m - 1)) * n + Math.round(u * (n - 1)));
+  return { g, base, punto, D, dentroUV };
 })();
 
+const zonaSoconusco = (() => {
+  if (!chiapas) return [] as THREE.Vector3[];
+  const a = CHIAPAS.puntos.tuxtlaChico;
+  const b = CHIAPAS.puntos.tapachula;
+  const cx = (a[0] + b[0]) / 2;
+  const cy = (a[1] + b[1]) / 2;
+  const l: THREE.Vector3[] = [];
+  for (let i = 0; i < 900 && l.length < 140; i++) {
+    const ang = i * AUREO;
+    const r = Math.sqrt(i / 900) * 0.11;
+    const u = cx + Math.cos(ang) * r * 1.3;
+    const v = cy + Math.sin(ang) * r;
+    if (!chiapas.dentroUV(u, v)) continue;
+    const p = chiapas.punto([u, v]);
+    if (p.y < 0.004) continue;
+    l.push(p);
+  }
+  return l;
+})();
 const ChiapasRelieve: React.FC<{ t: number; brilloSoconusco?: number }> = ({ t, brilloSoconusco = 0 }) => {
   if (!chiapas) return null;
   const tac = chiapas.punto(CHIAPAS.puntos.tacana);
@@ -285,12 +319,8 @@ const ChiapasRelieve: React.FC<{ t: number; brilloSoconusco?: number }> = ({ t, 
         <meshBasicMaterial color="#ffb070" transparent opacity={0.5} toneMapped={false} />
       </mesh>
       {/* el Soconusco se ilumina de verde */}
-      {brilloSoconusco > 0 && (
-        <mesh position={soc.clone().add(P(-0.25, 0.04, 0.25))} rotation={[-Math.PI / 2, 0, -0.75]}>
-          <circleGeometry args={[0.8, 48]} />
-          <meshBasicMaterial color="#8dff7a" transparent opacity={0.28 * brilloSoconusco} depthWrite={false} toneMapped={false} />
-        </mesh>
-      )}
+      {brilloSoconusco > 0 &&
+        zonaSoconusco.map((p, i) => <Brillo key={i} p={[p.x, p.y + 0.03, p.z]} tam={0.32} color="#8dff7a" o={0.16 * brilloSoconusco * (0.8 + Math.sin(t * 2 + i) * 0.2)} />)}
     </group>
   );
 };
@@ -441,6 +471,13 @@ const Diorama: React.FC<{ t: number; fundir: number; subir: number; crece: numbe
     return { x, y, r: 0.08 + rnd(i * 9) * 0.1, o: fundir > nace * 0.6 ? 1 : 0 };
   });
   const pulso = 0.8 + Math.sin(t * 4) * 0.2;
+  // la placa de Cocos se desliza hacia abajo y el manto se mueve en corrientes
+  if (losaTex) losaTex.offset.set(t * 0.06, -t * 0.045);
+  if (capaTex) capaTex.offset.set(t * 0.02, Math.sin(t * 0.3) * 0.02);
+  if (lavaFlujoTex) lavaFlujoTex.offset.set(0, -t * 0.9);
+  // cada erupción baja lava por las laderas y deja una capa nueva
+  const ciclo = (crece * CAPAS) % 1;
+  const lavaLadera = crece > 0 && crece < 1 ? Math.min(1, ciclo * 1.6) : erupcion > 0 ? Math.min(1, ((t * 0.5) % 1) * 1.4) : 0;
   return (
     <group>
       <mesh geometry={mantoGeo}>
@@ -493,9 +530,14 @@ const Diorama: React.FC<{ t: number; fundir: number; subir: number; crece: numbe
       {subir > 0 && (
         <>
           <mesh position={[VX, -2.0 + (subir * (2.0 + altoV)) / 2, 0.035]}>
-            <planeGeometry args={[0.16, subir * (2.0 + altoV)]} />
-            <meshBasicMaterial color="#ffb03a" toneMapped={false} />
+            <planeGeometry args={[0.2, subir * (2.0 + altoV)]} />
+            <meshBasicMaterial map={lavaFlujoTex} color="#ffffff" toneMapped={false} />
           </mesh>
+          {Array.from({ length: 6 }, (_, i) => {
+            const l = (t * 0.7 + i / 6) % 1;
+            const y = -2.0 + l * subir * (2.0 + altoV);
+            return <Brillo key={i} p={[VX, y, 0.09]} tam={0.6} color="#ffb040" o={0.6 * subir} />;
+          })}
           <mesh position={camara} scale={[0.9, 0.35, 1]}>
             <circleGeometry args={[1, 40]} />
             <meshBasicMaterial color="#ff7a1a" transparent opacity={0.9 * pulso} toneMapped={false} />
@@ -528,6 +570,33 @@ const Diorama: React.FC<{ t: number; fundir: number; subir: number; crece: numbe
               ) : null,
             )}
         </group>
+      )}
+      {/* ríos de lava bajando por la mitad de atrás del cono */}
+      {crece > 0 && lavaLadera > 0 &&
+        [Math.PI * 0.62, Math.PI, Math.PI * 1.38].map((a, j) => {
+          const pts = Array.from({ length: 20 }, (_, i) => {
+            const u = (i / 19) * lavaLadera * 0.95;
+            const r = 0.06 + u * anchoV;
+            const y = altoV * Math.pow(1 - r / anchoV, 1.5) + 0.04;
+            const aa = a + Math.sin(u * 7 + j) * 0.06;
+            return P(VX + Math.cos(aa) * r, y, Math.sin(aa) * r);
+          });
+          const fin = pts[pts.length - 1];
+          return (
+            <group key={j}>
+              <mesh>
+                <tubeGeometry args={[new THREE.CatmullRomCurve3(pts), 40, 0.07, 6, false]} />
+                <meshBasicMaterial map={lavaFlujoTex} toneMapped={false} />
+              </mesh>
+              <Brillo p={[fin.x, fin.y + 0.1, fin.z]} tam={1.1} color="#ff6a1a" o={0.8 * pulso} />
+            </group>
+          );
+        })}
+      {crece > 0 && (erupcion > 0 || (crece < 1 && ciclo < 0.7)) && (
+        <>
+          <Humo t={t} desde={P(VX, altoV + 0.1, -0.4)} n={22} color="#4a423c" sube={5} abre={1.2} vida={2.6} o={0.9} tam={1.6} viento={0.4} />
+          <Brillo p={[VX, altoV + 0.2, 0]} tam={2.4} color="#ff5a12" o={0.7 * pulso} />
+        </>
       )}
       {/* chorro de lava al reventar */}
       {erupcion > 0 && (
@@ -635,6 +704,43 @@ if (detalleTex) {
   detalleTex.repeat.set(40, 40);
 }
 const alturaVolcan = dem.altura;
+// cañadas reales: desde la cima se sigue la bajada más empinada del relieve (por ahí corre la lava y el lodo)
+const rutas = Array.from({ length: 9 }, (_, j) => {
+  const a = j * AUREO + 0.3;
+  let x = Math.cos(a) * 0.35;
+  let z = Math.sin(a) * 0.35;
+  const l: THREE.Vector3[] = [P(x, alturaVolcan(x, z) + 0.03, z)];
+  for (let i = 0; i < 140; i++) {
+    const e = 0.05;
+    const gx = alturaVolcan(x + e, z) - alturaVolcan(x - e, z);
+    const gz = alturaVolcan(x, z + e) - alturaVolcan(x, z - e);
+    const gl = Math.hypot(gx, gz) || 1;
+    // baja por la pendiente, con un poco de empuje hacia afuera para no quedarse atorada
+    const ox = x / (Math.hypot(x, z) || 1);
+    const oz = z / (Math.hypot(x, z) || 1);
+    x += (-gx / gl) * 0.06 + ox * 0.02;
+    z += (-gz / gl) * 0.06 + oz * 0.02;
+    if (Math.hypot(x, z) > 9.5) break;
+    if (i % 2 === 0) l.push(P(x, alturaVolcan(x, z) + 0.04, z));
+  }
+  return l;
+});
+const RioLava: React.FC<{ pts: THREE.Vector3[]; avance: number; t: number; lodo?: boolean; grosor?: number }> = ({ pts, avance, t, lodo, grosor = 0.07 }) => {
+  const n = Math.max(2, Math.floor(pts.length * Math.min(1, avance)));
+  if (avance <= 0.01 || n < 2) return null;
+  const tramo = pts.slice(0, n);
+  const fin = tramo[tramo.length - 1];
+  return (
+    <group>
+      <mesh>
+        <tubeGeometry args={[new THREE.CatmullRomCurve3(tramo), Math.max(8, n * 2), grosor, 6, false]} />
+        {lodo ? <meshStandardMaterial color="#5a4632" roughness={0.35} /> : <meshBasicMaterial map={lavaFlujoTex} toneMapped={false} />}
+      </mesh>
+      {!lodo && <Brillo p={[fin.x, fin.y + 0.15, fin.z]} tam={1.2} color="#ff5a12" o={0.75 + Math.sin(t * 6) * 0.15} />}
+      {!lodo && <Humo t={t} desde={fin} n={5} color="#6a5a50" sube={1.2} abre={0.3} vida={2} o={0.6} tam={0.6} />}
+    </group>
+  );
+};
 // línea de frontera: de norte a sur por la cima (aproximada)
 const fronteraPts = Array.from({ length: 160 }, (_, i) => {
   const z = -8 + (i / 159) * 16;
@@ -651,7 +757,7 @@ const Humo: React.FC<{ t: number; desde: THREE.Vector3; n: number; color: string
         const a = rnd(i * 3) * Math.PI * 2;
         return (
           <sprite key={i} position={[desde.x + Math.cos(a) * abre * l + viento * l * sube, desde.y + sube * l, desde.z + Math.sin(a) * abre * l]} scale={[tam * (0.4 + l * 1.6), tam * (0.4 + l * 1.6), 1]}>
-            <spriteMaterial map={humoTex} color={color} transparent opacity={o * Math.min(1, l * 6) * (1 - l)} depthWrite={false} />
+            <spriteMaterial map={humoTex} color={color} transparent opacity={o * Math.min(1, l * 6) * (1 - l)} depthWrite={false} rotation={rnd(i * 13) * 6 + l * (rnd(i) > 0.5 ? 1.2 : -1.2)} />
           </sprite>
         );
       })}
@@ -722,7 +828,7 @@ const VolcanReal: React.FC<{ t: number; brasa: number; frontera: number; nube: n
         </>
       )}
       {/* erupción fuerte: columna de ceniza y nubes de fuego bajando */}
-      <Humo t={t} desde={cima} n={28} color="#5a5048" sube={7} abre={1.6} vida={3} o={nube} tam={2.4} viento={0.6} />
+      <Humo t={t} desde={cima} n={45} color="#4a403a" sube={8} abre={2} vida={3.5} o={nube} tam={2.8} viento={0.7} />
       {flujos > 0 &&
         Array.from({ length: 8 }, (_, j) => {
           const a = j * AUREO;
@@ -738,6 +844,15 @@ const VolcanReal: React.FC<{ t: number; brasa: number; frontera: number; nube: n
             ) : null;
           });
         })}
+      {flujos > 0 && rutas.map((r, j) => <RioLava key={j} pts={r} avance={flujos * (0.6 + rnd(j * 3) * 0.4)} t={t + j} />)}
+      {nube > 0 &&
+        Array.from({ length: 40 }, (_, i) => {
+          const l = (t * 0.8 + rnd(i)) % 1;
+          const a = rnd(i * 5) * Math.PI * 2;
+          const v = 1 + rnd(i * 7) * 2;
+          return <Brillo key={i} p={[Math.cos(a) * v * l * 1.5, ALTO_TACANA + v * 2.2 * l - 3.2 * l * l, Math.sin(a) * v * l * 1.5]} tam={0.25} color={i % 3 ? '#ff8a2a' : '#ffe08a'} o={nube * (1 - l)} />;
+        })}
+      {nube > 0 && <Brillo p={[0, ALTO_TACANA + 0.3, 0]} tam={3.5} color="#ff4a0a" o={nube * (0.7 + Math.sin(t * 7) * 0.15)} />}
       {nube > 0 && <pointLight position={[0, ALTO_TACANA + 1, 0]} color="#ff5a1a" intensity={nube * 40} distance={14} />}
       {/* 1986: explosión de vapor en el flanco noroeste, a 3,800 m */}
       <Humo t={t} desde={P(-0.25, ALTO_TACANA * 0.93, -0.3)} n={14} color="#f2f2f2" sube={1.6} abre={0.5} vida={2.2} o={vapor} tam={0.8} />
@@ -746,23 +861,7 @@ const VolcanReal: React.FC<{ t: number; brasa: number; frontera: number; nube: n
         <Humo key={i} t={t + i * 0.7} desde={P(-0.6 + i * 0.25, ALTO_TACANA * 0.87, 0.5 + i * 0.1)} n={8} color="#ffffff" sube={0.9} abre={0.15} vida={2.6} o={fumarolas * 0.8} tam={0.35} viento={0.4} />
       ))}
       {/* lodo volcánico bajando por las cañadas hacia los valles */}
-      {lodo > 0 &&
-        Array.from({ length: 10 }, (_, j) => {
-          const a = 0.6 + j * 0.42;
-          const largo = 2 + lodo * 8;
-          const pts = Array.from({ length: 24 }, (_, i) => {
-            const r = 1 + (i / 23) * largo;
-            const x = Math.cos(a + Math.sin(r * 0.6) * 0.08) * r;
-            const z = Math.sin(a + Math.sin(r * 0.6) * 0.08) * r;
-            return P(x, alturaVolcan(x, z) + 0.03, z);
-          });
-          return (
-            <mesh key={j}>
-              <tubeGeometry args={[new THREE.CatmullRomCurve3(pts), 60, 0.025 + rnd(j) * 0.02, 5, false]} />
-              <meshStandardMaterial color="#5a4632" roughness={0.4} transparent opacity={0.85} />
-            </mesh>
-          );
-        })}
+      {lodo > 0 && rutas.map((r, j) => <RioLava key={j} pts={r} avance={lodo * (0.7 + rnd(j) * 0.3)} t={t} lodo grosor={0.04} />)}
     </group>
   );
 };
@@ -1007,16 +1106,7 @@ export const Tacana: React.FC<Tiempos> = ({ voz, inicios, palabras }) => {
   if (temblor > 0) pos.add(P(Math.sin(t * 47) * 0.12 * temblor, Math.cos(t * 53) * 0.1 * temblor, 0));
 
   // árboles del Soconusco
-  const arboles = useMemo(() => {
-    if (!chiapas) return [];
-    const base = CHIAPAS.puntos.tuxtlaChico;
-    return Array.from({ length: 70 }, (_, i) => {
-      const a = i * AUREO;
-      const r = Math.sqrt(i / 70) * 0.09;
-      const uv = [base[0] - 0.02 + Math.cos(a) * r * 1.2, base[1] - 0.03 + Math.sin(a) * r * 0.8];
-      return { p: chiapas.punto(uv), esp: ESPECIES[i % 4], sem: rnd(i * 7), orden: i / 70 };
-    }).filter((a) => a.p.y > 0.004);
-  }, []);
+  const arboles = useMemo(() => zonaSoconusco.slice(0, 90).map((p, i) => ({ p, esp: ESPECIES[i % 4], sem: rnd(i * 7), orden: i / 90 })), []);
   const tEspecie = ESPECIES.map((e, i) => W(['cacao', 'café', 'mango', 'rambután'][i], s[11], s[11] + 1 + i * 1.2));
   const brotan = (i: number, orden: number) => (esc >= 11 ? suave(t, tEspecie[i] - 0.3 + orden * 0.8, tEspecie[i] + 0.4 + orden * 0.8) : 0);
 
