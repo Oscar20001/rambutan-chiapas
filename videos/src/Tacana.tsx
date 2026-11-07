@@ -11,6 +11,7 @@ import { Lluvia, Nubes, nublar } from './Realismo';
 import { selvaTex } from './TierraVolcan';
 import { TACANA_DEM } from './tacanaDem';
 import { CHIAPAS } from './chiapasDatos';
+import { REGION } from './regionDem';
 
 // "Tacaná, la casa de fuego". Voz de Antonio, sin música, subtítulos palabra por palabra.
 // Todo lo que dice la voz se ve: Chiapas en relieve (alturas reales), la placa de Cocos hundiéndose,
@@ -403,6 +404,14 @@ const pastoDiorama = (() => {
 const curvaLosa = new THREE.CatmullRomCurve3(LOSA_ARRIBA.map(([x, y]) => P(x, y, 0.02)));
 
 const VX = 4.5; // dónde nace el volcán
+// árboles sobre el continente del corte (ligeros, en una sola geometría)
+const flechaGeo = (() => {
+  const sh = new THREE.Shape();
+  [[-0.9, -0.16], [0.2, -0.16], [0.2, -0.38], [0.9, 0], [0.2, 0.38], [0.2, 0.16], [-0.9, 0.16]].forEach(([x, y], i) => (i ? sh.lineTo(x, y) : sh.moveTo(x, y)));
+  const g = new THREE.ShapeGeometry(sh);
+  g.rotateX(-Math.PI / 2);
+  return g;
+})();
 const R_V = 4.2;
 const perfil = (h: number, r: number, n = 40) => {
   const pts: THREE.Vector2[] = [];
@@ -444,6 +453,7 @@ const capaGeo = (k: number) => {
 };
 const capasGeo = Array.from({ length: CAPAS }, (_, k) => capaGeo(k));
 
+let bosqueDioramaGeo: THREE.BufferGeometry | null = null;
 const Diorama: React.FC<{ t: number; fundir: number; subir: number; crece: number; erupcion: number; corte: number }> = ({ t, fundir, subir, crece, erupcion, corte }) => {
   // tamaño del volcán según cuántas capas ya se formaron
   const visibles = Math.min(CAPAS, Math.floor(crece * CAPAS + 0.0001));
@@ -471,6 +481,16 @@ const Diorama: React.FC<{ t: number; fundir: number; subir: number; crece: numbe
     return { x, y, r: 0.08 + rnd(i * 9) * 0.1, o: fundir > nace * 0.6 ? 1 : 0 };
   });
   const pulso = 0.8 + Math.sin(t * 4) * 0.2;
+  if (!bosqueDioramaGeo) {
+    const pts: { x: number; y: number; z: number; s: number; c: THREE.Color }[] = [];
+    for (let i = 0; pts.length < 260 && i < 3000; i++) {
+      const x = -2.6 + rnd(i * 1.3) * 13.4;
+      const z = -0.25 - rnd(i * 2.7) * (FONDO_D - 0.5);
+      if (Math.hypot(x - VX, z) < R_V + 0.15) continue;
+      pts.push({ x, y: 0, z, s: 0.28 + rnd(i * 3.1) * 0.22, c: VERDES[i % VERDES.length].clone() });
+    }
+    bosqueDioramaGeo = bosqueGeo(pts);
+  }
   // la placa de Cocos se desliza hacia abajo y el manto se mueve en corrientes
   if (losaTex) losaTex.offset.set(t * 0.06, -t * 0.045);
   if (capaTex) capaTex.offset.set(t * 0.02, Math.sin(t * 0.3) * 0.02);
@@ -500,9 +520,21 @@ const Diorama: React.FC<{ t: number; fundir: number; subir: number; crece: numbe
         <planeGeometry args={[8, FONDO_D]} />
         <meshStandardMaterial color="#4aa0d0" roughness={0.1} metalness={0.2} transparent opacity={0.6} />
       </mesh>
+      <mesh geometry={bosqueDioramaGeo!} castShadow>
+        <meshStandardMaterial vertexColors roughness={0.9} />
+      </mesh>
+      {/* flechas grandes sobre el fondo del mar: la placa de Cocos avanza hacia el continente */}
+      {[0, 1, 2].map((i) => {
+        const l = (t * 0.22 + i / 3) % 1;
+        return (
+          <mesh key={`f${i}`} geometry={flechaGeo} position={[-10 + l * 6.5, -1.17, -1.4 - i * 1.5]} scale={[1.3, 1, 1.3]}>
+            <meshBasicMaterial color="#9fe0ff" transparent opacity={Math.min(1, l * 5, (1 - l) * 5) * 0.95} toneMapped={false} />
+          </mesh>
+        );
+      })}
       {flechas.map((f, i) => (
         <mesh key={i} position={[f.p.x, f.p.y - 0.5, 0.03]} rotation={[0, 0, f.a - Math.PI / 2]}>
-          <coneGeometry args={[0.16, 0.38, 3]} />
+          <coneGeometry args={[0.26, 0.6, 3]} />
           <meshBasicMaterial color="#9fd8ff" transparent opacity={f.o * 0.9} toneMapped={false} />
         </mesh>
       ))}
@@ -741,12 +773,6 @@ const RioLava: React.FC<{ pts: THREE.Vector3[]; avance: number; t: number; lodo?
     </group>
   );
 };
-// línea de frontera: de norte a sur por la cima (aproximada)
-const fronteraPts = Array.from({ length: 160 }, (_, i) => {
-  const z = -8 + (i / 159) * 16;
-  const x = 0.04 + Math.sin(z * 0.5) * 0.25;
-  return P(x, alturaVolcan(x, z) + 0.03, z);
-});
 
 const Humo: React.FC<{ t: number; desde: THREE.Vector3; n: number; color: string; sube: number; abre: number; vida: number; o: number; tam: number; viento?: number }> = ({ t, desde, n, color, sube, abre, vida, o, tam, viento = 0.3 }) => {
   if (!humoTex || o <= 0) return null;
@@ -765,7 +791,7 @@ const Humo: React.FC<{ t: number; desde: THREE.Vector3; n: number; color: string
   );
 };
 
-const Bandera: React.FC<{ tex: THREE.Texture | null; p: THREE.Vector3; t: number; fase: number }> = ({ tex, p, t, fase }) => {
+const Bandera: React.FC<{ tex: THREE.Texture | null; p: THREE.Vector3; t: number; fase: number; grande?: boolean }> = ({ tex, p, t, fase, grande }) => {
   const geo = useMemo(() => new THREE.PlaneGeometry(0.9, 0.56, 16, 4), []);
   const pos = geo.attributes.position;
   for (let i = 0; i < pos.count; i++) {
@@ -775,7 +801,7 @@ const Bandera: React.FC<{ tex: THREE.Texture | null; p: THREE.Vector3; t: number
   pos.needsUpdate = true;
   geo.computeVertexNormals();
   return (
-    <group position={p}>
+    <group position={p} scale={grande ? 2 : 1}>
       <mesh position={[0, 0.6, 0]}>
         <cylinderGeometry args={[0.015, 0.015, 1.2, 8]} />
         <meshStandardMaterial color="#d8d8d8" metalness={0.8} roughness={0.3} />
@@ -789,9 +815,300 @@ const Bandera: React.FC<{ tex: THREE.Texture | null; p: THREE.Vector3; t: number
   );
 };
 
-const VolcanReal: React.FC<{ t: number; brasa: number; frontera: number; nube: number; flujos: number; vapor: number; fumarolas: number; lodo: number }> = ({ t, brasa, frontera, nube, flujos, vapor, fumarolas, lodo }) => {
+// ---------- bosque ligero: muchos arbolitos en una sola geometría (no pesa) ----------
+const bosqueGeo = (pts: { x: number; y: number; z: number; s: number; c: THREE.Color }[]) => {
+  const geos: THREE.BufferGeometry[] = [];
+  const cono = new THREE.ConeGeometry(0.34, 1, 6, 1);
+  cono.translate(0, 0.62, 0);
+  const tronco = new THREE.CylinderGeometry(0.06, 0.08, 0.2, 4, 1);
+  tronco.translate(0, 0.1, 0);
+  pts.forEach((p) => {
+    [cono, tronco].forEach((base, j) => {
+      const g = base.clone();
+      g.scale(p.s, p.s, p.s);
+      g.translate(p.x, p.y, p.z);
+      const c = j === 0 ? p.c : new THREE.Color('#4a3a2a');
+      const col = new Float32Array(g.attributes.position.count * 3);
+      for (let i = 0; i < g.attributes.position.count; i++) col.set([c.r, c.g, c.b], i * 3);
+      g.setAttribute('color', new THREE.BufferAttribute(col, 3));
+      g.deleteAttribute('uv');
+      geos.push(g);
+    });
+  });
+  const total = geos.reduce((n, g) => n + g.attributes.position.count, 0);
+  const pos = new Float32Array(total * 3);
+  const nor = new Float32Array(total * 3);
+  const col = new Float32Array(total * 3);
+  let o = 0;
+  const idx: number[] = [];
+  geos.forEach((g) => {
+    pos.set(g.attributes.position.array as Float32Array, o * 3);
+    nor.set(g.attributes.normal.array as Float32Array, o * 3);
+    col.set(g.attributes.color.array as Float32Array, o * 3);
+    const ii = g.index!.array;
+    for (let i = 0; i < ii.length; i++) idx.push(ii[i] + o);
+    o += g.attributes.position.count;
+  });
+  const out = new THREE.BufferGeometry();
+  out.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+  out.setAttribute('normal', new THREE.BufferAttribute(nor, 3));
+  out.setAttribute('color', new THREE.BufferAttribute(col, 3));
+  out.setIndex(idx);
+  return out;
+};
+const VERDES = ['#2f5a26', '#3a6a2c', '#27481f', '#466e30', '#33552a'].map((c) => new THREE.Color(c));
+
+// ---------- frontera en el Tacaná: la brecha (franja sin árboles) en línea recta por la cima ----------
+// Tratado de 1882: recta que pasa por la cima, rumbo aprox. NNO–SSE (Natural Earth 10m).
+const RUMBO_FR = (330 * Math.PI) / 180;
+const DIR_FR = { x: Math.sin(RUMBO_FR), z: -Math.cos(RUMBO_FR) }; // hacia el NNO (z negativo = norte)
+const PERP_FR = { x: -DIR_FR.z, z: DIR_FR.x }; // hacia el ENE (Guatemala); el lado contrario es México
+const distFrontera = (x: number, z: number) => x * PERP_FR.x + z * PERP_FR.z;
+const brechaGeo = (largo: number) => {
+  const n = 220;
+  const pos: number[] = [];
+  const idx: number[] = [];
+  const ancho = 0.045;
+  for (let i = 0; i <= n; i++) {
+    const s = -largo + (2 * largo * i) / n;
+    [-1, 1].forEach((lado) => {
+      const x = DIR_FR.x * s + PERP_FR.x * lado * ancho;
+      const z = DIR_FR.z * s + PERP_FR.z * lado * ancho;
+      pos.push(x, alturaVolcan(x, z) + 0.012, z);
+    });
+    if (i < n) {
+      const a = i * 2;
+      idx.push(a, a + 1, a + 2, a + 1, a + 3, a + 2);
+    }
+  }
+  const g = new THREE.BufferGeometry();
+  g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
+  g.setIndex(idx);
+  g.computeVertexNormals();
+  return g;
+};
+const BRECHA_L = 9.5;
+const brechaCompleta = brechaGeo(BRECHA_L);
+const mojoneras = Array.from({ length: 15 }, (_, i) => {
+  const s = (i - 7) * 1.25;
+  const x = DIR_FR.x * s;
+  const z = DIR_FR.z * s;
+  return { s, p: P(x, alturaVolcan(x, z), z) };
+});
+// árboles en las laderas del Tacaná (bosque de niebla y pinos), sin tocar la brecha
+const bosqueTacana = (() => {
+  const pts: { x: number; y: number; z: number; s: number; c: THREE.Color }[] = [];
+  for (let i = 0; pts.length < 3800 && i < 30000; i++) {
+    const x = (rnd(i * 2.1 + 0.3) - 0.5) * 17;
+    const z = (rnd(i * 3.7 + 0.9) - 0.5) * 17;
+    const y = alturaVolcan(x, z);
+    const k = y / ALTO_TACANA;
+    if (k < 0.04 || k > 0.8) continue;
+    if (Math.abs(distFrontera(x, z)) < 0.09) continue;
+    if (Math.hypot(x, z) > 8.6) continue;
+    // menos árboles muy arriba (pastizal) y en las laderas más empinadas
+    const e = 0.04;
+    const pend = Math.hypot(alturaVolcan(x + e, z) - alturaVolcan(x - e, z), alturaVolcan(x, z + e) - alturaVolcan(x, z - e)) / (2 * e);
+    if (pend > 1.6 || rnd(i * 5.3) < k * 0.9) continue;
+    const c = VERDES[Math.floor(rnd(i * 7.7) * VERDES.length)].clone();
+    if (k > 0.55) c.lerp(new THREE.Color('#3c4a30'), 0.6); // pinos más oscuros arriba
+    pts.push({ x, y: y - 0.01, z, s: 0.1 + rnd(i * 9.1) * 0.08, c });
+  }
+  return bosqueGeo(pts);
+})();
+
+// mar de nubes: algodón bajo la cima (las fotos desde el Tacaná)
+const MarNubes: React.FC<{ t: number; centro: THREE.Vector3; rMin: number; rMax: number; y: number; n: number; o: number; tam: number; color?: string; plano?: boolean }> = ({ t, centro, rMin, rMax, y, n, o, tam, color = '#ffffff', plano }) => {
+  if (!humoTex || o <= 0) return null;
+  return (
+    <group>
+      {Array.from({ length: n }, (_, i) => {
+        const a = i * AUREO + t * 0.008;
+        const r = rMin + Math.sqrt(rnd(i * 4.1)) * (rMax - rMin);
+        const yy = y + (rnd(i * 6.3) - 0.5) * tam * (plano ? 0.06 : 0.18);
+        const s = tam * (0.7 + rnd(i * 2.9) * 0.7);
+        return (
+          <sprite key={i} position={[centro.x + Math.cos(a) * r, yy, centro.z + Math.sin(a) * r]} scale={[s * 1.6, s * (plano ? 0.32 : 0.75), 1]}>
+            <spriteMaterial map={humoTex} color={i % 4 ? color : '#e6ecf4'} transparent opacity={o * (0.55 + rnd(i * 8.8) * 0.35)} depthWrite={false} rotation={rnd(i) * 0.4 - 0.2} />
+          </sprite>
+        );
+      })}
+    </group>
+  );
+};
+
+// ---------- región Tacaná–Tajumulco: pueblos, frontera, bosques y nubes (relieve real) ----------
+const REG_W = 32;
+const REG_H = (REG_W * REGION.kmh) / REGION.kmw;
+const REG_KM = REGION.kmw / REG_W; // km por unidad
+const REG_EXAG = 1.7;
+const region = (() => {
+  const { nx, ny } = REGION;
+  const b = atob(REGION.alt);
+  const a = new Uint16Array(nx * ny);
+  for (let i = 0; i < nx * ny; i++) a[i] = b.charCodeAt(i * 2) | (b.charCodeAt(i * 2 + 1) << 8);
+  const metros = (x: number, z: number) => {
+    const fx = Math.min(nx - 1.001, Math.max(0, (x / REG_W + 0.5) * (nx - 1)));
+    const fz = Math.min(ny - 1.001, Math.max(0, (z / REG_H + 0.5) * (ny - 1)));
+    const c = Math.floor(fx);
+    const r = Math.floor(fz);
+    const u = fx - c;
+    const v = fz - r;
+    const m = (rr: number, cc: number) => a[rr * nx + cc];
+    return m(r, c) * (1 - u) * (1 - v) + m(r, c + 1) * u * (1 - v) + m(r + 1, c) * (1 - u) * v + m(r + 1, c + 1) * u * v;
+  };
+  const alto = (m: number) => (m / 1000 / REG_KM) * REG_EXAG;
+  // las orillas bajan suave a la planicie para que no se vea el corte de la maqueta
+  const orilla = (x: number, z: number) => {
+    const d = Math.min(REG_W / 2 - Math.abs(x), REG_H / 2 - Math.abs(z));
+    const k = Math.min(1, Math.max(0, d / 1.6));
+    return k * k * (3 - 2 * k);
+  };
+  const altura = (x: number, z: number) => 0.1 + (alto(metros(x, z)) - 0.1) * orilla(x, z);
+  const uv = (u: number, v: number) => {
+    const x = (u - 0.5) * REG_W;
+    const z = (v - 0.5) * REG_H;
+    return P(x, altura(x, z), z);
+  };
+  const pueblos = Object.entries(REGION.pueblos).map(([nombre, [u, v, pais]]) => ({ nombre, pais: pais as string, p: uv(u as number, v as number) }));
+  const radio: Record<string, number> = { Tapachula: 0.85, 'San Marcos': 0.55, Cacahoatán: 0.28, 'Tuxtla Chico': 0.26 };
+  const g = new THREE.PlaneGeometry(REG_W, REG_H, nx - 1, ny - 1);
+  g.rotateX(-Math.PI / 2);
+  const pos = g.attributes.position;
+  for (let i = 0; i < pos.count; i++) pos.setY(i, altura(pos.getX(i), pos.getZ(i)));
+  g.computeVertexNormals();
+  const nor = g.attributes.normal;
+  const C = (h: string) => new THREE.Color(h);
+  const campos = ['#6f8a3c', '#7d9446', '#5e7e34', '#8a9a52', '#668a3a', '#4f7a30'].map(C);
+  const col: number[] = [];
+  for (let i = 0; i < pos.count; i++) {
+    const x = pos.getX(i);
+    const z = pos.getZ(i);
+    const m = metros(x, z);
+    const inc = 1 - nor.getY(i);
+    const ruido = rnd(Math.floor(x * 14) * 977 + Math.floor(z * 14)) * 0.5 + 0.5;
+    let c: THREE.Color;
+    if (m < 700) c = campos[Math.floor(rnd(Math.floor(x * 2.2) * 313 + Math.floor(z * 2.6) * 7) * campos.length)].clone();
+    else if (m < 1900) c = C('#3c6630').lerp(C('#2f5426'), (m - 700) / 1200);
+    else if (m < 2900) c = C('#2f5426').lerp(C('#3e5a30'), (m - 1900) / 1000);
+    else if (m < 3600) c = C('#3e5a30').lerp(C('#6e6a48'), (m - 2900) / 700);
+    else c = C('#6e6a48').lerp(C('#7a7068'), Math.min(1, (m - 3600) / 500));
+    // altiplano de San Marcos: milpas y potreros
+    if (m > 2200 && m < 2700 && x > 4) c.lerp(campos[Math.floor(rnd(Math.floor(x * 3) * 11 + Math.floor(z * 3)) * campos.length)], 0.45);
+    c.lerp(C('#5a514a'), Math.min(0.5, Math.max(0, inc - 0.25) * 1.3));
+    pueblos.forEach((pb) => {
+      const r = radio[pb.nombre] ?? 0.16;
+      const d = Math.hypot(x - pb.p.x, z - pb.p.z) / r;
+      if (d < 1) c.lerp(C(rnd(Math.floor(x * 40) * 31 + Math.floor(z * 40)) > 0.5 ? '#b8ab98' : '#9a8e80'), (1 - d * d) * 0.85);
+    });
+    c.multiplyScalar(0.85 + ruido * 0.25);
+    col.push(c.r, c.g, c.b);
+  }
+  g.setAttribute('color', new THREE.Float32BufferAttribute(col, 3));
+  const tacana = uv(REGION.cimas.tacana[0], REGION.cimas.tacana[1]);
+  const tajumulco = uv(REGION.cimas.tajumulco[0], REGION.cimas.tajumulco[1]);
+  const frontera = REGION.frontera.map(([u, v]) => uv(u, v).add(P(0, 0.05, 0)));
+  // árboles: cafetales y bosques en las laderas, nada en pueblos ni en la brecha
+  const pts: { x: number; y: number; z: number; s: number; c: THREE.Color }[] = [];
+  for (let i = 0; pts.length < 2600 && i < 30000; i++) {
+    const x = (rnd(i * 1.7 + 0.11) - 0.5) * REG_W * 0.98;
+    const z = (rnd(i * 2.3 + 0.57) - 0.5) * REG_H * 0.98;
+    const m = metros(x, z);
+    if (m < 650 || m > 3500) continue;
+    if (pueblos.some((pb) => Math.hypot(x - pb.p.x, z - pb.p.z) < (radio[pb.nombre] ?? 0.16) * 1.3)) continue;
+    if (rnd(i * 3.3) < (m > 2900 ? 0.6 : 0.15)) continue;
+    const c = VERDES[Math.floor(rnd(i * 5.9) * VERDES.length)].clone();
+    pts.push({ x, y: altura(x, z) - 0.01, z, s: 0.14 + rnd(i * 4.4) * 0.1, c });
+  }
+  return { g, altura, uv, pueblos, tacana, tajumulco, frontera, bosque: bosqueGeo(pts) };
+})();
+
+const RegionTacana: React.FC<{ t: number; trazo: number; pueblosO: number; paisesO: { mx: number; gt: number }; nubes: number; cimasO: number; soloTajumulco?: boolean; tex: Record<string, THREE.Texture | null> }> = ({ t, trazo, pueblosO, paisesO, nubes, cimasO, soloTajumulco, tex }) => {
   const banderas = useMemo(() => ({ mx: bandera('mx'), gt: bandera('gt') }), []);
-  const nFr = Math.floor(fronteraPts.length * frontera);
+  // la línea se dibuja desde la cima hacia los dos lados
+  const iCima = region.frontera.reduce((b, p, i) => (p.distanceTo(region.tacana) < region.frontera[b].distanceTo(region.tacana) ? i : b), 0);
+  const n = region.frontera.length;
+  const a0 = Math.max(0, Math.round(iCima - trazo * iCima));
+  const a1 = Math.min(n - 1, Math.round(iCima + trazo * (n - 1 - iCima)));
+  const tramo = region.frontera.slice(a0, a1 + 1);
+  return (
+    <group>
+      <mesh geometry={region.g} receiveShadow castShadow>
+        <meshStandardMaterial vertexColors map={detalleTex} roughness={0.95} envMapIntensity={0.2} />
+      </mesh>
+      <mesh geometry={region.bosque} castShadow>
+        <meshStandardMaterial vertexColors roughness={0.9} />
+      </mesh>
+      {/* fuera de la maqueta: el horizonte */}
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.09, 0]}>
+        <ringGeometry args={[REG_H / 2 - 0.3, 160, 64]} />
+        <meshStandardMaterial color="#5e7a40" roughness={1} />
+      </mesh>
+      {tramo.length > 1 && (
+        <>
+          <mesh>
+            <tubeGeometry args={[new THREE.CatmullRomCurve3(tramo), tramo.length * 3, 0.05, 6, false]} />
+            <meshBasicMaterial color="#ffe14d" toneMapped={false} />
+          </mesh>
+          <mesh>
+            <tubeGeometry args={[new THREE.CatmullRomCurve3(tramo), tramo.length * 3, 0.14, 6, false]} />
+            <meshBasicMaterial color="#ffd23a" transparent opacity={0.28} toneMapped={false} depthWrite={false} />
+          </mesh>
+        </>
+      )}
+      {/* la línea también se ve "invisible": un brillo que corre por ella */}
+      {trazo >= 1 && (
+        <Brillo p={region.frontera[Math.floor(((t * 0.25) % 1) * (n - 1))].toArray() as [number, number, number]} tam={1.2} color="#fff2a0" o={0.8} />
+      )}
+      {paisesO.mx > 0 && (
+        <>
+          <Bandera grande tex={banderas.mx} p={region.tacana.clone().add(P(-4.2, -2.2, 1.5)).setY(region.altura(region.tacana.x - 4.2, region.tacana.z + 1.5))} t={t} fase={0} />
+          <Etiqueta tex={tex.mx} position={region.uv(0.22, 0.42).add(P(0, 2.2, 0))} alto={1.0} o={paisesO.mx} />
+        </>
+      )}
+      {paisesO.gt > 0 && (
+        <>
+          <Bandera grande tex={banderas.gt} p={region.tacana.clone().add(P(3.6, 0, -1.6)).setY(region.altura(region.tacana.x + 3.6, region.tacana.z - 1.6))} t={t} fase={1.3} />
+          <Etiqueta tex={tex.gt} position={region.uv(0.7, 0.38).add(P(0, 2.4, 0))} alto={1.0} o={paisesO.gt} />
+        </>
+      )}
+      {region.pueblos.map((pb, i) => {
+        const o = Math.min(1, Math.max(0, pueblosO * 1.6 - i * 0.09));
+        if (o <= 0) return null;
+        const alto = pb.nombre === 'Tapachula' || pb.nombre === 'San Marcos' ? 0.62 : 0.5;
+        return (
+          <group key={pb.nombre}>
+            <mesh position={[pb.p.x, pb.p.y + 0.35 * o, pb.p.z]}>
+              <cylinderGeometry args={[0.02, 0.02, 0.7 * o, 6]} />
+              <meshBasicMaterial color="#ffffff" />
+            </mesh>
+            <mesh position={[pb.p.x, pb.p.y + 0.75 * o, pb.p.z]}>
+              <sphereGeometry args={[0.11, 16, 12]} />
+              <meshStandardMaterial color={pb.pais === 'mx' ? '#e0262f' : '#2f7fd0'} emissive={pb.pais === 'mx' ? '#801010' : '#103a80'} roughness={0.4} />
+            </mesh>
+            <Etiqueta tex={tex[pb.nombre]} position={[pb.p.x, pb.p.y + 1.25, pb.p.z]} alto={alto} o={o} />
+          </group>
+        );
+      })}
+      <Etiqueta tex={tex.tacanaR} position={region.tacana.clone().add(P(0, 1.2, 0))} alto={0.7} o={soloTajumulco ? 0 : cimasO} />
+      <Etiqueta tex={tex.tajumulco} position={region.tajumulco.clone().add(P(0, 0.75, 0))} alto={0.5} o={cimasO} />
+      <MarNubes t={t} centro={P(0, 0, 0)} rMin={0} rMax={17} y={(2300 / 1000 / REG_KM) * REG_EXAG} n={220} o={nubes} tam={2.2} plano />
+    </group>
+  );
+};
+
+const VolcanReal: React.FC<{ t: number; brasa: number; frontera: number; nube: number; flujos: number; vapor: number; fumarolas: number; lodo: number; texMx?: THREE.Texture | null; texGt?: THREE.Texture | null }> = ({ t, brasa, frontera, nube, flujos, vapor, fumarolas, lodo, texMx = null, texGt = null }) => {
+  const banderas = useMemo(() => ({ mx: bandera('mx'), gt: bandera('gt') }), []);
+  // la brecha se abre desde la cima hacia los dos lados
+  const largo = BRECHA_L * frontera;
+  const brecha = useMemo(() => brechaCompleta.clone(), []);
+  if (frontera > 0) {
+    const n = brecha.index!.count / 6;
+    const visibles = Math.round(((largo / BRECHA_L) * n) / 2);
+    brecha.setDrawRange((Math.floor(n / 2) - visibles) * 6, visibles * 12);
+  }
+  const mxP = P(PERP_FR.x * -1.15 + 0.2, 0, PERP_FR.z * -1.15 + 0.9);
+  const gtP = P(PERP_FR.x * 1.15 + 0.2, 0, PERP_FR.z * 1.15 + 0.9);
   const cima = P(0, ALTO_TACANA, 0);
   return (
     <group>
@@ -811,20 +1128,32 @@ const VolcanReal: React.FC<{ t: number; brasa: number; frontera: number; nube: n
           <pointLight position={[0, ALTO_TACANA + 0.4, 0]} color="#ff6a1a" intensity={brasa * 25} distance={6} />
         </>
       )}
-      {/* frontera México | Guatemala */}
-      {frontera > 0 &&
-        fronteraPts.slice(0, nFr).map((p, i) =>
-          i % 3 === 0 ? (
-            <mesh key={i} position={p}>
-              <boxGeometry args={[0.05, 0.03, 0.09]} />
-              <meshBasicMaterial color="#ffffff" toneMapped={false} />
-            </mesh>
-          ) : null,
-        )}
+      {/* bosque ligero en las laderas */}
+      <mesh geometry={bosqueTacana} castShadow receiveShadow>
+        <meshStandardMaterial vertexColors roughness={0.9} />
+      </mesh>
+      {/* frontera México | Guatemala: la brecha sin árboles y las mojoneras blancas */}
+      {frontera > 0 && (
+        <>
+          <mesh geometry={brecha} receiveShadow>
+            <meshStandardMaterial color="#9fbf6a" roughness={0.95} polygonOffset polygonOffsetFactor={-2} />
+          </mesh>
+          {mojoneras.map((m, i) =>
+            Math.abs(m.s) <= largo ? (
+              <mesh key={i} position={[m.p.x, m.p.y + (m.s === 0 ? 0.09 : 0.05), m.p.z]}>
+                <boxGeometry args={m.s === 0 ? [0.06, 0.18, 0.06] : [0.035, 0.1, 0.035]} />
+                <meshStandardMaterial color="#f4f4f0" emissive="#555" roughness={0.6} />
+              </mesh>
+            ) : null,
+          )}
+        </>
+      )}
       {frontera > 0.6 && (
         <>
-          <Bandera tex={banderas.mx} p={P(-1.6, alturaVolcan(-1.6, 0.8), 0.8)} t={t} fase={0} />
-          <Bandera tex={banderas.gt} p={P(1.7, alturaVolcan(1.7, 0.6), 0.6)} t={t} fase={1.3} />
+          <Bandera tex={banderas.mx} p={P(mxP.x, alturaVolcan(mxP.x, mxP.z), mxP.z)} t={t} fase={0} />
+          <Bandera tex={banderas.gt} p={P(gtP.x, alturaVolcan(gtP.x, gtP.z), gtP.z)} t={t} fase={1.3} />
+          <Etiqueta tex={texMx} position={P(mxP.x, alturaVolcan(mxP.x, mxP.z) + 1.55, mxP.z)} alto={0.36} o={Math.min(1, (frontera - 0.6) * 4)} />
+          <Etiqueta tex={texGt} position={P(gtP.x, alturaVolcan(gtP.x, gtP.z) + 1.55, gtP.z)} alto={0.36} o={Math.min(1, (frontera - 0.6) * 4)} />
         </>
       )}
       {/* erupción fuerte: columna de ceniza y nubes de fuego bajando */}
@@ -1011,7 +1340,7 @@ export const EPISODIOS: Episodio[] = [
     ],
   },
   {
-    orden: [7, 6, 7, 6, 7, 0, 11, 1, 11],
+    orden: [7, 6, 14, 6, 14, 0, 11, 1, 11],
     rotulos: [
       { l: 0, w: 'dos', texto: '¿DOS PAÍSES A LA VEZ?', big: true, color: '#ffd84d' },
       { l: 1, w: 'segundo', texto: '2º PICO MÁS ALTO DE CENTROAMÉRICA', fondo: '#133621', fila: 1 },
@@ -1078,6 +1407,9 @@ export const Tacana: React.FC<Tiempos & { ep?: Episodio }> = ({ voz, inicios, pa
   let esc = s.filter((x) => t >= x).length - 1;
   // episodios: cada línea (o grupo de líneas seguidas con la misma escena) usa su escena del mundo 3D
   let tCard = 0;
+  let trA = 0;
+  let trB = 0;
+  let regN = 0;
   let tramos: { a: number; b: number; e: number; l0: number; l1: number }[] = [];
   if (ep) {
     const finVoz = palabras.length ? palabras[palabras.length - 1].t + 0.8 : 60;
@@ -1096,6 +1428,9 @@ export const Tacana: React.FC<Tiempos & { ep?: Episodio }> = ({ voz, inicios, pa
     });
     const tr = tramos.filter((x) => t >= x.a).pop() ?? tramos[0];
     esc = tr.e;
+    trA = tr.a;
+    trB = tr.b;
+    regN = tramos.filter((x) => x.e === 14 && x.a < tr.a).length;
     for (let i = 0; i < 14; i++) s[i] = i < esc ? tr.a : i === esc ? tr.a : tr.b;
     s[13] = esc === 12 ? Math.max(tr.b, tCard) : tCard;
     if (esc === 12) s[12] = tr.a;
@@ -1107,7 +1442,14 @@ export const Tacana: React.FC<Tiempos & { ep?: Episodio }> = ({ voz, inicios, pa
     () => ({
       pacifico: etiqueta('OCÉANO PACÍFICO'),
       cocos: etiqueta('PLACA DE COCOS', '#cfeaff'),
-      continente: etiqueta('CONTINENTE'),
+      continente: etiqueta('PLACA NORTEAMERICANA'),
+      mx: etiqueta('MÉXICO · CHIAPAS', '#ffffff', 'rgba(0,80,50,0.85)', '#ffffff'),
+      gt: etiqueta('GUATEMALA · SAN MARCOS', '#ffffff', 'rgba(30,100,170,0.85)', '#ffffff'),
+      mxCorto: etiqueta('MÉXICO', '#ffffff', 'rgba(0,80,50,0.85)', '#ffffff'),
+      gtCorto: etiqueta('GUATEMALA', '#ffffff', 'rgba(30,100,170,0.85)', '#ffffff'),
+      tacanaR: etiqueta('VOLCÁN TACANÁ', '#ffd08a', 'rgba(60,12,0,0.8)', FUEGO),
+      tajumulco: etiqueta('VOLCÁN TAJUMULCO', '#ffd08a', 'rgba(60,12,0,0.8)', FUEGO),
+      ...Object.fromEntries(Object.entries(REGION.pueblos).map(([n, v]) => [n, etiqueta(n, '#ffffff', v[2] === 'mx' ? 'rgba(90,10,14,0.82)' : 'rgba(10,40,90,0.82)', '#ffffff')])),
       magma: etiqueta('MAGMA', '#ffd08a', 'rgba(60,12,0,0.8)', FUEGO),
       tacana: etiqueta('VOLCÁN TACANÁ', '#ffd08a', 'rgba(60,12,0,0.8)', FUEGO),
       chiapas: etiqueta('CHIAPAS'),
@@ -1122,6 +1464,7 @@ export const Tacana: React.FC<Tiempos & { ep?: Episodio }> = ({ voz, inicios, pa
   const mapa = (esc === 0 && t < tTacana + 0.2 && (!ep || ep.orden[0] === 0)) || esc === 11 || esc === 12;
   const diorama = esc >= 2 && esc <= 5;
   const real = !mapa && !diorama && esc <= 10;
+  const reg = esc === 14;
 
   // cielo
   let cielo = cieloEntre('atardecer', 'atardecer', 0);
@@ -1138,7 +1481,8 @@ export const Tacana: React.FC<Tiempos & { ep?: Episodio }> = ({ voz, inicios, pa
   if (esc === 9) cielo = cieloEntre('amanecer', 'dia', k(s[9], s[10]));
   const lluviaF = esc === 10 ? k(s[10], s[10] + 1.5) * (1 - k(W('vida', s[10], s[10] + 3), W('vida', s[10], s[10] + 3) + 1.5) * 0.6) : 0;
   if (esc === 10) cielo = nublar(cieloEntre('dia', 'dia', 0), lluviaF * 0.9);
-  if (esc >= 11) cielo = cieloEntre('dia', 'atardecer', k(s[11], s[13]));
+  if (esc >= 11 && esc <= 13) cielo = cieloEntre('dia', 'atardecer', k(s[11], s[13]));
+  if (reg) cielo = cieloEntre('dia', 'dia', 0);
 
   // momentos clave
   const tMagma = W('magma', s[3], s[3] + 5);
@@ -1152,14 +1496,14 @@ export const Tacana: React.FC<Tiempos & { ep?: Episodio }> = ({ voz, inicios, pa
   const tVivo = W('vivo', s[1], s[2] - 1);
   const tMil = W('mil', s[6], s[6] + 2);
   const metros = esc === 6 ? Math.round(4060 * Math.min(1, k(s[6] + 0.2, tMil + 0.6))) : 0;
-  const frontera = esc === 7 ? k(W('línea', s[7], s[7] + 2) - 0.2, W('guatemala', s[7], s[8] - 0.5)) : 0;
+  const frontera = esc === 7 ? (ep ? k(trA + 0.3, trA + 2.6) : k(W('línea', s[7], s[7] + 2) - 0.2, W('guatemala', s[7], s[8] - 0.5))) : 0;
   const nube = esc === 8 ? k(s[8] + 0.6, s[8] + 2) : 0;
   const flujos = esc === 8 ? k(W('nubes', s[8], s[8] + 4) - 0.2, s[9] - 0.5) : 0;
   const tVapor = W('explosión', s[9], s[9] + 5);
   const vapor = esc === 9 ? k(tVapor - 0.3, tVapor + 0.3) * (1 - k(tVapor + 3, tVapor + 4)) : 0;
   const fumarolas = esc === 9 ? k(W('fumarolas', s[9], s[9] + 7) - 0.5, W('fumarolas', s[9], s[9] + 7) + 0.5) : esc === 10 ? 1 : 0;
   const lodo = esc === 10 ? k(W('ceniza', s[10], s[10] + 4), s[11] - 0.5) : 0;
-  const brasa = ep && !ep.brasa ? 0 : esc === 0 ? (ep ? 1 : k(tFuego - 0.3, tFuego + 0.4)) : esc === 1 ? 1 : esc >= 6 && esc <= 9 ? 0.25 : 0;
+  const brasa = ep && !ep.brasa ? 0 : esc === 14 ? 0 : esc === 0 ? (ep ? 1 : k(tFuego - 0.3, tFuego + 0.4)) : esc === 1 ? 1 : esc >= 6 && esc <= 9 ? 0.25 : 0;
 
   // cámara
   let pos = P(0, 6, 14);
@@ -1188,8 +1532,10 @@ export const Tacana: React.FC<Tiempos & { ep?: Episodio }> = ({ voz, inicios, pa
     const l = t - s[esc];
     if (esc === 2) {
       const x = k(s[2], s[3]);
-      pos = lerp(P(-9, 4, 14), P(-3, 1.5, 12), x);
-      mira = lerp(P(-2, -1, -2), P(0, -2.2, -1), x);
+      // el corte completo: el mar, la placa de Cocos que se hunde y el continente que se queda
+      const lejos = vert ? 1 : tipo === 'cuadrado' ? 0.85 : 0.68;
+      pos = lerp(P(-5, 7, 36 * lejos), P(-1, 3, 30 * lejos), x);
+      mira = lerp(P(-1.5, -3.2, -2), P(-0.5, -3.6, -2), x);
     } else if (esc === 3) {
       const x = k(s[3], s[4]);
       pos = lerp(P(-1, -0.5, 11), P(3.5, -3.6, 6.5), x);
@@ -1237,6 +1583,36 @@ export const Tacana: React.FC<Tiempos & { ep?: Episodio }> = ({ voz, inicios, pa
       const x = k(s[10], s[11]);
       pos = lerp(P(-6, 6, 9), P(-12, 4, 16), x);
       mira = lerp(P(0, 2, 0), P(-2, 0.5, 4), x);
+    }
+  }
+  // región: la línea por la cima, los dos países, los pueblos y el Tajumulco sobre el mar de nubes
+  let trazo = 0;
+  let paisesO = { mx: 0, gt: 0 };
+  let pueblosO = 0;
+  let cimasO = 0;
+  let nubesReg = 0;
+  if (reg) {
+    const x = k(trA, trB);
+    if (regN === 0) {
+      const tCh = W('chiapas', trA, trA + 3);
+      const tGt = W('guatemala', trA, trA + 5);
+      trazo = k(trA + 0.2, tCh);
+      paisesO = { mx: k(tCh - 0.2, tCh + 0.4), gt: k(tGt - 0.2, tGt + 0.4) };
+      pueblosO = k(tGt + 0.4, trB - 0.3);
+      cimasO = k(trA + 0.3, trA + 1);
+      const e = Easing.inOut(Easing.cubic)(x);
+      pos = lerp(region.tacana.clone().add(P(-2.2, 2.6, 4.2)), P(-1.5, 19, 20.5), e);
+      mira = lerp(region.tacana, P(0.8, 0, -0.5), e);
+    } else {
+      trazo = 0;
+      paisesO = { mx: 0, gt: 0 };
+      pueblosO = 0;
+      cimasO = k(W('tajumulco', trA, trA + 4) - 0.3, W('tajumulco', trA, trA + 4) + 0.3);
+      nubesReg = 1;
+      // parado en la cima del Tacaná, mirando al oriente: el Tajumulco asoma sobre las nubes
+      pos = region.tacana.clone().add(P(-1.4 + x * 0.6, 0.75 + x * 0.25, 1.1 - x * 0.3));
+      fovE = fov * 0.6;
+      mira = lerp(region.tacana.clone().add(P(3, 0, 0)), region.tajumulco.clone().add(P(0, 0.6, 0)), Easing.inOut(Easing.cubic)(k(trA, trA + 2.5)));
     }
   }
   if (temblor > 0) pos.add(P(Math.sin(t * 47) * 0.12 * temblor, Math.cos(t * 53) * 0.1 * temblor, 0));
@@ -1289,15 +1665,23 @@ export const Tacana: React.FC<Tiempos & { ep?: Episodio }> = ({ voz, inicios, pa
         {diorama && (
           <group>
             <Diorama t={t} fundir={fundir} subir={subir} crece={crece} erupcion={erupcion} corte={1} />
-            <Etiqueta tex={etiquetas.pacifico} position={P(-7, 0.8, -1)} alto={0.55} o={esc === 2 ? k(s[2] + 0.5, s[2] + 1.2) : 0} />
-            <Etiqueta tex={etiquetas.cocos} position={P(-5, -2.6, 0.3)} alto={0.55} o={esc === 2 ? k(W('cocos', s[2], s[2] + 4) - 0.2, W('cocos', s[2], s[2] + 4) + 0.3) : 0} />
-            <Etiqueta tex={etiquetas.continente} position={P(7, 0.9, -1)} alto={0.55} o={esc === 2 ? k(W('continente', s[2], s[3] - 1) - 0.2, W('continente', s[2], s[3] - 1) + 0.3) : 0} />
+            <Etiqueta tex={etiquetas.pacifico} position={P(-6.5, 1.4, -1)} alto={vert ? 1.05 : 0.8} o={esc === 2 ? k(s[2] + 0.5, s[2] + 1.2) : 0} />
+            <Etiqueta tex={etiquetas.cocos} position={P(-5.5, -2.9, 0.3)} alto={vert ? 1.05 : 0.8} o={esc === 2 ? k(W('cocos', s[2], s[2] + 4) - 0.2, W('cocos', s[2], s[2] + 4) + 0.3) : 0} />
+            <Etiqueta tex={etiquetas.continente} position={P(3.6, 1.6, -1)} alto={vert ? 1.05 : 0.8} o={esc === 2 ? k(W('continente', s[2], s[3] - 1) - 0.2, W('continente', s[2], s[3] - 1) + 0.3) : 0} />
             <Etiqueta tex={etiquetas.magma} position={P(3.8, -3.2, 0.3)} alto={0.45} o={esc === 3 ? k(tMagma - 0.2, tMagma + 0.3) : esc === 4 ? 1 - k(s[4] + 1, s[4] + 1.6) : 0} />
+          </group>
+        )}
+        {reg && (
+          <group>
+            <fog attach="fog" args={['#cfdbe6', 28, 95]} />
+            <RegionTacana t={t} trazo={trazo} pueblosO={pueblosO} paisesO={paisesO} nubes={nubesReg} cimasO={cimasO} soloTajumulco={regN > 0} tex={etiquetas as unknown as Record<string, THREE.Texture | null>} />
+            <Nubes t={t} n={6} altura={12} dist={40} ancho={120} opacidad={0.6} tam={0.5} />
           </group>
         )}
         {real && (
           <group>
-            <VolcanReal t={t} brasa={brasa} frontera={esc === 7 ? frontera : 0} nube={nube} flujos={flujos} vapor={vapor} fumarolas={fumarolas} lodo={lodo} />
+            <VolcanReal t={t} brasa={brasa} frontera={esc === 7 ? frontera : 0} nube={nube} flujos={flujos} vapor={vapor} fumarolas={fumarolas} lodo={lodo} texMx={etiquetas.mxCorto} texGt={etiquetas.gtCorto} />
+            {(esc === 6 || esc === 7) && <MarNubes t={t} centro={P(0, 0, 0)} rMin={4.2} rMax={15} y={ALTO_TACANA * 0.4} n={80} o={0.75} tam={2.6} />}
             {esc !== 8 && <Nubes t={t} n={6} altura={9} dist={30} ancho={90} opacidad={0.6} tam={0.4} />}
             {esc === 10 && <Lluvia t={t} fuerza={lluviaF} centro={pos.clone().add(P(0, -1, -3))} radio={6} alto={6} n={500} suelo={0} />}
           </group>
