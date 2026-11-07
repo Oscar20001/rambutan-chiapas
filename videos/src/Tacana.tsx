@@ -950,7 +950,80 @@ const Regla: React.FC<{ valor: string; sub: string; o: number; u: number; top: n
   ) : null;
 
 // ---------- video ----------
-export const Tacana: React.FC<Tiempos> = ({ voz, inicios, palabras }) => {
+// Episodios de la serie: qué escena del mundo 3D va con cada línea de la voz y qué rótulos salen.
+type Rotulo = { l: number; w?: string; texto: string; fondo?: string; color?: string; big?: boolean; fila?: number; giro?: number };
+export type Episodio = { orden: number[]; rotulos: Rotulo[]; brasa?: boolean };
+const FIN = { w: 'continuará', texto: 'CONTINUARÁ…', fondo: '#111', fila: 2 };
+export const EPISODIOS: Episodio[] = [
+  {
+    orden: [0, 1, 2, 3, 4, 5, 6, 7, 11],
+    brasa: true,
+    rotulos: [
+      { l: 0, w: 'tacaná', texto: 'TACANÁ', big: true },
+      { l: 0, w: 'fuego', texto: '🔥 CASA DE FUEGO', fondo: '#9b1c23', fila: 1, giro: 2 },
+      { l: 1, w: 'vivo', texto: '¡TODAVÍA ESTÁ VIVO!', color: '#ffb070', big: true },
+      { l: 2, texto: '🌊 TODO EMPEZÓ BAJO EL MAR', fondo: 'rgba(10,20,40,.8)' },
+      { l: 3, w: 'magma', texto: 'LA ROCA SE FUNDE: MAGMA', fondo: '#7a1c0c' },
+      { l: 4, w: 'reventar', texto: '¡ERUPCIÓN!', color: '#ffb070', big: true, giro: -4 },
+      { l: 5, w: 'estratovolcán', texto: 'ESTRATOVOLCÁN · CAPA SOBRE CAPA', fondo: '#3a2a20' },
+      { l: 7, w: 'países', texto: '¿QUÉ DOS PAÍSES? 👇', fondo: '#9b1c23' },
+      { l: 7, ...FIN },
+      { l: 8, w: 'rambután', texto: 'AQUÍ CRECE NUESTRO RAMBUTÁN', fondo: '#133621' },
+    ],
+  },
+  {
+    orden: [7, 6, 7, 6, 7, 0, 11, 1, 11],
+    rotulos: [
+      { l: 0, w: 'dos', texto: '¿DOS PAÍSES A LA VEZ?', big: true, color: '#ffd84d' },
+      { l: 1, w: 'segundo', texto: '2º PICO MÁS ALTO DE CENTROAMÉRICA', fondo: '#133621', fila: 1 },
+      { l: 2, w: 'chiapas', texto: '🇲🇽 CHIAPAS, MÉXICO', fondo: '#006847' },
+      { l: 2, w: 'guatemala', texto: 'SAN MARCOS, GUATEMALA 🇬🇹', fondo: '#4997d0', fila: 1, giro: 2 },
+      { l: 3, w: 'diez', texto: '⛰️ UNAS 10 HORAS DE SUBIDA', fondo: '#3a2a20' },
+      { l: 4, w: 'tajumulco', texto: 'SE VE EL TAJUMULCO, EL MÁS ALTO DE CENTROAMÉRICA', fondo: '#2a3a4a' },
+      { l: 5, w: 'reserva', texto: '🌳 RESERVA DE LA BIOSFERA', fondo: '#133621' },
+      { l: 6, w: 'soconusco', texto: '🌱 EL SOCONUSCO', fondo: '#133621' },
+      { l: 7, w: 'dormido', texto: 'NO ESTÁ DORMIDO…', color: '#ffb070', big: true },
+      { l: 7, w: 'despertó', texto: '¿CUÁNDO DESPERTÓ? 👇', fondo: '#9b1c23', fila: 1 },
+      { l: 7, ...FIN },
+    ],
+  },
+  {
+    orden: [8, 8, 1, 9, 9, 9, 0, 10, 11],
+    brasa: true,
+    rotulos: [
+      { l: 0, w: 'años', texto: 'HACE CASI 2,000 AÑOS', fondo: '#7a1c0c', big: true },
+      { l: 1, w: 'ceniza', texto: 'CENIZA · ROCA ARDIENTE · GAS', fondo: '#3a2a20' },
+      { l: 2, w: 'apagó', texto: '…PERO NUNCA SE APAGÓ', color: '#ffb070', big: true },
+      { l: 3, texto: '1855 · 1878 · 1949', fondo: '#2a3a4a' },
+      { l: 3, w: 'vapor', texto: 'EXPLOSIONES DE VAPOR', fondo: '#555', fila: 1 },
+      { l: 4, w: 'mayo', texto: '8 DE MAYO DE 1986', fondo: '#2a3a4a' },
+      { l: 4, w: 'boca', texto: 'UNA BOCA NUEVA A 3,800 M', fondo: '#7a1c0c', fila: 1 },
+      { l: 5, w: 'fumarolas', texto: '♨️ FUMAROLAS A 3,600 M', fondo: '#2a3a4a' },
+      { l: 5, w: 'termales', texto: 'AGUAS TERMALES', fondo: '#1d6a9a', fila: 1, giro: 2 },
+      { l: 6, w: 'vigilan', texto: '🔭 VIGILADO DÍA Y NOCHE', fondo: '#2a3a4a' },
+      { l: 7, w: 'vida', texto: 'EL FUEGO QUE LE DIO VIDA AL SOCONUSCO', fondo: '#133621' },
+      { l: 7, ...FIN },
+    ],
+  },
+  {
+    orden: [1, 8, 10, 10, 10, 10, 11, 11, 12, 11],
+    brasa: true,
+    rotulos: [
+      { l: 0, w: 'silencio', texto: 'DESPUÉS DEL FUEGO… SILENCIO', fondo: '#222' },
+      { l: 1, w: 'ceniza', texto: 'LA CENIZA LO CUBRIÓ TODO', fondo: '#3a2a20' },
+      { l: 2, w: 'lluvia', texto: '🌧️ LLEGÓ LA LLUVIA', fondo: '#2a3a4a', big: true },
+      { l: 3, w: 'ríos', texto: 'LOS RÍOS BAJARON CENIZA Y LODO', fondo: '#5a4632' },
+      { l: 4, w: 'volcánico', texto: 'SUELO VOLCÁNICO: DE LOS MÁS FÉRTILES', fondo: '#133621' },
+      { l: 5, w: 'lluviosas', texto: 'DE LAS REGIONES MÁS LLUVIOSAS DE MÉXICO', fondo: '#2a3a4a' },
+      { l: 6, w: 'rambután', texto: '¡Y RAMBUTÁN!', color: '#ff6b74', big: true },
+      { l: 7, w: 'fruta', texto: 'DEL FUEGO… A LA FRUTA', fondo: '#9b1c23' },
+      { l: 8, w: 'primeros', texto: '¿QUIÉNES FUERON LOS PRIMEROS? 👇', fondo: '#133621' },
+      { l: 8, ...FIN },
+    ],
+  },
+];
+
+export const Tacana: React.FC<Tiempos & { ep?: Episodio }> = ({ voz, inicios, palabras, ep }) => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
   const t = frame / fps;
@@ -963,7 +1036,31 @@ export const Tacana: React.FC<Tiempos> = ({ voz, inicios, palabras }) => {
   const fin = palabras.length ? palabras[palabras.length - 1].t + 0.8 : s[13];
   s[13] = Math.max(s[12] + 3, fin);
   const W = (p: string, desde = 0, otro = 0) => cuando(palabras, p, desde, otro);
-  const esc = s.filter((x) => t >= x).length - 1;
+  let esc = s.filter((x) => t >= x).length - 1;
+  // episodios: cada línea (o grupo de líneas seguidas con la misma escena) usa su escena del mundo 3D
+  let tCard = 0;
+  let tramos: { a: number; b: number; e: number; l0: number; l1: number }[] = [];
+  if (ep) {
+    const finVoz = palabras.length ? palabras[palabras.length - 1].t + 0.8 : 60;
+    // la tarjeta sale cuando la voz dice la marca en la última línea (no la del correo)
+    const ultima = inicios[inicios.length - 1] ?? 0;
+    tCard = W('ixchel', ultima - 0.3, finVoz) - 0.2;
+    const ini = inicios.map((x, i) => (i === 0 ? 0 : x));
+    ep.orden.forEach((e, i) => {
+      const a = ini[i] ?? finVoz;
+      const b = ini[i + 1] ?? finVoz + 10;
+      const ult = tramos[tramos.length - 1];
+      if (ult && ult.e === e) {
+        ult.b = b;
+        ult.l1 = i;
+      } else tramos.push({ a, b, e, l0: i, l1: i });
+    });
+    const tr = tramos.filter((x) => t >= x.a).pop() ?? tramos[0];
+    esc = tr.e;
+    for (let i = 0; i < 14; i++) s[i] = i < esc ? tr.a : i === esc ? tr.a : tr.b;
+    s[13] = esc === 12 ? Math.max(tr.b, tCard) : tCard;
+    if (esc === 12) s[12] = tr.a;
+  }
   const k = (a: number, b: number) => suave(t, a, b);
   const lerp = (a: THREE.Vector3, b: THREE.Vector3, x: number) => a.clone().lerp(b, x);
 
@@ -983,7 +1080,7 @@ export const Tacana: React.FC<Tiempos> = ({ voz, inicios, palabras }) => {
 
   // ¿qué mundo se ve?
   const tTacana = W('tacaná', 0, 3.2);
-  const mapa = (esc === 0 && t < tTacana + 0.2) || esc === 11 || esc === 12;
+  const mapa = (esc === 0 && t < tTacana + 0.2 && (!ep || ep.orden[0] === 0)) || esc === 11 || esc === 12;
   const diorama = esc >= 2 && esc <= 5;
   const real = !mapa && !diorama && esc <= 10;
 
@@ -1023,7 +1120,7 @@ export const Tacana: React.FC<Tiempos> = ({ voz, inicios, palabras }) => {
   const vapor = esc === 9 ? k(tVapor - 0.3, tVapor + 0.3) * (1 - k(tVapor + 3, tVapor + 4)) : 0;
   const fumarolas = esc === 9 ? k(W('fumarolas', s[9], s[9] + 7) - 0.5, W('fumarolas', s[9], s[9] + 7) + 0.5) : esc === 10 ? 1 : 0;
   const lodo = esc === 10 ? k(W('ceniza', s[10], s[10] + 4), s[11] - 0.5) : 0;
-  const brasa = esc === 0 ? k(tFuego - 0.3, tFuego + 0.4) : esc === 1 ? 1 : esc >= 6 && esc <= 9 ? 0.25 : 0;
+  const brasa = ep && !ep.brasa ? 0 : esc === 0 ? (ep ? 1 : k(tFuego - 0.3, tFuego + 0.4)) : esc === 1 ? 1 : esc >= 6 && esc <= 9 ? 0.25 : 0;
 
   // cámara
   let pos = P(0, 6, 14);
@@ -1171,6 +1268,33 @@ export const Tacana: React.FC<Tiempos> = ({ voz, inicios, palabras }) => {
       <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(ellipse at center, transparent 55%, rgba(0,0,0,.55) 100%)' }} />
 
       {/* rótulos */}
+      {ep
+        ? ep.rotulos.map((r, i, todos) => {
+            const tr = tramos.find((x) => r.l >= x.l0 && r.l <= x.l1);
+            const inicio = (x: Rotulo) => {
+              const a0 = (inicios[x.l] ?? 0) * (x.l === 0 ? 0 : 1);
+              return x.w ? W(x.w, a0, a0 + 0.3) - 0.1 : a0 + 0.3;
+            };
+            const filas = (x: Rotulo) => [x.fila ?? 0, (x.fila ?? 0) + (x.big ? 1 : 0)];
+            const [f0, f1] = filas(r);
+            const desde = inicio(r);
+            // se quita cuando termina su escena o cuando otro rótulo ocupa su lugar
+            const choca = todos.slice(i + 1).filter((x) => {
+              const [g0, g1] = filas(x);
+              return g0 <= f1 && g1 >= f0;
+            });
+            const siguiente = choca.length ? Math.min(...choca.map(inicio)) : Infinity;
+            const hasta = Math.min(tr ? tr.b : desde + 4, tCard, siguiente) - 0.2;
+            const size = r.big ? big : med * (r.texto.length > 28 ? 0.8 : 1);
+            return (
+              <Sello key={i} t={t} desde={desde} hasta={hasta} top={tituloTop + (r.fila ?? 0) * big * 1.08} size={size} fondo={r.fondo} color={r.color} giro={r.giro}>
+                {r.texto}
+              </Sello>
+            );
+          })
+        : null}
+      {!ep && (
+        <>
       <Sello t={t} desde={tTacana} hasta={s[1] - 0.2} top={tituloTop} size={big}>
         TACANÁ
       </Sello>
@@ -1223,6 +1347,8 @@ export const Tacana: React.FC<Tiempos> = ({ voz, inicios, palabras }) => {
         PRÓXIMO: LOS MAYAS DE IZAPA
       </Sello>
 
+        </>
+      )}
       <Regla valor={`${Math.round(100 * k(W('cien', s[3], s[3] + 3) - 0.6, W('cien', s[3], s[3] + 3) + 0.4))} KM`} sub="DE PROFUNDIDAD" o={esc === 3 ? k(W('cien', s[3], s[3] + 3) - 0.6, W('cien', s[3], s[3] + 3)) : 0} u={u} top={h * (vert ? 0.42 : 0.35)} />
       <Regla valor={`${metros.toLocaleString('en-US')} M`} sub="SOBRE EL NIVEL DEL MAR" o={esc === 6 ? k(s[6], s[6] + 0.4) : 0} u={u} top={tituloTop - 10 * u} />
 

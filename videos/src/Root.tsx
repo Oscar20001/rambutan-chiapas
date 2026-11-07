@@ -19,7 +19,14 @@ import { Monterrey } from './Monterrey';
 import monterrey from './guiones/monterrey.json';
 import { Acertijo } from './Acertijo';
 import acertijo from './guiones/acertijo-arbol7.json';
-import { Tacana } from './Tacana';
+import { Tacana, EPISODIOS } from './Tacana';
+import secreto1 from './guiones/secreto1.json';
+import secreto2 from './guiones/secreto2.json';
+import secreto3 from './guiones/secreto3.json';
+import secreto4 from './guiones/secreto4.json';
+const SECRETOS = [secreto1, secreto2, secreto3, secreto4];
+const Secreto = (i: number): React.FC<Tiempos> => (p) => <Tacana {...p} ep={EPISODIOS[i]} />;
+const SECRETO_COMP = SECRETOS.map((_, i) => Secreto(i));
 import { Vitrina, DURA_VITRINA } from './Modelos';
 import tacana from './guiones/tacana.json';
 
@@ -105,6 +112,13 @@ export const Root: React.FC = () => (
     <Composition id="MonterreyV" component={Monterrey} {...vertical} calculateMetadata={tiemposDe(monterrey, 5)} />
     <Composition id="MonterreyC" component={Monterrey} {...vertical} width={1080} height={1080} calculateMetadata={tiemposDe(monterrey, 5)} />
     <Composition id="MonterreyH" component={Monterrey} {...vertical} width={1920} height={1080} calculateMetadata={tiemposDe(monterrey, 5)} />
+    {SECRETOS.map((g, i) => (
+      <React.Fragment key={g.id}>
+        <Composition id={`Secreto${i + 1}V`} component={SECRETO_COMP[i]} {...vertical} calculateMetadata={tiemposDe(g, 2.5)} />
+        <Composition id={`Secreto${i + 1}C`} component={SECRETO_COMP[i]} {...vertical} width={1080} height={1080} calculateMetadata={tiemposDe(g, 2.5)} />
+        <Composition id={`Secreto${i + 1}H`} component={SECRETO_COMP[i]} {...vertical} width={1920} height={1080} calculateMetadata={tiemposDe(g, 2.5)} />
+      </React.Fragment>
+    ))}
     <Composition id="TacanaV" component={Tacana} {...vertical} calculateMetadata={tiemposDe(tacana, 5)} />
     <Composition id="TacanaC" component={Tacana} {...vertical} width={1080} height={1080} calculateMetadata={tiemposDe(tacana, 5)} />
     <Composition id="TacanaH" component={Tacana} {...vertical} width={1920} height={1080} calculateMetadata={tiemposDe(tacana, 5)} />
