@@ -1323,7 +1323,9 @@ export const Tacana: React.FC<Tiempos & { ep?: Episodio }> = ({ voz, inicios, pa
               return g0 <= f1 && g1 >= f0;
             });
             const siguiente = choca.length ? Math.min(...choca.map(inicio)) : Infinity;
-            const hasta = Math.min(tr ? tr.b : desde + 4, tCard, siguiente) - 0.2;
+            // cada rótulo dura lo que dura su línea (los de fin de episodio, hasta la tarjeta)
+            const finLinea = r.texto.startsWith('CONTINUARÁ') ? Infinity : inicios[r.l + 1] ?? Infinity;
+            const hasta = Math.min(tr ? tr.b : desde + 4, tCard, siguiente, finLinea) - 0.2;
             const size = r.big ? big : med * (r.texto.length > 28 ? 0.8 : 1);
             return (
               <Sello key={i} t={t} desde={desde} hasta={hasta} top={tituloTop + (r.fila ?? 0) * big * 1.08} size={size} fondo={r.fondo} color={r.color} giro={r.giro}>
