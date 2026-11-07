@@ -950,10 +950,49 @@ const Regla: React.FC<{ valor: string; sub: string; o: number; u: number; top: n
   ) : null;
 
 // ---------- video ----------
+
+// Botones animados al final: Seguir, Me gusta y Comenta (una mano los toca uno por uno)
+const BotonesFinal: React.FC<{ t: number; desde: number; u: number; w: number; h: number; hor: boolean }> = ({ t, desde, u, w, h, hor }) => {
+  if (t < desde) return null;
+  const l = t - desde;
+  const entra = avance(l, 0, 0.5);
+  const toques = [0.9, 1.9, 2.9];
+  const boton = (i: number) => {
+    const tocado = l > toques[i];
+    const pop = Math.max(0, 1 - Math.abs(l - toques[i]) * 4);
+    return { tocado, escala: 1 + pop * 0.18 - (Math.abs(l - toques[i]) < 0.08 ? 0.08 : 0) };
+  };
+  const items = [
+    { icono: '➕', texto: 'SEGUIR', hecho: '✓ SIGUIENDO', color: '#fe2c55' },
+    { icono: '🤍', texto: 'ME GUSTA', hecho: '❤️ ¡GRACIAS!', color: '#ff4d6d' },
+    { icono: '💬', texto: 'COMENTA', hecho: '💬 ¡TE LEEMOS!', color: '#25a3ff' },
+  ];
+  const tam = (hor ? 34 : 40) * u;
+  const i = toques.findIndex((x) => l < x + 0.35);
+  const actual = i < 0 ? 2 : i;
+  const mano = Math.min(1, Math.max(0, (l - 0.4) / 0.4));
+  return (
+    <div style={{ position: 'absolute', left: 0, right: 0, bottom: h * (hor ? 0.05 : 0.07), display: 'flex', justifyContent: 'center', gap: 18 * u, opacity: entra, transform: `translateY(${(1 - entra) * 60 * u}px)` }}>
+      {items.map((it, k) => {
+        const b = boton(k);
+        return (
+          <div key={k} style={{ position: 'relative', fontFamily: TITULO, fontSize: tam, letterSpacing: 2 * u, color: '#fff', background: b.tocado ? 'rgba(20,20,20,.85)' : it.color, border: `${3 * u}px solid ${b.tocado ? it.color : '#fff'}`, borderRadius: 60 * u, padding: `${14 * u}px ${26 * u}px ${8 * u}px`, transform: `scale(${b.escala})`, boxShadow: `0 ${8 * u}px ${24 * u}px rgba(0,0,0,.45)` }}>
+            {b.tocado ? it.hecho : `${it.icono} ${it.texto}`}
+            {k === actual && mano > 0 && (
+              <div style={{ position: 'absolute', right: -10 * u, bottom: -46 * u, fontSize: 64 * u, transform: `translateY(${Math.abs(l - toques[k]) < 0.12 ? 6 * u : 0}px)`, opacity: mano }}>👆</div>
+            )}
+          </div>
+        );
+      })}
+      <div style={{ position: 'absolute', width: w, height: 1 }} />
+    </div>
+  );
+};
+
 // Episodios de la serie: qué escena del mundo 3D va con cada línea de la voz y qué rótulos salen.
 type Rotulo = { l: number; w?: string; texto: string; fondo?: string; color?: string; big?: boolean; fila?: number; giro?: number };
 export type Episodio = { orden: number[]; rotulos: Rotulo[]; brasa?: boolean };
-const FIN = { w: 'continuará', texto: 'CONTINUARÁ…', fondo: '#111', fila: 2 };
+const FIN = (n: number) => ({ w: 'continuará', texto: `CONTINUARÁ… PARTE ${n} DE 15`, fondo: '#111', fila: 2 });
 export const EPISODIOS: Episodio[] = [
   {
     orden: [0, 1, 2, 3, 4, 5, 6, 7, 11],
@@ -967,7 +1006,7 @@ export const EPISODIOS: Episodio[] = [
       { l: 4, w: 'reventar', texto: '¡ERUPCIÓN!', color: '#ffb070', big: true, giro: -4 },
       { l: 5, w: 'estratovolcán', texto: 'ESTRATOVOLCÁN · CAPA SOBRE CAPA', fondo: '#3a2a20' },
       { l: 7, w: 'países', texto: '¿QUÉ DOS PAÍSES? 👇', fondo: '#9b1c23' },
-      { l: 7, ...FIN },
+      { l: 7, ...FIN(1) },
       { l: 8, w: 'rambután', texto: 'AQUÍ CRECE NUESTRO RAMBUTÁN', fondo: '#133621' },
     ],
   },
@@ -984,7 +1023,7 @@ export const EPISODIOS: Episodio[] = [
       { l: 6, w: 'soconusco', texto: '🌱 EL SOCONUSCO', fondo: '#133621' },
       { l: 7, w: 'dormido', texto: 'NO ESTÁ DORMIDO…', color: '#ffb070', big: true },
       { l: 7, w: 'despertó', texto: '¿CUÁNDO DESPERTÓ? 👇', fondo: '#9b1c23', fila: 1 },
-      { l: 7, ...FIN },
+      { l: 7, ...FIN(2) },
     ],
   },
   {
@@ -1002,7 +1041,7 @@ export const EPISODIOS: Episodio[] = [
       { l: 5, w: 'termales', texto: 'AGUAS TERMALES', fondo: '#1d6a9a', fila: 1, giro: 2 },
       { l: 6, w: 'vigilan', texto: '🔭 VIGILADO DÍA Y NOCHE', fondo: '#2a3a4a' },
       { l: 7, w: 'vida', texto: 'EL FUEGO QUE LE DIO VIDA AL SOCONUSCO', fondo: '#133621' },
-      { l: 7, ...FIN },
+      { l: 7, ...FIN(3) },
     ],
   },
   {
@@ -1018,7 +1057,7 @@ export const EPISODIOS: Episodio[] = [
       { l: 6, w: 'rambután', texto: '¡Y RAMBUTÁN!', color: '#ff6b74', big: true },
       { l: 7, w: 'fruta', texto: 'DEL FUEGO… A LA FRUTA', fondo: '#9b1c23' },
       { l: 8, w: 'primeros', texto: '¿QUIÉNES FUERON LOS PRIMEROS? 👇', fondo: '#133621' },
-      { l: 8, ...FIN },
+      { l: 8, ...FIN(4) },
     ],
   },
 ];
@@ -1354,6 +1393,7 @@ export const Tacana: React.FC<Tiempos & { ep?: Episodio }> = ({ voz, inicios, pa
 
       <Subtitulos t={t} palabras={palabras} hasta={s[13]} top={subTop} size={(hor ? 62 : 74) * u} />
       <CierreSerie t={t} desde={s[13]} fondo="radial-gradient(circle at 50% 40%, #4a1a0c, #0a0503 75%)" />
+      {ep && <BotonesFinal t={t} desde={W('continuará', 0, tCard - 4) - 0.3} u={u} w={w} h={h} hor={hor} />}
       <div style={{ position: 'absolute', bottom: 0, height: 0, fontFamily: TEXTO }} />
     </AbsoluteFill>
   );
