@@ -1042,7 +1042,7 @@ const RegionTacana: React.FC<{ t: number; trazo: number; pueblosO: number; paise
       {/* fuera de la maqueta: el horizonte */}
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.09, 0]}>
         <ringGeometry args={[REG_H / 2 - 0.3, 160, 64]} />
-        <meshStandardMaterial color="#5e7a40" roughness={1} />
+        <meshStandardMaterial color={new THREE.Color("#5e7a40").lerp(new THREE.Color("#e2e9ef"), nubes)} roughness={1} />
       </mesh>
       {tramo.length > 1 && (
         <>
@@ -1093,6 +1093,7 @@ const RegionTacana: React.FC<{ t: number; trazo: number; pueblosO: number; paise
       <Etiqueta tex={tex.tacanaR} position={region.tacana.clone().add(P(0, 1.2, 0))} alto={0.7} o={soloTajumulco ? 0 : cimasO} />
       <Etiqueta tex={tex.tajumulco} position={region.tajumulco.clone().add(P(0, 0.75, 0))} alto={0.5} o={cimasO} />
       <MarNubes t={t} centro={P(0, 0, 0)} rMin={0} rMax={17} y={(2300 / 1000 / REG_KM) * REG_EXAG} n={220} o={nubes} tam={2.2} plano />
+      <MarNubes t={t + 7} centro={P(0, 0, 0)} rMin={REG_H / 2 - 1} rMax={45} y={0.25} n={160} o={nubes} tam={4.5} plano />
     </group>
   );
 };
@@ -1611,7 +1612,7 @@ export const Tacana: React.FC<Tiempos & { ep?: Episodio }> = ({ voz, inicios, pa
       nubesReg = 1;
       // parado en la cima del Tacaná, mirando al oriente: el Tajumulco asoma sobre las nubes
       pos = region.tacana.clone().add(P(-1.4 + x * 0.6, 0.75 + x * 0.25, 1.1 - x * 0.3));
-      fovE = fov * 0.6;
+      fovE = fov * (vert ? 0.6 : 0.42);
       mira = lerp(region.tacana.clone().add(P(3, 0, 0)), region.tajumulco.clone().add(P(0, 0.6, 0)), Easing.inOut(Easing.cubic)(k(trA, trA + 2.5)));
     }
   }
