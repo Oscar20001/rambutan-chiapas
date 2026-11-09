@@ -5,7 +5,7 @@
 // ---------- datos que cambia el dueño ----------
 
 // Números de WhatsApp con lada de país (52) y sin espacios. El primero recibe los mensajes de los botones.
-const WHATSAPP = ['529621707553', '529622699611'];
+const WHATSAPP = ['529621707553'];
 
 // Dirección del script de Google que guarda las citas en tu Google Calendar (ver agenda/LEEME.md).
 // Mientras esté vacía, la agenda funciona igual pero la cita se pide por WhatsApp.
@@ -73,6 +73,7 @@ const TEXTOS = {
       fruta: (f) => `Hola, me interesa el ${f.toLowerCase()}. ¿Qué disponibilidad y precio tienen?`,
       precio: 'Hola, ¿me pueden pasar el precio por kilo de esta semana para un pedido mayorista de rambután?',
       faq: 'Hola, tengo una pregunta sobre su rambután:',
+      condiciones: 'Hola, tengo una duda sobre sus condiciones de venta:',
       ficha: 'Hola, revisé su ficha técnica y quiero cotizar rambután. ¿Qué calibres tienen esta semana?',
       flotante: 'Hola, vi su sitio de rambután y quiero información.',
     },
@@ -147,6 +148,7 @@ const TEXTOS = {
       fruta: (f) => `Hello, I am interested in ${f.toLowerCase()}. What availability and price do you have?`,
       precio: 'Hello, could you send me this week\'s price per kilo for a wholesale rambutan order?',
       faq: 'Hello, I have a question about your rambutan:',
+      condiciones: 'Hello, I have a question about your terms of sale:',
       ficha: 'Hello, I read your spec sheet and would like a quote. Which sizes do you have this week?',
       flotante: 'Hello, I saw your rambutan website and would like more information.',
     },
@@ -215,6 +217,11 @@ const pesos = new Intl.NumberFormat(T.locale, { style: 'currency', currency: 'MX
 const $ = (sel, root = document) => root.querySelector(sel);
 const $$ = (sel, root = document) => [...root.querySelectorAll(sel)];
 const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+// sacudida corta para avisar qué falta (2 a 3 vaivenes, 360 ms)
+const sacudir = (nodes) => {
+  if (reduced) return;
+  nodes.filter(Boolean).forEach((n) => { n.classList.remove('is-shake'); void n.offsetWidth; n.classList.add('is-shake'); n.addEventListener('animationend', () => n.classList.remove('is-shake'), { once: true }); });
+};
 const SVG = 'http://www.w3.org/2000/svg';
 const el = (tag, attrs = {}) => { const n = document.createElementNS(SVG, tag); for (const k in attrs) n.setAttribute(k, attrs[k]); return n; };
 const html = (tag, attrs = {}, text) => { const n = document.createElement(tag); for (const k in attrs) n.setAttribute(k, attrs[k]); if (text !== undefined) n.textContent = text; return n; };
@@ -239,7 +246,7 @@ function openWhatsApp(text) {
 const OFFSET_CHIAPAS = -6;
 const ahoraChiapas = () => new Date(Date.now() + OFFSET_CHIAPAS * 3600e3);
 
-// ---------- animación de carga: corre una vez por visita y nunca tapa más de tres segundos ----------
+// ---------- animación de carga: corre una vez por visita, dura 1.5 s y se cierra con cualquier toque ----------
 (() => {
   const loader = $('#loader');
   if (!loader) return;
@@ -263,9 +270,8 @@ const ahoraChiapas = () => new Date(Date.now() + OFFSET_CHIAPAS * 3600e3);
     loader.classList.add('is-done');
     setTimeout(() => loader.remove(), 700);
   };
-  setTimeout(done, 2500);
-  loader.addEventListener('click', done);
-  window.addEventListener('keydown', done, { once: true });
+  setTimeout(done, 1500);
+  ['pointerdown', 'keydown', 'wheel', 'touchstart'].forEach((ev) => window.addEventListener(ev, done, { once: true, passive: true }));
 })();
 
 // ---------- guía de embarque: unidades, camión que se llena y mapa de la ruta ----------
@@ -279,6 +285,22 @@ const guia = (() => {
   select.value = '0';
 
   const out = (key, value) => $$(`[data-out="${key}"]`).forEach((n) => { n.textContent = value; });
+  // los números cuentan del valor anterior al nuevo y dan un pequeño salto
+  const ultimos = {}, cuentas = {};
+  const contar = (key, n, render) => {
+    const from = ultimos[key];
+    ultimos[key] = n;
+    if (reduced || from === undefined || from === n) { out(key, render(n)); return; }
+    cancelAnimationFrame(cuentas[key]);
+    $$(`[data-out="${key}"]`).forEach((node) => { node.classList.remove('is-tick'); void node.offsetWidth; node.classList.add('is-tick'); });
+    const t0 = performance.now(), dur = 420;
+    const step = (now) => {
+      const k = Math.min(1, (now - t0) / dur), e = 1 - Math.pow(1 - k, 3);
+      out(key, render(Math.round(from + (n - from) * e)));
+      if (k < 1) cuentas[key] = requestAnimationFrame(step);
+    };
+    cuentas[key] = requestAnimationFrame(step);
+  };
   let unidad = 't';
   const U = () => UNIDADES[unidad];
   const label = $('[data-unit-label]');
@@ -432,11 +454,11 @@ const guia = (() => {
     const d = datos();
     out('ciudad', d.nombre);
     out('ciudad-corta', d.corta);
-    out('cajas', T.cajas(d.cajasTxt));
+    contar('cajas', d.cajas, (v) => T.cajas(fmt.format(v)));
     out('vehiculo', d.veh.nombre);
     out('unidades', T.unidadesN(d.veh.unidades));
-    out('km', `${fmt.format(d.km)} km`);
-    out('horas', `${d.horas} h`);
+    contar('km', d.km, (v) => `${fmt.format(v)} km`);
+    contar('horas', d.horas, (v) => `${v} h`);
     out('dias', T.dias(d.dias));
     if (PRECIO_KG) out('precio', T.precio(pesos.format(d.t * 1000 * PRECIO_KG)));
     llenarCamion(d);
@@ -696,7 +718,7 @@ $$('[data-imprimir]').forEach((btn) => btn.addEventListener('click', () => {
     error.hidden = ok;
     if (!ok) {
       error.textContent = A.faltan;
-      if (enfocar) (faltan[0] || $('.agenda__day:not(:disabled)', diasBox))?.focus();
+      if (enfocar) { sacudir([...faltan, error]); (faltan[0] || $('.agenda__day:not(:disabled)', diasBox))?.focus(); }
     }
     return ok;
   }
@@ -786,6 +808,7 @@ $$('[data-imprimir]').forEach((btn) => btn.addEventListener('click', () => {
     required.forEach((f) => f.setAttribute('aria-invalid', String(missing.includes(f))));
     if (missing.length) {
       error.hidden = false;
+      sacudir([...missing, error]);
       missing[0].focus();
       return;
     }
@@ -840,20 +863,29 @@ $$('[data-imprimir]').forEach((btn) => btn.addEventListener('click', () => {
   document.fonts?.ready.then(place);
 })();
 
-// ---------- botón flotante de WhatsApp: se esconde arriba, junto a los formularios y sobre el pie ----------
+// ---------- botón flotante de WhatsApp: siempre a la vista en la misma esquina ----------
+// Con la X se guarda en una pestaña de la orilla y se recuerda; la pestaña lo vuelve a abrir.
 (() => {
-  const fab = $('.fab');
-  if (!fab) return;
-  // se quita del camino donde ya hay un formulario a la vista
-  const formas = $$('#envio .slip, #cotizar, #agenda, #contacto, .foot');
-  const visibles = new Set();
-  const pintar = () => fab.classList.toggle('is-on', window.scrollY > window.innerHeight * 0.6 && !visibles.size);
-  if ('IntersectionObserver' in window) {
-    const io = new IntersectionObserver((es) => { es.forEach((x) => (x.isIntersecting ? visibles.add(x.target) : visibles.delete(x.target))); pintar(); }, { threshold: 0.15 });
-    formas.forEach((f) => io.observe(f));
-  }
-  window.addEventListener('scroll', pintar, { passive: true });
-  pintar();
+  const box = $('[data-fab]');
+  if (!box) return;
+  const CLAVE = 'ixchel-wa-guardado';
+  const leer = () => { try { return localStorage.getItem(CLAVE) === '1'; } catch (e) { return false; } };
+  const escribir = (v) => { try { v ? localStorage.setItem(CLAVE, '1') : localStorage.removeItem(CLAVE); } catch (e) { /* sin almacenamiento */ } };
+  const guardar = (v, enfocar) => {
+    box.classList.toggle('is-guardado', v);
+    escribir(v);
+    if (enfocar) (v ? $('[data-fab-abrir]', box) : $('.fab', box))?.focus({ preventScroll: true });
+  };
+  const saludar = () => {
+    if (box.classList.contains('is-guardado') || !matchMedia('(min-width: 761px)').matches) return;
+    box.classList.add('is-open');
+    setTimeout(() => box.classList.remove('is-open'), 3200);
+  };
+  guardar(leer(), false);
+  $('[data-fab-guardar]', box).addEventListener('click', () => guardar(true, true));
+  $('[data-fab-abrir]', box).addEventListener('click', () => { guardar(false, true); saludar(); });
+  // aparece en cuanto carga la página y se queda ahí
+  requestAnimationFrame(() => { box.classList.add('is-on'); setTimeout(saludar, 900); });
 })();
 
 // ---------- menú desplegable de contacto ----------
@@ -959,3 +991,71 @@ $$('[data-imprimir]').forEach((btn) => btn.addEventListener('click', () => {
 })();
 
 $$('[data-year]').forEach((el) => { el.textContent = String(new Date().getFullYear()); });
+
+// ---------- las animaciones en bucle se detienen cuando su sección no se ve (ahorra batería) ----------
+(() => {
+  if (reduced || !('IntersectionObserver' in window)) return;
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach((e) => e.target.classList.toggle('is-off', !e.isIntersecting));
+  }, { rootMargin: '120px 0px' });
+  $$('.hero, main > section').forEach((s) => io.observe(s));
+})();
+
+// ---------- barra de las páginas: sombra al bajar y menú en hoja para celular ----------
+(() => {
+  const bar = $('[data-bar]');
+  if (!bar) return;
+  const pintar = () => bar.classList.toggle('is-scrolled', window.scrollY > 8);
+  window.addEventListener('scroll', pintar, { passive: true });
+  pintar();
+
+  const boton = $('.bar__toggle', bar);
+  const nav = $('.bar__nav', bar);
+  if (!boton || !nav) return;
+  $$(':scope > *', nav).forEach((a, k) => a.style.setProperty('--k', String(k)));
+  const etiqueta = $('.bar__label', boton);
+  const movil = matchMedia('(max-width: 960px)');
+  const poner = (abierto, devolver) => {
+    bar.classList.toggle('is-open', abierto);
+    document.documentElement.classList.toggle('is-locked', abierto);
+    boton.setAttribute('aria-expanded', String(abierto));
+    etiqueta.textContent = abierto ? boton.dataset.cerrar : boton.dataset.abrir;
+    if (abierto) $('a', nav)?.focus({ preventScroll: true });
+    else if (devolver) boton.focus({ preventScroll: true });
+  };
+  boton.addEventListener('click', () => poner(!bar.classList.contains('is-open'), true));
+  nav.addEventListener('click', (e) => { if (e.target.closest('a:not(.drop-btn)')) poner(false, false); });
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && bar.classList.contains('is-open')) poner(false, true); });
+  movil.addEventListener('change', () => poner(false, false));
+})();
+
+// ---------- sin internet: el sitio queda guardado y avisa con el logo cuando se va o vuelve la señal ----------
+(() => {
+  if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost')) {
+    const raiz = document.documentElement.lang === 'en' ? '../' : './';
+    window.addEventListener('load', () => navigator.serviceWorker.register(`${raiz}sw.js`, { scope: `${raiz}` }).catch(() => {}));
+  }
+  const en = document.documentElement.lang === 'en';
+  const aviso = document.createElement('div');
+  aviso.className = 'net';
+  aviso.setAttribute('role', 'status');
+  aviso.setAttribute('aria-live', 'polite');
+  aviso.hidden = true;
+  aviso.innerHTML = '<svg class="net__logo" viewBox="0 0 120 120" aria-hidden="true"><use href="#logo"/></svg><span class="net__text"></span><span class="net__dots" aria-hidden="true"><i></i><i></i><i></i></span>';
+  document.body.append(aviso);
+  const texto = $('.net__text', aviso);
+  let quitar = 0;
+  const mostrar = (enLinea) => {
+    clearTimeout(quitar);
+    aviso.hidden = false;
+    aviso.classList.toggle('is-back', enLinea);
+    texto.textContent = enLinea
+      ? (en ? 'Back online' : 'Volvió la conexión')
+      : (en ? 'No internet. You can keep browsing the site' : 'Sin internet. Puedes seguir viendo el sitio');
+    requestAnimationFrame(() => aviso.classList.add('is-on'));
+    if (enLinea) quitar = setTimeout(() => { aviso.classList.remove('is-on'); setTimeout(() => { aviso.hidden = true; }, 400); }, 2600);
+  };
+  window.addEventListener('offline', () => mostrar(false));
+  window.addEventListener('online', () => mostrar(true));
+  if (navigator.onLine === false) mostrar(false);
+})();
