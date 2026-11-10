@@ -144,7 +144,7 @@ const piedraMat = (rep: [number, number], oscura = 0) => {
 };
 
 // plataforma escalonada: cuerpos de piedra bola con taludes y pasto encima, escalinata al frente
-const Plataforma: React.FC<{ ancho: number; fondo: number; alto: number; cuerpos: number; position?: [number, number, number]; giro?: number }> = ({ ancho, fondo, alto, cuerpos, position = [0, 0, 0], giro = 0 }) => {
+export const Plataforma: React.FC<{ ancho: number; fondo: number; alto: number; cuerpos: number; position?: [number, number, number]; giro?: number }> = ({ ancho, fondo, alto, cuerpos, position = [0, 0, 0], giro = 0 }) => {
   const piezas = useMemo(() => {
     const l: { w: number; d: number; y: number; h: number }[] = [];
     const h = alto / cuerpos;
@@ -180,7 +180,7 @@ const Plataforma: React.FC<{ ancho: number; fondo: number; alto: number; cuerpos
   );
 };
 
-const Estela: React.FC<{ position: [number, number, number]; giro?: number; alto?: number }> = ({ position, giro = 0, alto = 1.6 }) => (
+export const Estela: React.FC<{ position: [number, number, number]; giro?: number; alto?: number }> = ({ position, giro = 0, alto = 1.6 }) => (
   <group position={position} rotation={[0, giro, 0]}>
     <mesh position={[0, alto / 2, 0]} castShadow>
       <boxGeometry args={[alto * 0.5, alto, alto * 0.14]} />

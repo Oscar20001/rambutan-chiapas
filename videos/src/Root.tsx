@@ -28,6 +28,7 @@ const SECRETOS = [secreto1, secreto2, secreto3, secreto4];
 const Secreto = (i: number): React.FC<Tiempos> => (p) => <Tacana {...p} ep={EPISODIOS[i]} />;
 const SECRETO_COMP = SECRETOS.map((_, i) => Secreto(i));
 import { Vitrina, DURA_VITRINA } from './Modelos';
+import { IzapaVida, DURA_IZAPA } from './Antiguos';
 import tacana from './guiones/tacana.json';
 
 const FPS = 30;
@@ -122,6 +123,8 @@ export const Root: React.FC = () => (
     <Composition id="TacanaV" component={Tacana} {...vertical} calculateMetadata={tiemposDe(tacana, 5)} />
     <Composition id="TacanaC" component={Tacana} {...vertical} width={1080} height={1080} calculateMetadata={tiemposDe(tacana, 5)} />
     <Composition id="TacanaH" component={Tacana} {...vertical} width={1920} height={1080} calculateMetadata={tiemposDe(tacana, 5)} />
+    <Composition id="IzapaVidaV" component={IzapaVida} fps={FPS} width={1080} height={1920} durationInFrames={DURA_IZAPA * FPS} />
+    <Composition id="IzapaVidaH" component={IzapaVida} fps={FPS} width={1920} height={1080} durationInFrames={DURA_IZAPA * FPS} />
     <Composition id="Vitrina" component={Vitrina} fps={FPS} width={1080} height={1920} durationInFrames={DURA_VITRINA * 5 * FPS} />
     <Composition id="Viaje" component={Viaje} fps={60} width={1080} height={1920} durationInFrames={DURACION_VIAJE * 60} />
   </>
