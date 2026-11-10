@@ -13,7 +13,7 @@ PARES = [
     ('href="img/logo.svg"', 'href="../img/logo.svg"'),
     ('href="styles.css?v=20261103d"', 'href="../styles.css?v=20261103d"'),
     ('src="app.js?v=20261103d"', 'src="../app.js?v=20261103d"'),
-    ('src="asistente.js?v=20261110d"', 'src="../asistente.js?v=20261110d"'),
+    ('src="asistente.js?v=20261110e"', 'src="../asistente.js?v=20261110e"'),
     ('src="medicion.js?v=20261106b"', 'src="../medicion.js?v=20261106b"'),
     ('<link rel="canonical" href="https://oscar20001.github.io/rambutan-chiapas/">', '<link rel="canonical" href="https://oscar20001.github.io/rambutan-chiapas/en/">'),
     ('<meta property="og:url" content="https://oscar20001.github.io/rambutan-chiapas/">', '<meta property="og:url" content="https://oscar20001.github.io/rambutan-chiapas/en/">'),

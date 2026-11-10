@@ -144,20 +144,20 @@
 
   // ---------- la ventana ----------
   const css = document.createElement('link');
-  css.rel = 'stylesheet'; css.href = RAIZ + 'asistente.css?v=20261110d';
+  css.rel = 'stylesheet'; css.href = RAIZ + 'asistente.css?v=20261110e';
   document.head.appendChild(css);
 
   const caja = document.createElement('div');
   caja.className = 'asis';
   caja.innerHTML = `
     <button type="button" class="asis__boton" aria-expanded="false" aria-controls="asis-panel" aria-label="${T.abrir}">
-      <img class="asis__cara" src="${RAIZ}img/asistente-maya.svg?v=2" alt="" width="44" height="44">
+      <img class="asis__cara" src="${RAIZ}img/asistente-maya.svg?v=3" alt="" width="44" height="44">
       <span class="asis__boton-txt">${T.boton}</span>
     </button>
-    <div class="asis__saludo" hidden><img class="asis__saludo-cara" src="${RAIZ}img/asistente-maya.svg?v=2" alt="" width="40" height="40"><button type="button" class="asis__saludo-txt">${T.burbuja}</button><button type="button" class="asis__saludo-x" aria-label="${T.burbujaCerrar}"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg></button></div>
+    <div class="asis__saludo" hidden><img class="asis__saludo-cara" src="${RAIZ}img/asistente-maya.svg?v=3" alt="" width="40" height="40"><button type="button" class="asis__saludo-txt">${T.burbuja}</button><button type="button" class="asis__saludo-x" aria-label="${T.burbujaCerrar}"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg></button></div>
     <section class="asis__panel" id="asis-panel" role="dialog" aria-modal="false" aria-labelledby="asis-titulo" hidden>
       <header class="asis__cabeza">
-        <img class="asis__logo" src="${RAIZ}img/asistente-maya.svg?v=2" alt="" width="48" height="48">
+        <img class="asis__logo" src="${RAIZ}img/asistente-maya.svg?v=3" alt="" width="48" height="48">
         <div class="asis__nombre"><p class="asis__titulo" id="asis-titulo">${T.titulo}</p><p class="asis__sub">${T.sub}</p></div>
         <a class="asis__persona" href="${WA}" target="_blank" rel="noopener" data-wa="asistente" aria-label="${T.persona}" title="${T.persona}"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M16 4.2C9.5 4.2 4.2 9.3 4.2 15.6c0 2.3.7 4.4 1.9 6.2L4.6 27.6l6-1.6c1.6.9 3.5 1.4 5.4 1.4 6.5 0 11.8-5.1 11.8-11.4S22.5 4.2 16 4.2z" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linejoin="round"/><path d="M12 11.5c.3-.6.6-.6.9-.6h.6c.2 0 .5 0 .7.5l.9 2.1c.1.3 0 .5-.1.7l-.6.7c-.2.2-.2.4 0 .7.9 1.5 2 2.5 3.5 3.2.3.1.5.1.7-.1l.8-.9c.2-.3.5-.3.8-.2l2 .9c.3.2.5.3.5.5 0 .7-.4 1.7-1.6 2.2-1 .4-2.3.3-4.4-.7-2.6-1.2-4.2-3.7-4.6-4.4-.4-.6-1.1-2-.5-3.4z" fill="currentColor"/></svg></a>
         <button type="button" class="asis__cerrar" aria-label="${T.cerrar}"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 3l10 10M13 3L3 13" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></button>

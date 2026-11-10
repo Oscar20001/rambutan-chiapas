@@ -9,6 +9,53 @@
   <g clip-path="url(#am-c)">
     <!-- estrellas -->
     <g fill="#f4d96c"><circle cx="52" cy="14" r="0.9"/><circle cx="14" cy="60" r="0.8"/><circle cx="104" cy="44" r="0.9"/><circle cx="22" cy="78" r="0.7"/><circle cx="108" cy="70" r="0.7"/></g>
+    <!-- geometría sagrada: flor de la vida, sutil -->
+    <g fill="none" stroke="#f4d96c" stroke-width="0.6" opacity="0.4">
+      <circle cx="67.00" cy="46.00" r="9"/>
+      <circle cx="67.00" cy="37.00" r="9"/>
+      <circle cx="74.79" cy="41.50" r="9"/>
+      <circle cx="74.79" cy="50.50" r="9"/>
+      <circle cx="67.00" cy="55.00" r="9"/>
+      <circle cx="59.21" cy="50.50" r="9"/>
+      <circle cx="59.21" cy="41.50" r="9"/>
+      <circle cx="67.00" cy="28.00" r="9"/>
+      <circle cx="74.79" cy="32.50" r="9"/>
+      <circle cx="82.59" cy="37.00" r="9"/>
+      <circle cx="82.59" cy="46.00" r="9"/>
+      <circle cx="82.59" cy="55.00" r="9"/>
+      <circle cx="74.79" cy="59.50" r="9"/>
+      <circle cx="67.00" cy="64.00" r="9"/>
+      <circle cx="59.21" cy="59.50" r="9"/>
+      <circle cx="51.41" cy="55.00" r="9"/>
+      <circle cx="51.41" cy="46.00" r="9"/>
+      <circle cx="51.41" cy="37.00" r="9"/>
+      <circle cx="59.21" cy="32.50" r="9"/>
+      <circle cx="67" cy="46" r="27" stroke-width="0.9"/>
+      <circle cx="67" cy="46" r="29.5" stroke-dasharray="1 2"/>
+    </g>
+    <!-- pirámide escalonada maya al fondo -->
+    <g>
+      <path d="M2 118 L132 118 L124 108 L10 108 Z" fill="#2b6b40"/>
+      <path d="M10 108 L124 108 L117 98 L17 98 Z" fill="#357a4b"/>
+      <path d="M17 98 L117 98 L110 88 L24 88 Z" fill="#2b6b40"/>
+      <path d="M24 88 L110 88 L103 78 L31 78 Z" fill="#357a4b"/>
+      <path d="M31 78 L103 78 L96 68 L38 68 Z" fill="#2b6b40"/>
+      <path d="M38 68 L96 68 L90 59 L44 59 Z" fill="#357a4b"/>
+      <g fill="none" stroke="#f4d96c" stroke-width="1" opacity="0.75">
+        <path d="M10 108 H124 M17 98 H117 M24 88 H110 M31 78 H103 M38 68 H96 M44 59 H90"/>
+      </g>
+      <g fill="#f4d96c" opacity="0.7">
+        <path d="M14 112 l2 -2 2 2 -2 2z"/><path d="M116 112 l2 -2 2 2 -2 2z"/>
+        <path d="M21 102 l2 -2 2 2 -2 2z"/><path d="M109 102 l2 -2 2 2 -2 2z"/>
+        <path d="M28 92 l2 -2 2 2 -2 2z"/><path d="M102 92 l2 -2 2 2 -2 2z"/>
+        <path d="M35 82 l2 -2 2 2 -2 2z"/><path d="M95 82 l2 -2 2 2 -2 2z"/>
+        <path d="M42 72 l2 -2 2 2 -2 2z"/><path d="M88 72 l2 -2 2 2 -2 2z"/>
+      </g>
+      <!-- templo en la cima -->
+      <path d="M50 59 V49 H84 V59 Z" fill="#2b6b40"/>
+      <path d="M47 49 H87 L83 44 H51 Z" fill="#9b1c23"/>
+      <path d="M47 49 H87" stroke="#f4d96c" stroke-width="0.9" opacity="0.7"/>
+    </g>
     <!-- luna con conejo, a la izquierda -->
     <circle cx="29" cy="33" r="21" fill="#f4d96c" opacity="0.18"/>
     <circle cx="29" cy="33" r="17.5" fill="url(#am-luna)"/>
