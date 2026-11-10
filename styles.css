@@ -901,6 +901,7 @@ ol.legal__lista { list-style: decimal; }
 .foot__links a:focus-visible { color: var(--ink); transform: translateX(0.5rem); }
 .foot__links a:focus-visible::before { opacity: 1; transform: none; }
 .foot__rows { display: grid; gap: 0.35rem; }
+.foot__nota { margin: 0.75rem 0 0; max-width: 22rem; color: var(--muted); line-height: 1.4; }
 .foot__rows a, .foot__rows p { display: flex; align-items: center; gap: 0.8rem; min-height: 3rem; margin: 0; padding: 0.25rem 0; color: var(--ink); text-decoration: none; max-width: none; }
 .foot__rows svg { flex: none; width: 2.4rem; height: 2.4rem; padding: 0.5rem; background: rgba(244, 217, 108, 0.1); color: var(--ink); transition: background-color var(--t-hover) ease, color var(--t-hover) ease, transform var(--t-std) var(--ease-pop); }
 .foot__rows span { display: grid; min-width: 0; line-height: 1.25; overflow-wrap: anywhere; }
