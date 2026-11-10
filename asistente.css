@@ -10,6 +10,14 @@
 .asis__boton:focus-visible { outline: 3px solid var(--ink, #f4d96c); outline-offset: 5px; }
 @media (hover: hover) and (pointer: fine) { .asis__boton:hover { background: var(--red-deep, #7d151b); } }
 
+/* saludo junto al botón */
+.asis__saludo { pointer-events: auto; position: absolute; left: 0; bottom: calc(100% + 0.75rem); display: flex; align-items: flex-start; gap: 0.25rem; width: max-content; max-width: min(17rem, calc(100vw - 6rem)); padding: 0.7rem 0.5rem 0.7rem 0.95rem; border: 2px solid var(--ink, #f4d96c); border-radius: 1rem 1rem 1rem 0.3rem; background: var(--bg, #133621); box-shadow: 0 0.75rem 1.5rem rgba(0, 0, 0, 0.35); animation: asis-entra 360ms var(--ease-out, ease) both; }
+.asis__saludo[hidden] { display: none; }
+.asis__saludo-txt { padding: 0; border: 0; background: none; color: var(--ink, #f4d96c); font-family: inherit; font-size: 1rem; line-height: 1.3; text-align: left; cursor: pointer; }
+.asis__saludo-x { display: grid; place-items: center; width: 1.75rem; height: 1.75rem; flex: none; padding: 0; border: 0; border-radius: 50%; background: transparent; color: var(--ink, #f4d96c); cursor: pointer; }
+.asis__saludo-x svg { width: 0.75rem; height: 0.75rem; }
+.asis__saludo-txt:focus-visible, .asis__saludo-x:focus-visible { outline: 3px solid var(--ink, #f4d96c); outline-offset: 2px; }
+
 /* la ventana */
 .asis__panel { pointer-events: auto; position: absolute; left: 0; bottom: calc(100% + 0.9rem); display: flex; flex-direction: column; width: min(24rem, calc(100vw - 2.5rem)); height: min(36rem, calc(100svh - 7.5rem)); border: 2px solid var(--ink, #f4d96c); border-radius: 1.25rem; background: var(--bg, #133621); box-shadow: 0 1.5rem 3rem rgba(0, 0, 0, 0.45); overflow: hidden; transform-origin: bottom left; animation: asis-entra 320ms var(--ease-out, ease) both; }
 .asis__panel[hidden] { display: none; }
@@ -20,6 +28,9 @@
 .asis__nombre { flex: 1; min-width: 0; }
 .asis__titulo { margin: 0; font-family: var(--font-display, "Arial Narrow", sans-serif); font-size: 1.45rem; letter-spacing: 0.03em; line-height: 1; text-transform: uppercase; }
 .asis__sub { margin: 0.2rem 0 0; font-size: 0.875rem; color: var(--muted, #d8c477); }
+.asis__persona { display: grid; place-items: center; width: 2.75rem; height: 2.75rem; flex: none; border-radius: 50%; background: var(--ink, #f4d96c); color: var(--bg, #133621); }
+.asis__persona svg { width: 1.45rem; height: 1.45rem; }
+.asis__persona:focus-visible { outline: 3px solid var(--ink, #f4d96c); outline-offset: 2px; }
 .asis__cerrar { display: grid; place-items: center; width: 2.75rem; height: 2.75rem; flex: none; padding: 0; border: 2px solid var(--ink, #f4d96c); border-radius: 50%; background: transparent; color: var(--ink, #f4d96c); cursor: pointer; }
 .asis__cerrar svg { width: 0.9rem; height: 0.9rem; }
 .asis__cerrar:focus-visible { outline: 3px solid var(--ink, #f4d96c); outline-offset: 2px; }
@@ -64,6 +75,8 @@
   .asis__chip:hover, .asis__link:hover { background: var(--ink, #f4d96c); color: var(--bg, #133621); }
   .asis__wa:hover, .asis__enviar:hover { background: #fbe896; }
   .asis__cerrar:hover { background: var(--bg, #133621); }
+  .asis__persona:hover { background: #fbe896; }
+  .asis__saludo-txt:hover { text-decoration: underline; }
 }
 
 /* celular: el botón se hace solo icono y la ventana ocupa casi toda la pantalla */

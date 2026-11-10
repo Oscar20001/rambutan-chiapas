@@ -22,6 +22,7 @@
     waPregunta: 'Ask on WhatsApp', waTexto: (q) => `Hello Ixchel, I have a question from your website: ${q}`,
     datos: 'Please don’t type bank details or passwords here. For your order, use WhatsApp or the quote form.',
     ver: 'See more',
+    persona: 'Talk to a person on WhatsApp', burbuja: 'Questions about buying rambutan? I can help 👋', burbujaCerrar: 'Dismiss',
   } : {
     abrir: 'Pregúntale al asistente', boton: '¿Dudas?', titulo: 'Asistente Ixchel', sub: 'Respuestas automáticas · 24 h',
     cerrar: 'Cerrar asistente', placeholder: 'Escribe tu pregunta…', enviar: 'Enviar',
@@ -32,6 +33,7 @@
     waPregunta: 'Preguntar por WhatsApp', waTexto: (q) => `Hola Ixchel, tengo una pregunta desde su página: ${q}`,
     datos: 'Por seguridad, no escribas aquí datos bancarios ni contraseñas. Para tu pedido usa WhatsApp o el formulario de cotización.',
     ver: 'Ver más',
+    persona: 'Hablar con una persona por WhatsApp', burbuja: '¿Dudas para comprar rambután? Te ayudo 👋', burbujaCerrar: 'Cerrar aviso',
   };
 
   // ---------- lo que sabe: palabras clave (sin acentos) y respuesta ----------
@@ -142,7 +144,7 @@
 
   // ---------- la ventana ----------
   const css = document.createElement('link');
-  css.rel = 'stylesheet'; css.href = RAIZ + 'asistente.css?v=20261110';
+  css.rel = 'stylesheet'; css.href = RAIZ + 'asistente.css?v=20261110b';
   document.head.appendChild(css);
 
   const caja = document.createElement('div');
@@ -152,10 +154,12 @@
       <svg viewBox="0 0 32 32" aria-hidden="true"><path d="M6 7.5h20a2.5 2.5 0 0 1 2.5 2.5v10a2.5 2.5 0 0 1-2.5 2.5H14l-6 5v-5H6A2.5 2.5 0 0 1 3.5 20V10A2.5 2.5 0 0 1 6 7.5z" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linejoin="round"/><circle cx="11" cy="15" r="1.7" fill="currentColor"/><circle cx="16" cy="15" r="1.7" fill="currentColor"/><circle cx="21" cy="15" r="1.7" fill="currentColor"/></svg>
       <span class="asis__boton-txt">${T.boton}</span>
     </button>
+    <div class="asis__saludo" hidden><button type="button" class="asis__saludo-txt">${T.burbuja}</button><button type="button" class="asis__saludo-x" aria-label="${T.burbujaCerrar}"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg></button></div>
     <section class="asis__panel" id="asis-panel" role="dialog" aria-modal="false" aria-labelledby="asis-titulo" hidden>
       <header class="asis__cabeza">
         <img class="asis__logo" src="${RAIZ}img/logo.svg" alt="" width="40" height="40">
         <div class="asis__nombre"><p class="asis__titulo" id="asis-titulo">${T.titulo}</p><p class="asis__sub">${T.sub}</p></div>
+        <a class="asis__persona" href="${WA}" target="_blank" rel="noopener" data-wa="asistente" aria-label="${T.persona}" title="${T.persona}"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M16 4.2C9.5 4.2 4.2 9.3 4.2 15.6c0 2.3.7 4.4 1.9 6.2L4.6 27.6l6-1.6c1.6.9 3.5 1.4 5.4 1.4 6.5 0 11.8-5.1 11.8-11.4S22.5 4.2 16 4.2z" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linejoin="round"/><path d="M12 11.5c.3-.6.6-.6.9-.6h.6c.2 0 .5 0 .7.5l.9 2.1c.1.3 0 .5-.1.7l-.6.7c-.2.2-.2.4 0 .7.9 1.5 2 2.5 3.5 3.2.3.1.5.1.7-.1l.8-.9c.2-.3.5-.3.8-.2l2 .9c.3.2.5.3.5.5 0 .7-.4 1.7-1.6 2.2-1 .4-2.3.3-4.4-.7-2.6-1.2-4.2-3.7-4.6-4.4-.4-.6-1.1-2-.5-3.4z" fill="currentColor"/></svg></a>
         <button type="button" class="asis__cerrar" aria-label="${T.cerrar}"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 3l10 10M13 3L3 13" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></button>
       </header>
       <div class="asis__chat" role="log" aria-live="polite" aria-relevant="additions"></div>
@@ -177,8 +181,13 @@
   const campo = caja.querySelector('.asis__campo');
   const reducir = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   let iniciado = false;
+  const CLAVE = 'ixchel-asistente';
+  const leer = () => { try { return JSON.parse(sessionStorage.getItem(CLAVE)) || []; } catch (e) { return []; } };
+  const historial = leer().slice(-30);
+  const guardar = () => { try { sessionStorage.setItem(CLAVE, JSON.stringify(historial.slice(-30))); } catch (e) { /* sin memoria, no pasa nada */ } };
 
-  function burbuja(quien, texto, extra) {
+  function burbuja(quien, texto, extra, sinGuardar) {
+    if (!sinGuardar) { historial.push({ q: quien, t: texto, e: extra ? { l: extra.l, wa: extra.wa, pregunta: extra.pregunta } : null }); guardar(); }
     const b = document.createElement('div');
     b.className = 'asis__msg asis__msg--' + quien;
     const p = document.createElement('p');
@@ -225,11 +234,12 @@
 
   function abrir() {
     panel.hidden = false;
+    quitarSaludo();
     caja.classList.add('is-open');
     boton.setAttribute('aria-expanded', 'true');
     if (!iniciado) {
       iniciado = true;
-      burbuja('bot', T.hola);
+      if (historial.length) historial.forEach((m) => burbuja(m.q, m.t, m.e, true)); else burbuja('bot', T.hola);
       T.chips.forEach((c) => {
         const b = document.createElement('button');
         b.type = 'button'; b.className = 'asis__chip'; b.textContent = c;
@@ -254,4 +264,13 @@
 
   // aparece después de un momento para no tapar la carga de la página
   setTimeout(() => caja.classList.add('is-on'), reducir ? 0 : 1200);
+
+  // saludo una sola vez por visita, a los 8 segundos, si no han abierto el asistente
+  const saludo = caja.querySelector('.asis__saludo');
+  function quitarSaludo() { saludo.hidden = true; try { sessionStorage.setItem(CLAVE + '-saludo', '1'); } catch (e) { /* nada */ } }
+  let visto = false;
+  try { visto = sessionStorage.getItem(CLAVE + '-saludo') === '1'; } catch (e) { visto = true; }
+  if (!visto && !historial.length) setTimeout(() => { if (panel.hidden) saludo.hidden = false; }, 8000);
+  caja.querySelector('.asis__saludo-txt').addEventListener('click', abrir);
+  caja.querySelector('.asis__saludo-x').addEventListener('click', quitarSaludo);
 })();
