@@ -1112,3 +1112,6 @@ ol.legal__lista { list-style: decimal; }
 @keyframes net-beat { 50% { transform: scale(0.9); opacity: 0.7; } }
 @keyframes net-dot { 0%, 100% { transform: translateY(0); opacity: 0.4; } 40% { transform: translateY(-4px); opacity: 1; } }
 @keyframes net-hop { 40% { transform: translateY(-6px) rotate(-8deg); } }
+
+/* celular: deja espacio al final para que los botones flotantes (asistente y WhatsApp) no tapen los enlaces legales */
+@media (max-width: 47.99em) { .foot { padding-bottom: calc(max(2rem, env(safe-area-inset-bottom) + 1rem) + 4.75rem); } }
