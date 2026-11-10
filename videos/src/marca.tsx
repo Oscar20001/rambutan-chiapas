@@ -6,6 +6,9 @@ import { TITULO, TEXTO, avance } from './comun';
 export const MARCA = 'IXCHEL';
 export const MARCA_SUB = 'FRUTAS DEL SOCONUSCO';
 export const TEL = '(962) 170 7553';
+// segundo número oficial (2026-11-10): WhatsApp y llamadas; el comprador debe identificarse
+export const TEL2 = '(962) 269 9611';
+export const AVISO_ID = 'Identifícate: nombre, negocio y ciudad';
 export const CORREO = 'ventasixchelfrutas@gmail.com';
 
 // Formato del video: vertical (celular), cuadrado (tableta/feed) u horizontal (computadora).
@@ -115,6 +118,8 @@ export const CierreSerie: React.FC<{ t: number; desde: number; fondo?: string }>
         <div style={{ ...it(2), fontFamily: TEXTO, fontSize: 36 * u, opacity: 0.9 }}>Rambután de Tuxtla Chico, Chiapas</div>
         <div style={{ ...it(3), fontFamily: TITULO, fontSize: 40 * u, letterSpacing: 4 * u, opacity: 0.85 }}>LLAMA O ENVÍA WHATSAPP</div>
         <div style={{ ...it(3.4), fontFamily: TITULO, fontSize: 104 * u, letterSpacing: 3 * u, color: '#25d366', background: 'rgba(5,30,15,.85)', padding: `${8 * u}px ${44 * u}px 0`, borderRadius: 80 * u, boxShadow: `0 0 ${(40 + 30 * Math.max(0, Math.sin(l * 3))) * u}px rgba(37,211,102,${0.35 + 0.25 * Math.max(0, Math.sin(l * 3))})`, transform: `scale(${1 + 0.035 * Math.max(0, Math.sin(l * 3))})` }}>{TEL}</div>
+        <div style={{ ...it(3.7), fontFamily: TITULO, fontSize: 62 * u, letterSpacing: 3 * u, color: '#25d366' }}>{TEL2}</div>
+        <div style={{ ...it(3.9), fontFamily: TEXTO, fontSize: 32 * u, opacity: 0.9 }}>{AVISO_ID}</div>
         <div style={{ ...it(4), fontFamily: TEXTO, fontSize: 38 * u }}>{CORREO}</div>
       </div>
     </div>
