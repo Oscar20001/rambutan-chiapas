@@ -13,7 +13,7 @@ PARES = [
     ('href="img/logo.svg"', 'href="../img/logo.svg"'),
     ('href="styles.css?v=20261103d"', 'href="../styles.css?v=20261103d"'),
     ('src="app.js?v=20261103d"', 'src="../app.js?v=20261103d"'),
-    ('src="asistente.js?v=20261110h"', 'src="../asistente.js?v=20261110h"'),
+    ('src="asistente.js?v=20261110i"', 'src="../asistente.js?v=20261110i"'),
     ('src="medicion.js?v=20261106b"', 'src="../medicion.js?v=20261106b"'),
     ('<small>Segundo WhatsApp y llamadas</small>', '<small>Second WhatsApp and calls</small>'),
     ('<p class="foot__nota small">Al escribir o llamar, identifícate con tu nombre, tu negocio y tu ciudad. Solo atendemos a compradores que se identifican.</p>', '<p class="foot__nota small">When you write or call, identify yourself with your name, business and city. We only assist buyers who identify themselves.</p>'),
