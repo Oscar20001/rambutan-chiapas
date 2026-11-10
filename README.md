@@ -2,6 +2,8 @@
 
 Sitio de venta de rambután por tonelada desde Tuxtla Chico, Chiapas.
 
+> **Todos los derechos reservados.** Este repositorio es público solo para poder publicar el sitio oficial. No es código abierto: está prohibido copiarlo, clonarlo para volver a publicarlo o usarlo para hacerse pasar por Ixchel, a mano o con inteligencia artificial. Ver [LICENSE](LICENSE). Sitio oficial: https://oscar20001.github.io/rambutan-chiapas/
+
 Sitio estático (HTML, CSS y JavaScript sin dependencias) para conectar con compradores mayoristas de
 rambután en todo México. Se abre directo con `index.html`.
 
