@@ -788,6 +788,12 @@ select.field option { background: var(--red); color: var(--paper); }
 .legal .sheet__title { font-size: var(--step-head); line-height: 0.9; }
 .legal__h { margin-top: 2rem; margin-bottom: 0.5rem; font-size: var(--step-lead); line-height: 1; }
 .legal a:focus-visible { outline-color: var(--paper-ink); }
+ul.legal__lista { list-style: disc; }
+ol.legal__lista { list-style: decimal; }
+.legal__lista { margin: 0.5rem 0 0; padding-left: 1.25rem; display: grid; gap: 0.5rem; line-height: 1.5; }
+.legal__canales { margin: 0.75rem 0 1rem; }
+.legal__canales a { overflow-wrap: anywhere; }
+@media (max-width: 40em) { .legal__canales li { flex-wrap: wrap; } .legal__canales li i { display: none; } .legal__canales li span:last-child { flex-basis: 100%; text-align: left; font-weight: 700; } }
 .form-legal { margin-top: 0.25rem; }
 .form-legal a { color: inherit; }
 

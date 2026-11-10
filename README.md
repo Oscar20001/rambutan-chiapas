@@ -2,6 +2,8 @@
 
 Sitio de venta de rambután por tonelada desde Tuxtla Chico, Chiapas.
 
+> **Todos los derechos reservados.** Este repositorio es público solo para poder publicar el sitio oficial. No es código abierto: está prohibido copiarlo, clonarlo para volver a publicarlo o usarlo para hacerse pasar por Ixchel, a mano o con inteligencia artificial. Ver [LICENSE](LICENSE). Sitio oficial: https://oscar20001.github.io/rambutan-chiapas/
+
 Sitio estático (HTML, CSS y JavaScript sin dependencias) para conectar con compradores mayoristas de
 rambután en todo México. Se abre directo con `index.html`.
 
@@ -58,6 +60,12 @@ logo animado y el teléfono. Cuando cambies archivos del sitio, sube `VERSION` e
    las cajas y el camión cargando harán el sitio mucho más creíble. Los lugares para cambiarlas:
    el fondo del inicio (`.hero__art`), el cuadro de "La fruta" (`.plate__pic`) y las dos imágenes de
    preguntas (`.faq__tall`, `.faq__square`).
+
+## Protección contra copias
+
+- `proteccion.js` se carga en todas las páginas. Si la página se abre desde una dirección que no es la oficial, o metida dentro de otra página, tapa todo con un aviso y da el enlace al sitio verdadero.
+- **Si el sitio se muda a un dominio propio**, agrega el dominio en `DOMINIOS` y cambia `OFICIAL` dentro de `proteccion.js`, y actualiza la dirección en `oficial.html` y `en/official.html`. Si no, la página verdadera mostraría el aviso.
+- `oficial.html` (y `en/official.html`) lista los únicos canales oficiales y cómo reportar una suplantación.
 
 ## Estadísticas de visitas
 
