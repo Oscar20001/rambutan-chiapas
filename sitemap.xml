@@ -98,4 +98,16 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://oscar20001.github.io/rambutan-chiapas/en/terms.html"/>
     <changefreq>monthly</changefreq>
   </url>
+  <url>
+    <loc>https://oscar20001.github.io/rambutan-chiapas/oficial.html</loc>
+    <xhtml:link rel="alternate" hreflang="es-MX" href="https://oscar20001.github.io/rambutan-chiapas/oficial.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://oscar20001.github.io/rambutan-chiapas/en/official.html"/>
+    <changefreq>monthly</changefreq>
+  </url>
+  <url>
+    <loc>https://oscar20001.github.io/rambutan-chiapas/en/official.html</loc>
+    <xhtml:link rel="alternate" hreflang="es-MX" href="https://oscar20001.github.io/rambutan-chiapas/oficial.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://oscar20001.github.io/rambutan-chiapas/en/official.html"/>
+    <changefreq>monthly</changefreq>
+  </url>
 </urlset>

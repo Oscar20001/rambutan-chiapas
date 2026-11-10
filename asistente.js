@@ -8,8 +8,8 @@
   const RAIZ = EN ? '../' : '';
   const WA = 'https://wa.me/529621707553';
   const P = EN
-    ? { fruta: 'fruit.html', pedidos: 'orders.html', agenda: 'schedule.html', preguntas: 'faq.html', cotizar: 'quote.html', contacto: 'contact.html', privacidad: 'privacy.html', terminos: 'terms.html' }
-    : { fruta: 'fruta.html', pedidos: 'pedidos.html', agenda: 'agenda.html', preguntas: 'preguntas.html', cotizar: 'cotizar.html', contacto: 'contacto.html', privacidad: 'privacidad.html', terminos: 'terminos.html' };
+    ? { fruta: 'fruit.html', pedidos: 'orders.html', agenda: 'schedule.html', preguntas: 'faq.html', cotizar: 'quote.html', contacto: 'contact.html', privacidad: 'privacy.html', terminos: 'terms.html', oficial: 'official.html' }
+    : { fruta: 'fruta.html', pedidos: 'pedidos.html', agenda: 'agenda.html', preguntas: 'preguntas.html', cotizar: 'cotizar.html', contacto: 'contacto.html', privacidad: 'privacidad.html', terminos: 'terminos.html', oficial: 'oficial.html' };
 
   // ---------- textos ----------
   const T = EN ? {
@@ -54,6 +54,7 @@
     { k: ['claim', 'complaint', 'return', 'damaged', 'bad', 'guarantee'], r: 'You or your driver check quality, size and quantity while loading, and we send photos and video before the truck leaves. Claims are accepted at the orchard before departure; after that the load is accepted, because handling on the road no longer depends on us.', l: ['Terms of sale', 'pedidos', '#condiciones'] },
     { k: ['invoice', 'factura', 'tax', 'receipt', 'rfc'], r: 'Ask us about invoicing on WhatsApp when you request your quote and we’ll confirm the details for your order.', wa: true },
     { k: ['phone', 'whatsapp', 'email', 'contact', 'number', 'mail'], r: 'WhatsApp and phone: +52 962 170 7553. Email: ventasixchelfrutas@gmail.com. Those are our only official contacts.', l: ['Contact', 'contacto'], wa: true },
+    { k: ['official', 'real page', 'copy', 'clone', 'impersonat', 'legit', 'genuine', 'verify'], r: 'Our only official site is oscar20001.github.io/rambutan-chiapas, with WhatsApp +52 962 170 7553 and ventasixchelfrutas@gmail.com. Anything else using our name is not us. If you see a copy, do not pay and tell us.', l: ['Official channels', 'oficial'] },
     { k: ['fraud', 'scam', 'fake', 'account', 'bank', 'safe', 'trust'], r: 'Only pay to the account we give you in writing from +52 962 170 7553 or ventasixchelfrutas@gmail.com. If someone asks you to pay from another number or profile in Ixchel’s name, don’t pay and let us know.', l: ['Terms of use', 'terminos'] },
     { k: ['health', 'vitamin', 'benefit', 'nutrition', 'calories', 'healthy'], r: 'Rambutan is a juicy tropical fruit, mostly water, and a source of vitamin C. That’s general information, not medical advice.' },
     { k: ['other fruit', 'mango', 'lychee', 'mangosteen', 'cacao', 'banana', 'more fruit'], r: 'Our main product is rambutan. Ask us on WhatsApp about other Soconusco fruits and we’ll tell you what we can offer.', wa: true },
@@ -75,6 +76,7 @@
     { k: ['reclamo', 'queja', 'devolucion', 'maltratada', 'mala', 'garantia'], r: 'Tú o tu chofer revisan calidad, calibre y cantidad mientras se carga, y te mandamos fotos y video antes de que salga el camión. Los reclamos se hacen en la huerta antes de salir; después la carga queda aceptada, porque el manejo en el camino ya no depende de nosotros.', l: ['Condiciones de venta', 'pedidos', '#condiciones'] },
     { k: ['factura', 'facturan', 'rfc', 'fiscal'], r: 'Pregúntanos por la factura en WhatsApp cuando pidas tu cotización y te confirmamos los detalles para tu pedido.', wa: true },
     { k: ['telefono', 'whatsapp', 'correo', 'contacto', 'numero', 'email', 'mail'], r: 'WhatsApp y teléfono: 962 170 7553. Correo: ventasixchelfrutas@gmail.com. Son nuestros únicos contactos oficiales.', l: ['Contacto', 'contacto'], wa: true },
+    { k: ['oficial', 'oficiales', 'copia', 'clon', 'suplant', 'verdadera', 'verdadero', 'legitim', 'verificar', 'impostor'], r: 'Nuestra única página oficial es oscar20001.github.io/rambutan-chiapas, con el WhatsApp 962 170 7553 y el correo ventasixchelfrutas@gmail.com. Cualquier otra que use nuestro nombre no somos nosotros. Si ves una copia, no pagues y avísanos.', l: ['Canales oficiales', 'oficial'] },
     { k: ['fraude', 'estafa', 'falso', 'cuenta', 'banco', 'seguro', 'confianza', 'robo'], r: 'Paga solo a la cuenta que te damos por escrito desde el 962 170 7553 o ventasixchelfrutas@gmail.com. Si alguien te pide pagar desde otro número o perfil a nombre de Ixchel, no pagues y avísanos.', l: ['Términos de uso', 'terminos'] },
     { k: ['salud', 'vitamina', 'vitaminas', 'beneficio', 'beneficios', 'nutricion', 'calorias', 'sano'], r: 'El rambután es una fruta tropical jugosa, en su mayoría agua, y aporta vitamina C. Es información general, no consejo médico.' },
     { k: ['otras frutas', 'mango', 'lichi', 'litchi', 'mangostan', 'cacao', 'platano', 'mas frutas'], r: 'Nuestro producto principal es el rambután. Pregúntanos por WhatsApp por otras frutas del Soconusco y te decimos qué podemos ofrecer.', wa: true },
@@ -144,7 +146,7 @@
 
   // ---------- la ventana ----------
   const css = document.createElement('link');
-  css.rel = 'stylesheet'; css.href = RAIZ + 'asistente.css?v=20261110e';
+  css.rel = 'stylesheet'; css.href = RAIZ + 'asistente.css?v=20261110f';
   document.head.appendChild(css);
 
   const caja = document.createElement('div');
