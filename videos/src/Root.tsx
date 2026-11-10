@@ -9,6 +9,7 @@ import { AnuncioCamion, AnuncioProducto } from './Anuncio3D';
 import { DURACION_ABRE, RambutanAbre } from './RambutanAbre';
 import { Alto, DURACION_ALTO } from './Alto';
 import { VueloPrueba } from './VueloPrueba';
+import { FichaVista, LOTERIA, MAYAS, IXCHEL, ADIVINA } from './Fichas';
 import { Carrusel, DOMINGO, DURA, SABADO, COMPRAR, PREGUNTAS, SOCONUSCO } from './Carrusel';
 import comoSeCome from './guiones/como-se-come.json';
 import compradores from './guiones/compradores.json';
@@ -33,11 +34,20 @@ import { TierraVolcan, DURACION_VOLCAN } from './TierraVolcan';
 
 import { TresCosechas, DURACION_COSECHAS } from './TresCosechas';
 
+import { PrimerRambutan, DURACION_PRIMER } from './PrimerRambutan';
+import { QueTiene, DURACION_QUE } from './QueTiene';
+import { DiaMuertos, DURACION_MUERTOS } from './DiaMuertos';
+import { CORTOS, CortoAgua, CortoCosecha, CortoPela, CortoQuiz } from './Cortos';
+
 export const Root: React.FC = () => (
   <>
     <Composition id="ComoSeCome" component={ComoSeCome} {...vertical} calculateMetadata={tiemposDe(comoSeCome)} />
     <Composition id="Huerta" component={Huerta} {...vertical} calculateMetadata={tiemposDe(compradores)} />
     <Composition id="Compradores" component={Compradores} {...vertical} calculateMetadata={tiemposDe(compradores)} />
+    <Composition id="FichaLoteria" component={FichaVista} fps={30} width={1080} height={1920} durationInFrames={1} defaultProps={{ ...LOTERIA, i: 0 }} />
+    <Composition id="FichaMayas" component={FichaVista} fps={30} width={1080} height={1920} durationInFrames={1} defaultProps={{ ...MAYAS, i: 0 }} />
+    <Composition id="FichaIxchel" component={FichaVista} fps={30} width={1080} height={1920} durationInFrames={1} defaultProps={{ ...IXCHEL, i: 0 }} />
+    <Composition id="FichaAdivina" component={FichaVista} fps={30} width={1080} height={1920} durationInFrames={1} defaultProps={{ ...ADIVINA, i: 0 }} />
     <Composition id="CarruselSabado" component={Carrusel} fps={FPS} width={1080} height={1920}
       durationInFrames={Math.round(SABADO.length * DURA * FPS + FPS)} defaultProps={{ laminas: SABADO }} />
     <Composition id="CarruselDomingo" component={Carrusel} fps={FPS} width={1080} height={1920}
@@ -57,6 +67,18 @@ export const Root: React.FC = () => (
     <Composition id="TresCosechasV" component={TresCosechas} fps={30} width={1080} height={1920} durationInFrames={Math.round(DURACION_COSECHAS * 30)} />
     <Composition id="TresCosechasH" component={TresCosechas} fps={30} width={1920} height={1080} durationInFrames={Math.round(DURACION_COSECHAS * 30)} />
     <Composition id="TresCosechasC" component={TresCosechas} fps={30} width={1080} height={1080} durationInFrames={Math.round(DURACION_COSECHAS * 30)} />
+    <Composition id="PrimerRambutanV" component={PrimerRambutan} fps={30} width={1080} height={1920} durationInFrames={Math.round(DURACION_PRIMER * 30)} />
+    <Composition id="PrimerRambutanH" component={PrimerRambutan} fps={30} width={1920} height={1080} durationInFrames={Math.round(DURACION_PRIMER * 30)} />
+    <Composition id="PrimerRambutanC" component={PrimerRambutan} fps={30} width={1080} height={1080} durationInFrames={Math.round(DURACION_PRIMER * 30)} />
+    <Composition id="MuertosH" component={DiaMuertos} fps={30} width={1920} height={1080} durationInFrames={DURACION_MUERTOS * 30} />
+    <Composition id="MuertosV" component={DiaMuertos} fps={30} width={1080} height={1920} durationInFrames={DURACION_MUERTOS * 30} />
+    <Composition id="CortoPela" component={CortoPela} fps={30} width={1080} height={1920} durationInFrames={CORTOS.pela * 30} />
+    <Composition id="CortoAgua" component={CortoAgua} fps={30} width={1080} height={1920} durationInFrames={CORTOS.agua * 30} />
+    <Composition id="CortoCosecha" component={CortoCosecha} fps={30} width={1080} height={1920} durationInFrames={CORTOS.cosecha * 30} />
+    <Composition id="CortoQuiz" component={CortoQuiz} fps={30} width={1080} height={1920} durationInFrames={CORTOS.quiz * 30} />
+    <Composition id="QueTieneV" component={QueTiene} fps={30} width={1080} height={1920} durationInFrames={Math.round(DURACION_QUE * 30)} />
+    <Composition id="QueTieneH" component={QueTiene} fps={30} width={1920} height={1080} durationInFrames={Math.round(DURACION_QUE * 30)} />
+    <Composition id="QueTieneC" component={QueTiene} fps={30} width={1080} height={1080} durationInFrames={Math.round(DURACION_QUE * 30)} />
     <Composition id="AnuncioProducto" component={AnuncioProducto} fps={FPS} width={1080} height={1920} durationInFrames={22 * FPS} />
     <Composition id="AnuncioCamion" component={AnuncioCamion} fps={FPS} width={1080} height={1920} durationInFrames={22 * FPS} />
     <Composition id="RambutanAbre" component={RambutanAbre} fps={FPS} width={1080} height={1920} durationInFrames={Math.round(DURACION_ABRE * FPS)} />

@@ -46,7 +46,7 @@ const COSECHA = { meses: [7, 8, 9, 10], pico: [8, 9] };
 
 const KG_POR_CAJA = 10;
 const KM_POR_HORA = 55; // promedio de un camión con paradas
-const MIN_T = 1;
+const MIN_T = 5;
 const MAX_T = 60;
 
 // ---------- textos en los dos idiomas ----------

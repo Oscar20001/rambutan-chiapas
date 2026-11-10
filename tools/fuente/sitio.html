@@ -64,7 +64,7 @@
    "name": "¿Cuál es el pedido mínimo?",
    "acceptedAnswer": {
     "@type": "Answer",
-    "text": "Trabajamos desde una tonelada por pedido. Para volúmenes semanales durante toda la temporada armamos un programa de cortes y te apartamos fruta."
+    "text": "Trabajamos desde cinco toneladas por pedido. Para volúmenes semanales durante toda la temporada armamos un programa de cortes y te apartamos fruta."
    }
   },
   {
@@ -104,7 +104,7 @@
    "name": "¿Cómo se paga?",
    "acceptedAnswer": {
     "@type": "Answer",
-    "text": "Con un apartado del 35 % para apartar fruta y fecha de corte, y el resto al recibir la fruta en la huerta. El apartado no se devuelve si cancelas. Todo está en las condiciones de venta."
+    "text": "Con un apartado del 35 % para apartar fruta y fecha de corte, y el resto en la huerta, antes de cargar tu camión. El apartado no se devuelve si cancelas. Todo está en las condiciones de venta."
    }
   }
  ]
@@ -348,7 +348,7 @@
         <div><dt>Cajas por tráiler</dt><dd>Hasta 2,200 cajas de 10 kg (22 t) en caja de 53 pies</dd></div>
         <div><dt>Temperatura</dt><dd>10 a 12 °C, humedad relativa de 90 a 95 %</dd></div>
         <div><dt>Vida de anaquel</dt><dd>Alrededor de dos semanas en frío; de tres a cinco días a temperatura ambiente</dd></div>
-        <div><dt>Pedido mínimo</dt><dd>1 tonelada</dd></div>
+        <div><dt>Pedido mínimo</dt><dd>5 toneladas</dd></div>
         <div><dt>Temporada</dt><dd>Julio a octubre, pico en agosto y septiembre</dd></div>
         <div><dt>Contacto</dt><dd>WhatsApp +52 962 170 7553</dd></div>
       </dl>
@@ -364,26 +364,26 @@
   <div class="frame">
     <div class="volume__head">
       <h2 id="t-volumen" class="head" data-reveal>Pedidos por volumen</h2>
-      <p data-reveal style="--i:1">Desde una camioneta de prueba hasta un tráiler completo cada semana de la temporada.</p>
+      <p data-reveal style="--i:1">Desde un camión de 5 toneladas hasta un tráiler completo cada semana de la temporada.</p>
     </div>
     <ol class="volume__tiers" data-stack>
       <li class="tier">
         <div class="tier__stack" aria-hidden="true" style="--n:3"></div>
         <h3 class="tier__name">Prueba</h3>
-        <p class="tier__range nums">1 a 3 toneladas</p>
-        <p>Cabe en una camioneta de 3.5 t. Para probar calibre, color y vida de anaquel en tu bodega.</p>
+        <p class="tier__range nums">5 a 10 toneladas</p>
+        <p>Cabe en un torton. Para probar calibre, color y vida de anaquel en tu bodega.</p>
       </li>
       <li class="tier">
         <div class="tier__stack" aria-hidden="true" style="--n:6"></div>
         <h3 class="tier__name">Mayoreo</h3>
-        <p class="tier__range nums">4 a 10 toneladas</p>
-        <p>Cabe en un torton. El pedido de central de abasto, cadena o distribuidor.</p>
+        <p class="tier__range nums">11 a 22 toneladas</p>
+        <p>Llena un tráiler de 53 pies. El pedido de central de abasto, cadena o distribuidor.</p>
       </li>
       <li class="tier">
         <div class="tier__stack" aria-hidden="true" style="--n:10"></div>
-        <h3 class="tier__name">Tráiler completo</h3>
-        <p class="tier__range nums">11 a 22 toneladas</p>
-        <p>Llena un tráiler de 53 pies. Programa semanal en temporada, con fruta apartada.</p>
+        <h3 class="tier__name">Programa semanal</h3>
+        <p class="tier__range nums">Más de 22 toneladas</p>
+        <p>Varios tráileres por semana durante la temporada, con fruta apartada.</p>
       </li>
     </ol>
   </div>
@@ -406,7 +406,7 @@
         <label for="toneladas" data-unit-label>Toneladas por pedido</label>
         <div class="calc__tons">
           <button type="button" class="calc__step" data-step="-1" aria-label="Menos">−</button>
-          <input id="toneladas" name="toneladas" type="number" inputmode="numeric" min="1" max="60" step="1" value="5">
+          <input id="toneladas" name="toneladas" type="number" inputmode="numeric" min="5" max="60" step="1" value="5">
           <button type="button" class="calc__step" data-step="1" aria-label="Más">+</button>
         </div>
       </form>
@@ -494,14 +494,14 @@
       <div class="ticket__main">
         <h2 id="t-precio" class="ticket__title">Pedido mayorista</h2>
         <ul class="ticket__terms" data-reveal style="--i:1">
-          <li>Desde 1 tonelada por pedido</li>
+          <li>Desde 5 toneladas por pedido</li>
           <li>Caja de 10 kg, calibre parejo</li>
           <li>Precio por kilo según calibre y semana</li>
           <li>Precio en huerta: tú mandas el transporte</li>
         </ul>
       </div>
       <div class="ticket__stub" data-reveal style="--i:2">
-        <p class="ticket__price nums">1 T</p>
+        <p class="ticket__price nums">5 T</p>
         <p class="ticket__unit">pedido mínimo</p>
         <a class="ticket__action" href="#cotizar" data-wa="precio">Pedir precio de la semana</a>
       </div>
@@ -540,14 +540,15 @@
         <p class="care__note small">Con los días, las puntas de los pelitos se oscurecen primero. Es normal y no quiere decir que la pulpa esté mala. El frío abajo de 8 °C sí daña la cáscara.</p>
       </aside>
       <ol class="terms__list">
-        <li data-reveal><b>Venta al mayoreo.</b> Vendemos desde una tonelada por pedido a negocios y comerciantes. Cada venta es una compraventa mercantil.</li>
+        <li data-reveal><b>Venta al mayoreo.</b> Vendemos desde cinco toneladas por pedido a negocios y comerciantes. Cada venta es una compraventa mercantil.</li>
         <li data-reveal><b>Precio.</b> Cambia según calibre y semana. Te lo confirmamos por escrito, por WhatsApp o correo, y vale 48 horas.</li>
-        <li data-reveal><b>Apartado del 35 %.</b> Para apartar fruta y fecha de corte pagas el 35 % del pedido. Se descuenta del total y el resto se paga al recibir la fruta en la huerta.</li>
+        <li data-reveal><b>Apartado del 35 %.</b> Para apartar fruta y fecha de corte pagas el 35 % del pedido. Se descuenta del total y el resto se paga en la huerta, antes de cargar tu camión.</li>
         <li data-reveal><b>El apartado no se devuelve</b> si cancelas, si no llega tu transporte el día acordado o si cambias la fecha con menos de 72 horas de aviso, como lo permite el artículo 379 del Código de Comercio. Si somos nosotros quienes no podemos surtir, tú eliges: pasar tu apartado al siguiente corte o que te lo devolvamos completo.</li>
+        <li data-reveal><b>Pagos seguros.</b> Solo recibimos transferencias o depósitos a la cuenta que te damos por escrito desde el WhatsApp 962 170 7553 o el correo ventasixchelfrutas@gmail.com. Cargamos cuando el pago ya se ve reflejado en nuestra cuenta. No aceptamos pago contra entrega en tu ciudad, cheques ni comprobantes sin confirmar. Si alguien te pide pagar a otra cuenta o desde otro número a nombre de Ixchel, no pagues y avísanos.</li>
         <li data-reveal><b>Entrega en la huerta.</b> Entregamos en Tuxtla Chico, Chiapas, cargado en el transporte que tú mandas. No hacemos envíos ni damos transporte. Desde que la fruta se sube a tu camión, su cuidado y cualquier riesgo del viaje (temperatura, tiempo, maniobras, robo o accidente) son tuyos.</li>
         <li data-reveal><b>Revisión al cargar.</b> Tú o tu chofer revisan calidad, calibre y cantidad mientras se carga. Antes de que salga el camión te mandamos fotos y video de la carga. Cuando el camión sale de la huerta, la carga queda aceptada.</li>
         <li data-reveal><b>Reclamos y devoluciones.</b> Solo aceptamos reclamos hechos en la huerta, antes de que salga el camión. Después no hay devoluciones, cambios ni descuentos, porque el manejo de la fruta ya no depende de nosotros. Tampoco se aceptan reclamos por frío o calor de más, golpes, retrasos del viaje o un almacenaje distinto al indicado en «Cómo cuidar tu rambután».</li>
-        <li data-reveal><b>Fruta fresca.</b> Los días que dura la fruta y los tiempos de camino que damos en esta página son aproximados, no una garantía.</li>
+        <li data-reveal><b>Fruta fresca.</b> Los días que dura la fruta y los tiempos de camino que damos en esta página son aproximados, no una garantía. Las fotos, videos y animaciones son ilustrativos.</li>
         <li data-reveal><b>Causas fuera de nuestro control.</b> Clima, plagas, bloqueos de carretera, cortes de luz o desastres pueden mover una fecha de corte. Reprogramamos y te avisamos lo antes posible. Si no se puede surtir, aplica el punto 4.</li>
         <li data-reveal><b>Acuerdos por escrito.</b> Los mensajes de WhatsApp y los correos cuentan como acuerdo por escrito y los guardamos como comprobante, junto con las fotos y el video de la carga.</li>
         <li data-reveal><b>Datos personales.</b> Usamos tus datos solo para cotizar, apartar y entregar, como dice el <a href="privacidad.html">aviso de privacidad</a>.</li>
@@ -630,7 +631,7 @@
         </details>
         <details>
           <summary>¿Cuál es el pedido mínimo?</summary>
-          <p>Trabajamos desde una tonelada por pedido. Para volúmenes semanales durante toda la temporada armamos un programa de cortes y te apartamos fruta.</p>
+          <p>Trabajamos desde cinco toneladas por pedido. Para volúmenes semanales durante toda la temporada armamos un programa de cortes y te apartamos fruta.</p>
         </details>
         <details>
           <summary>¿Cómo viene empacado?</summary>
@@ -650,7 +651,7 @@
         </details>
         <details>
           <summary>¿Cómo se paga?</summary>
-          <p>Con un apartado del 35 % para apartar fruta y fecha de corte, y el resto al recibir la fruta en la huerta. El apartado no se devuelve si cancelas. Todo está en las <a href="#condiciones">condiciones de venta</a>.</p>
+          <p>Con un apartado del 35 % para apartar fruta y fecha de corte, y el resto en la huerta, antes de cargar tu camión. El apartado no se devuelve si cancelas. Todo está en las <a href="#condiciones">condiciones de venta</a>.</p>
         </details>
       </div>
       <div class="faq__actions" data-reveal style="--i:3">
@@ -851,7 +852,7 @@
       </div>
     </div>
     <div class="foot__last">
-      <p class="foot__legal">© <span data-year>2026</span> Ixchel, Frutas del Soconusco <span class="foot__dot" aria-hidden="true">·</span> <a href="privacidad.html">Aviso de privacidad</a></p>
+      <p class="foot__legal">© <span data-year>2026</span> Ixchel, Frutas del Soconusco <span class="foot__dot" aria-hidden="true">·</span> <a href="privacidad.html">Aviso de privacidad</a> <span class="foot__dot" aria-hidden="true">·</span> <a href="terminos.html">Términos de uso</a></p>
       <a class="joks" href="https://www.facebook.com/share/1CNTDDn2zW/" target="_blank" rel="noopener" aria-label="Hecho por J.O.K.S (abre su página de Facebook)"><svg class="joks__fb" viewBox="0 0 24 24" aria-hidden="true"><path d="M13.5 21v-7.5h2.6l.4-3h-3V8.6c0-.9.3-1.5 1.5-1.5h1.6V4.4c-.3 0-1.2-.1-2.3-.1-2.3 0-3.8 1.4-3.8 3.9v2.3H8v3h2.5V21z" fill="currentColor"/></svg><span class="joks__txt"><span class="joks__by">Hecho por</span> <span class="joks__name"><b>J</b><i>.</i><b>O</b><i>.</i><b>K</b><i>.</i><b>S</b></span></span></a>
       <a class="foot__up" href="#inicio" aria-label="Volver arriba"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 13V3M3.5 7.5L8 3l4.5 4.5" fill="none" stroke="currentColor" stroke-width="2.2"/></svg></a>
     </div>
@@ -882,5 +883,6 @@
 
 <script src="medicion.js?v=20261106b" defer></script>
 <script src="app.js?v=20261103d" defer></script>
+<script src="asistente.js?v=20261110e" defer></script>
 </body>
 </html>

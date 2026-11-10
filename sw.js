@@ -1,10 +1,10 @@
 // Ixchel: guarda el sitio para que abra sin internet y muestra offline.html si una página no está guardada.
 // Al cambiar archivos del sitio, sube la versión para que los celulares bajen lo nuevo.
-const VERSION = 'ixchel-2026-11-06c';
+const VERSION = 'ixchel-2026-11-10e';
 const BASICOS = [
-  './', 'index.html', 'fruta.html', 'pedidos.html', 'agenda.html', 'preguntas.html', 'cotizar.html', 'contacto.html', 'privacidad.html',
-  'en/', 'en/index.html', 'en/fruit.html', 'en/orders.html', 'en/schedule.html', 'en/faq.html', 'en/quote.html', 'en/contact.html', 'en/privacy.html',
-  'offline.html', 'styles.css', 'app.js', 'medicion.js', 'site.webmanifest',
+  './', 'index.html', 'fruta.html', 'pedidos.html', 'agenda.html', 'preguntas.html', 'cotizar.html', 'contacto.html', 'privacidad.html', 'terminos.html',
+  'en/', 'en/index.html', 'en/fruit.html', 'en/orders.html', 'en/schedule.html', 'en/faq.html', 'en/quote.html', 'en/contact.html', 'en/privacy.html', 'en/terms.html',
+  'offline.html', 'styles.css', 'app.js', 'asistente.js', 'asistente.css', 'img/asistente-maya.svg?v=3', 'medicion.js', 'site.webmanifest',
   'fonts/bebas-neue.woff2', 'fonts/eb-garamond-normal.woff2', 'fonts/eb-garamond-italic.woff2',
   'img/logo.svg', 'img/icono-32.png', 'img/icono-180.png', 'img/icono-192.png',
 ];

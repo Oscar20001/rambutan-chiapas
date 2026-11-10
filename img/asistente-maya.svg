@@ -1,0 +1,154 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" role="img" aria-label="Ixchel, asistente maya, con la luna y el conejo">
+  <defs>
+    <clipPath id="am-c"><circle cx="60" cy="60" r="58"/></clipPath>
+    <radialGradient id="am-cielo" cx="0.3" cy="0.3" r="0.9"><stop offset="0" stop-color="#1f5a35"/><stop offset="1" stop-color="#0f2c1b"/></radialGradient>
+    <radialGradient id="am-luna" cx="0.4" cy="0.35" r="0.7"><stop offset="0" stop-color="#fff0a8"/><stop offset="1" stop-color="#f4d96c"/></radialGradient>
+    <linearGradient id="am-piel" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#bd7f47"/><stop offset="0.6" stop-color="#b0743f"/><stop offset="1" stop-color="#94592e"/></linearGradient>
+  </defs>
+  <circle cx="60" cy="60" r="58" fill="url(#am-cielo)"/>
+  <g clip-path="url(#am-c)">
+    <!-- estrellas -->
+    <g fill="#f4d96c"><circle cx="52" cy="14" r="0.9"/><circle cx="14" cy="60" r="0.8"/><circle cx="104" cy="44" r="0.9"/><circle cx="22" cy="78" r="0.7"/><circle cx="108" cy="70" r="0.7"/></g>
+    <!-- geometría sagrada: flor de la vida, sutil -->
+    <g fill="none" stroke="#f4d96c" stroke-width="0.6" opacity="0.4">
+      <circle cx="67.00" cy="46.00" r="9"/>
+      <circle cx="67.00" cy="37.00" r="9"/>
+      <circle cx="74.79" cy="41.50" r="9"/>
+      <circle cx="74.79" cy="50.50" r="9"/>
+      <circle cx="67.00" cy="55.00" r="9"/>
+      <circle cx="59.21" cy="50.50" r="9"/>
+      <circle cx="59.21" cy="41.50" r="9"/>
+      <circle cx="67.00" cy="28.00" r="9"/>
+      <circle cx="74.79" cy="32.50" r="9"/>
+      <circle cx="82.59" cy="37.00" r="9"/>
+      <circle cx="82.59" cy="46.00" r="9"/>
+      <circle cx="82.59" cy="55.00" r="9"/>
+      <circle cx="74.79" cy="59.50" r="9"/>
+      <circle cx="67.00" cy="64.00" r="9"/>
+      <circle cx="59.21" cy="59.50" r="9"/>
+      <circle cx="51.41" cy="55.00" r="9"/>
+      <circle cx="51.41" cy="46.00" r="9"/>
+      <circle cx="51.41" cy="37.00" r="9"/>
+      <circle cx="59.21" cy="32.50" r="9"/>
+      <circle cx="67" cy="46" r="27" stroke-width="0.9"/>
+      <circle cx="67" cy="46" r="29.5" stroke-dasharray="1 2"/>
+    </g>
+    <!-- pirámide escalonada maya al fondo -->
+    <g>
+      <path d="M2 118 L132 118 L124 108 L10 108 Z" fill="#2b6b40"/>
+      <path d="M10 108 L124 108 L117 98 L17 98 Z" fill="#357a4b"/>
+      <path d="M17 98 L117 98 L110 88 L24 88 Z" fill="#2b6b40"/>
+      <path d="M24 88 L110 88 L103 78 L31 78 Z" fill="#357a4b"/>
+      <path d="M31 78 L103 78 L96 68 L38 68 Z" fill="#2b6b40"/>
+      <path d="M38 68 L96 68 L90 59 L44 59 Z" fill="#357a4b"/>
+      <g fill="none" stroke="#f4d96c" stroke-width="1" opacity="0.75">
+        <path d="M10 108 H124 M17 98 H117 M24 88 H110 M31 78 H103 M38 68 H96 M44 59 H90"/>
+      </g>
+      <g fill="#f4d96c" opacity="0.7">
+        <path d="M14 112 l2 -2 2 2 -2 2z"/><path d="M116 112 l2 -2 2 2 -2 2z"/>
+        <path d="M21 102 l2 -2 2 2 -2 2z"/><path d="M109 102 l2 -2 2 2 -2 2z"/>
+        <path d="M28 92 l2 -2 2 2 -2 2z"/><path d="M102 92 l2 -2 2 2 -2 2z"/>
+        <path d="M35 82 l2 -2 2 2 -2 2z"/><path d="M95 82 l2 -2 2 2 -2 2z"/>
+        <path d="M42 72 l2 -2 2 2 -2 2z"/><path d="M88 72 l2 -2 2 2 -2 2z"/>
+      </g>
+      <!-- templo en la cima -->
+      <path d="M50 59 V49 H84 V59 Z" fill="#2b6b40"/>
+      <path d="M47 49 H87 L83 44 H51 Z" fill="#9b1c23"/>
+      <path d="M47 49 H87" stroke="#f4d96c" stroke-width="0.9" opacity="0.7"/>
+    </g>
+    <!-- luna con conejo, a la izquierda -->
+    <circle cx="29" cy="33" r="21" fill="#f4d96c" opacity="0.18"/>
+    <circle cx="29" cy="33" r="17.5" fill="url(#am-luna)"/>
+    <g opacity="0.25" fill="#d9b94a"><circle cx="21" cy="26" r="2.2"/><circle cx="37" cy="41" r="1.8"/><circle cx="20" cy="41" r="1.3"/></g>
+    <g transform="translate(-2.5 13) scale(0.47)">
+      <g fill="#fffaf0" stroke="#133621" stroke-width="2.6" stroke-linejoin="round">
+        <ellipse cx="60" cy="25" rx="3.6" ry="10" transform="rotate(-18 60 25)"/>
+        <ellipse cx="67" cy="26" rx="3.4" ry="9.5" transform="rotate(14 67 26)"/>
+        <path d="M56 40c0-6 5-10 10-9 5 1 8 6 6 11l9 4c6 3 8 10 4 14-3 3-9 3-16 3h-9c-3 0-4-3-2-5l3-2c-4-3-5-9-5-16z"/>
+        <circle cx="88" cy="55" r="3.4"/>
+      </g>
+      <circle cx="62.5" cy="38" r="2" fill="#133621"/>
+    </g>
+
+    <g transform="translate(14 9) scale(0.88)">
+      <!-- plumas de quetzal en capas -->
+      <g stroke="#0c2416" stroke-width="1.4" stroke-linejoin="round">
+        <path d="M60 34 C76 20 92 14 104 16 C96 26 82 32 68 37 Z" fill="#1f6b43"/>
+        <path d="M60 34 C48 24 40 16 34 14 C38 24 46 32 54 37 Z" fill="#1f6b43"/>
+        <path d="M60 32 C70 16 80 6 90 2 C88 14 78 26 66 35 Z" fill="#2e8b57"/>
+        <path d="M60 32 C52 18 46 8 42 2 C42 14 48 26 55 35 Z" fill="#2e8b57"/>
+        <path d="M60 32 C64 16 70 4 74 -4 C76 8 70 22 63 34 Z" fill="#4fbf7a"/>
+        <path d="M60 32 C56 16 51 4 48 -4 C46 8 50 22 57 34 Z" fill="#4fbf7a"/>
+        <path d="M60 33 C57 18 58 6 60 -6 C62 6 63 18 60 33 Z" fill="#6fd393"/>
+      </g>
+      <g fill="#f4d96c"><circle cx="103" cy="16" r="2.2"/><circle cx="89.5" cy="3" r="2"/><circle cx="74" cy="-3" r="1.8"/><circle cx="48" cy="-3" r="1.8"/><circle cx="42.5" cy="3" r="2"/><circle cx="35" cy="14.5" r="2"/></g>
+
+      <!-- cabello y trenzas -->
+      <path d="M37 54 C35 70 37 84 41 92 L79 92 C83 84 85 70 83 54 C81 42 71 36 60 36 C49 36 39 42 37 54 Z" fill="#1d1410"/>
+      <!-- huipil -->
+      <path d="M12 124 C14 102 28 91 45 88 L75 88 C92 91 106 102 108 124 Z" fill="#9b1c23" stroke="#0c2416" stroke-width="1.4"/>
+      <path d="M44 88.5 L60 103 L76 88.5" fill="#7d151b"/>
+      <path d="M41 89 L60 106 L79 89" fill="none" stroke="#f4d96c" stroke-width="2.6" stroke-linejoin="round"/>
+      <path d="M37 90 L60 110 L83 90" fill="none" stroke="#3fa66b" stroke-width="1.6" stroke-linejoin="round"/>
+      <g fill="none" stroke="#f4d96c" stroke-width="1.8" stroke-linejoin="round">
+        <path d="M18 108 l4 -4 4 4 4 -4 4 4"/><path d="M86 108 l4 -4 4 4 4 -4 4 4"/>
+      </g>
+      <g fill="#f4d96c"><path d="M24 116 l3 -3 3 3 -3 3z"/><path d="M38 117 l3 -3 3 3 -3 3z"/><path d="M76 117 l3 -3 3 3 -3 3z"/><path d="M90 116 l3 -3 3 3 -3 3z"/></g>
+      <g fill="#3fa66b"><circle cx="27" cy="116" r="1"/><circle cx="41" cy="117" r="1"/><circle cx="79" cy="117" r="1"/><circle cx="93" cy="116" r="1"/></g>
+      <!-- trenzas sobre los hombros -->
+      <g fill="#1d1410" stroke="#3a2a20" stroke-width="0.8">
+        <path d="M39 70 C36 80 35 90 37 100 C39 101 41 101 43 100 C42 90 43 80 44 72 Z"/>
+        <path d="M81 70 C84 80 85 90 83 100 C81 101 79 101 77 100 C78 90 77 80 76 72 Z"/>
+      </g>
+      <g fill="none" stroke="#3a2a20" stroke-width="0.9"><path d="M37.5 78 l5 2 M37 85 l5 2 M37 92 l5 2"/><path d="M82.5 78 l-5 2 M83 85 l-5 2 M83 92 l-5 2"/></g>
+      <g fill="#9b1c23" stroke="#f4d96c" stroke-width="0.8"><rect x="36" y="97" width="8" height="3.4" rx="1"/><rect x="76" y="97" width="8" height="3.4" rx="1"/></g>
+      <!-- cuello -->
+      <path d="M52.5 76 L52.5 89 C55.5 92 64.5 92 67.5 89 L67.5 76 Z" fill="#94592e"/>
+      <!-- collar y pectoral de jade -->
+      <path d="M46 88 C50 93 70 93 74 88" fill="none" stroke="#0c2416" stroke-width="0.8"/>
+      <g fill="#3fa66b" stroke="#0c2416" stroke-width="0.9">
+        <circle cx="46.5" cy="88.5" r="2.2"/><circle cx="50.5" cy="91.3" r="2.2"/><circle cx="55" cy="92.8" r="2.2"/><circle cx="65" cy="92.8" r="2.2"/><circle cx="69.5" cy="91.3" r="2.2"/><circle cx="73.5" cy="88.5" r="2.2"/>
+      </g>
+      <path d="M55.5 93 L64.5 93 L62.5 100 L57.5 100 Z" fill="#f4d96c" stroke="#0c2416" stroke-width="1"/>
+      <circle cx="60" cy="96" r="2.3" fill="#3fa66b" stroke="#0c2416" stroke-width="0.8"/>
+      <!-- orejas y orejeras -->
+      <ellipse cx="40" cy="61" rx="3.4" ry="5" fill="#a86a3d"/>
+      <ellipse cx="80" cy="61" rx="3.4" ry="5" fill="#94592e"/>
+      <circle cx="39" cy="65.5" r="4.4" fill="#3fa66b" stroke="#0c2416" stroke-width="1.1"/><circle cx="39" cy="65.5" r="1.5" fill="#f4d96c"/>
+      <circle cx="81" cy="65.5" r="4.4" fill="#3fa66b" stroke="#0c2416" stroke-width="1.1"/><circle cx="81" cy="65.5" r="1.5" fill="#f4d96c"/>
+      <path d="M39 70 l0 4 M81 70 l0 4" stroke="#f4d96c" stroke-width="1.2" stroke-linecap="round"/>
+      <circle cx="39" cy="75.5" r="1.4" fill="#9b1c23"/><circle cx="81" cy="75.5" r="1.4" fill="#9b1c23"/>
+      <!-- cara -->
+      <path d="M42 56 C42 45 50 39 60 39 C70 39 78 45 78 56 C78 70 71 81.5 60 81.5 C49 81.5 42 70 42 56 Z" fill="url(#am-piel)"/>
+      <path d="M71 74 C69 78 65 81 60 81.5 C66 80 70 76 72 70 Z" fill="#8a522a" opacity="0.35"/>
+      <!-- fleco -->
+      <path d="M42 54 C42 45 50 38 60 38 C70 38 78 45 78 54 L72.5 49.5 L66 51.5 L60 49 L54 51.5 L47.5 49.5 Z" fill="#1d1410"/>
+      <!-- tocado: banda roja con greca dorada y medallón de jade -->
+      <path d="M38.5 47 C44 39 52 35.5 60 35.5 C68 35.5 76 39 81.5 47 L79.5 51 C74 45 67 42 60 42 C53 42 46 45 40.5 51 Z" fill="#9b1c23" stroke="#0c2416" stroke-width="1.3" stroke-linejoin="round"/>
+      <path d="M42 46 l2.4 -2.4 0 2 2.4 -2.4 M48 42.6 l2.4 -1.8 0 1.6 2.4 -1.6 M67.2 41 l2.4 1.6 0 -1.6 2.4 1.8 M73.2 43.6 l2.4 2.4 0 -2 2.4 2.4" fill="none" stroke="#f4d96c" stroke-width="1.2" stroke-linejoin="round"/>
+      <circle cx="60" cy="38.5" r="6.6" fill="#f4d96c" stroke="#0c2416" stroke-width="1.3"/>
+      <circle cx="60" cy="38.5" r="4.4" fill="#9b1c23"/>
+      <circle cx="60" cy="38.5" r="2.8" fill="#3fa66b"/>
+      <circle cx="59" cy="37.5" r="0.8" fill="#c9f2d6"/>
+      <!-- cejas -->
+      <path d="M47.5 56 C50 53.8 53 53.6 55.5 55" fill="none" stroke="#1d1410" stroke-width="1.9" stroke-linecap="round"/>
+      <path d="M64.5 55 C67 53.6 70 53.8 72.5 56" fill="none" stroke="#1d1410" stroke-width="1.9" stroke-linecap="round"/>
+      <!-- ojos almendrados con pestañas -->
+      <path d="M47.5 61 C49.5 58.5 53.5 58.5 55.6 61 C53.5 63.2 49.5 63.2 47.5 61 Z" fill="#fff4dc"/>
+      <path d="M64.4 61 C66.5 58.5 70.5 58.5 72.5 61 C70.5 63.2 66.5 63.2 64.4 61 Z" fill="#fff4dc"/>
+      <circle cx="51.6" cy="60.8" r="2.2" fill="#3b2314"/><circle cx="68.4" cy="60.8" r="2.2" fill="#3b2314"/>
+      <circle cx="51.6" cy="60.8" r="1.2" fill="#120a06"/><circle cx="68.4" cy="60.8" r="1.2" fill="#120a06"/>
+      <circle cx="52.3" cy="60" r="0.7" fill="#fff"/><circle cx="69.1" cy="60" r="0.7" fill="#fff"/>
+      <path d="M47 61 C49.5 58 53.5 58 56 61 M47.5 61 l-1.4 -1 M64 61 C66.5 58 70.5 58 73 61 M72.5 61 l1.4 -1" fill="none" stroke="#1d1410" stroke-width="1.1" stroke-linecap="round"/>
+      <!-- nariz -->
+      <path d="M59.6 59 C59 63 58 66.5 57.3 68.6 C58.8 69.8 61.2 69.8 62.7 68.6" fill="none" stroke="#7a4522" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+      <!-- mejillas -->
+      <ellipse cx="48.5" cy="68.2" rx="3.6" ry="2.1" fill="#c8553d" opacity="0.45"/>
+      <ellipse cx="71.5" cy="68.2" rx="3.6" ry="2.1" fill="#c8553d" opacity="0.4"/>
+      <!-- sonrisa -->
+      <path d="M53.5 73.2 C56.5 77.6 63.5 77.6 66.5 73.2 C63 74.8 57 74.8 53.5 73.2 Z" fill="#7d151b" stroke="#7d151b" stroke-width="1.1" stroke-linejoin="round"/>
+      <path d="M55.6 74.4 C58 75.4 62 75.4 64.4 74.4 L64 75 C61.6 75.8 58.4 75.8 56 75 Z" fill="#fff4dc"/>
+    </g>
+  </g>
+  <circle cx="60" cy="60" r="57" fill="none" stroke="#f4d96c" stroke-width="3"/>
+</svg>
