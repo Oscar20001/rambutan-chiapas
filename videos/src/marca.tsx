@@ -89,7 +89,7 @@ const EspiralAurea: React.FC<{ w: number; h: number; o: number }> = ({ w, h, o }
 };
 
 // Cierre común: logo, marca, llamada a la acción, teléfono y correo. Responsivo a los tres formatos.
-export const CierreSerie: React.FC<{ t: number; desde: number; fondo?: string; minimo?: boolean; velo?: number }> = ({ t, desde, fondo = 'radial-gradient(circle at 50% 40%, #1f4a2a, #0a1a0f 75%)', minimo = false, velo = 0.86 }) => {
+export const CierreSerie: React.FC<{ t: number; desde: number; fondo?: string; minimo?: boolean; velo?: number; heroe?: (size: number) => React.ReactNode }> = ({ t, desde, fondo = 'radial-gradient(circle at 50% 40%, #1f4a2a, #0a1a0f 75%)', minimo = false, velo = 0.86, heroe }) => {
   const { u: u0, tipo, w, h } = useFormato();
   // en cuadrado no cabe la columna completa a tamaño vertical
   const u = tipo === 'cuadrado' ? u0 * 0.72 : u0;
@@ -107,7 +107,11 @@ export const CierreSerie: React.FC<{ t: number; desde: number; fondo?: string; m
     <div style={{ position: 'absolute', inset: 0, opacity: a, display: 'flex', flexDirection: hor ? 'row' : 'column', alignItems: 'center', justifyContent: 'center', gap: (hor ? 90 : 26) * u, color: '#fff8e6', textAlign: hor ? 'left' : 'center' }}>
       <EspiralAurea w={w} h={h} o={0.07 * a} />
       <div style={{ ...it(0), display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 14 * u }}>
-        <Img src={staticFile('logo.svg')} style={{ width: (hor ? 300 : 210) * u, background: '#fff4dc', borderRadius: '50%', padding: 10 * u, boxShadow: `0 0 ${60 * u}px rgba(255,210,120,.35)` }} />
+        {heroe && tipo !== 'cuadrado' && <div style={{ marginBottom: -30 * u }}>{heroe((hor ? 380 : 360) * u)}</div>}
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10 * u }}>
+          {heroe && tipo === 'cuadrado' && heroe(300 * u)}
+          <Img src={staticFile('logo.svg')} style={{ width: (hor ? 300 : 210) * u, background: '#fff4dc', borderRadius: '50%', padding: 10 * u, boxShadow: `0 0 ${60 * u}px rgba(255,210,120,.35)` }} />
+        </div>
         <div style={{ fontFamily: TITULO, fontSize: 120 * u, letterSpacing: 8 * u, lineHeight: 0.9 }}>{MARCA}</div>
         <div style={{ fontFamily: TITULO, fontSize: 38 * u, letterSpacing: 9 * u, opacity: 0.8 }}>{MARCA_SUB}</div>
       </div>

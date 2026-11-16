@@ -380,7 +380,7 @@ const Camara: React.FC<{ pos: [number, number, number]; mira: [number, number, n
   return null;
 };
 
-const Luces: React.FC<{ tibio?: boolean }> = ({ tibio = true }) => (
+export const Luces: React.FC<{ tibio?: boolean }> = ({ tibio = true }) => (
   <>
     <ambientLight intensity={0.55} />
     <directionalLight position={[4, 6, 5]} intensity={2.2} color={tibio ? '#fff1dc' : '#ffffff'} />
