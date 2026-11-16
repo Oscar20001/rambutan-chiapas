@@ -88,6 +88,26 @@ const EspiralAurea: React.FC<{ w: number; h: number; o: number }> = ({ w, h, o }
   );
 };
 
+// Iconos tipo sticker: WhatsApp, teléfono y correo.
+const ICONOS: Record<string, string> = {
+  wa: 'M16 3a13 13 0 0 0-11.2 19.6L3 29l6.6-1.7A13 13 0 1 0 16 3Zm0 23.6a10.6 10.6 0 0 1-5.4-1.5l-.4-.2-3.9 1 1-3.8-.2-.4A10.6 10.6 0 1 1 16 26.6Zm5.8-7.9c-.3-.2-1.9-.9-2.2-1s-.5-.2-.7.2-.8 1-1 1.2-.4.2-.7 0a8.7 8.7 0 0 1-4.3-3.8c-.3-.6.3-.5 1-1.7.1-.2 0-.4 0-.5l-1-2.4c-.3-.6-.5-.5-.7-.5h-.6a1.2 1.2 0 0 0-.9.4 3.7 3.7 0 0 0-1.1 2.7 6.4 6.4 0 0 0 1.3 3.4 14.6 14.6 0 0 0 5.6 5c2.1.9 2.9 1 4 .8a3.4 3.4 0 0 0 2.2-1.6 2.8 2.8 0 0 0 .2-1.6c0-.1-.3-.2-.6-.3Z',
+  tel: 'M9.4 4.5c.6-.6 1.6-.6 2.2 0l3 3c.6.6.6 1.6 0 2.2l-1.9 1.9a15 15 0 0 0 7.7 7.7l1.9-1.9c.6-.6 1.6-.6 2.2 0l3 3c.6.6.6 1.6 0 2.2l-2 2c-1.3 1.3-3.3 1.6-5 .9A24 24 0 0 1 6.5 13.5c-.7-1.7-.4-3.7.9-5Z',
+  mail: 'M5 8h22a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V10a2 2 0 0 1 2-2Zm0 2.4V22h22V10.4l-11 7.3Zm1.6-.4L16 16.2 25.4 10Z',
+};
+const Sticker: React.FC<{ u: number; l: number; k: number; giro: number; icono: string; fondo: string; size: number; late?: boolean; texto?: boolean; children: React.ReactNode }> = ({ u, l, k, giro, icono, fondo, size, late, texto, children }) => {
+  const v = avance(l, 0.25 + k * 0.22, 0.5, Easing.out(Easing.back(2.2)));
+  const pulso = late ? 1 + 0.035 * Math.max(0, Math.sin(l * 3)) : 1;
+  const ic = size * 1.05 * u;
+  return (
+    <div style={{ opacity: Math.min(1, v * 1.4), transform: `rotate(${giro * v}deg) scale(${(0.6 + 0.4 * v) * pulso})`, display: 'inline-flex', alignItems: 'center', gap: size * 0.25 * u, background: '#fffaf0', color: '#1a120a', borderRadius: 999, padding: `${size * 0.12 * u}px ${size * 0.42 * u}px ${size * 0.12 * u}px ${size * 0.12 * u}px`, boxShadow: `0 ${8 * u}px 0 rgba(0,0,0,.35), 0 0 0 ${4 * u}px rgba(255,255,255,.9)` }}>
+      <div style={{ width: ic, height: ic, borderRadius: '50%', background: fondo, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+        <svg viewBox="0 0 32 32" width={ic * 0.62} height={ic * 0.62}><path fill="#fff" d={ICONOS[icono]} /></svg>
+      </div>
+      <span style={{ fontFamily: texto ? TEXTO : TITULO, fontWeight: texto ? 700 : 400, fontSize: size * u, letterSpacing: texto ? 0 : 3 * u, lineHeight: 1, paddingTop: texto ? 0 : size * 0.1 * u }}>{children}</span>
+    </div>
+  );
+};
+
 // Cierre común: logo, marca, llamada a la acción, teléfono y correo. Responsivo a los tres formatos.
 export const CierreSerie: React.FC<{ t: number; desde: number; fondo?: string; minimo?: boolean; velo?: number; fondo3d?: React.ReactNode }> = ({ t, desde, fondo = 'radial-gradient(circle at 50% 40%, #1f4a2a, #0a1a0f 75%)', minimo = false, velo = 0.86, fondo3d }) => {
   const { u: u0, tipo, w, h } = useFormato();
@@ -123,10 +143,10 @@ export const CierreSerie: React.FC<{ t: number; desde: number; fondo?: string; m
         {minimo && <div style={{ ...it(1.5), fontFamily: TITULO, fontSize: 52 * u, letterSpacing: 3 * u, color: '#1a0f04', background: '#ffd84d', padding: `${6 * u}px ${30 * u}px 0`, borderRadius: 12 * u }}>DESDE 5 TONELADAS</div>}
         <div style={{ ...it(2), fontFamily: TEXTO, fontSize: 36 * u, opacity: 0.9 }}>Rambután de Tuxtla Chico, Chiapas</div>
         <div style={{ ...it(3), fontFamily: TITULO, fontSize: 40 * u, letterSpacing: 4 * u, opacity: 0.85 }}>LLAMA O ENVÍA WHATSAPP</div>
-        <div style={{ ...it(3.4), fontFamily: TITULO, fontSize: 104 * u, letterSpacing: 3 * u, color: '#25d366', background: 'rgba(5,30,15,.85)', padding: `${8 * u}px ${44 * u}px 0`, borderRadius: 80 * u, boxShadow: `0 0 ${(40 + 30 * Math.max(0, Math.sin(l * 3))) * u}px rgba(37,211,102,${0.35 + 0.25 * Math.max(0, Math.sin(l * 3))})`, transform: `scale(${1 + 0.035 * Math.max(0, Math.sin(l * 3))})` }}>{TEL}</div>
-        <div style={{ ...it(3.7), fontFamily: TITULO, fontSize: 62 * u, letterSpacing: 3 * u, color: '#25d366' }}>{TEL2}</div>
+        <Sticker u={u} l={l} k={3.4} giro={-2.5} icono="wa" fondo="#25d366" size={84} late>{TEL}</Sticker>
+        <Sticker u={u} l={l} k={3.7} giro={2} icono="tel" fondo="#e0352b" size={60}>{TEL2}</Sticker>
         <div style={{ ...it(3.9), fontFamily: TEXTO, fontSize: 32 * u, opacity: 0.9 }}>{AVISO_ID}</div>
-        <div style={{ ...it(4), fontFamily: TEXTO, fontSize: 38 * u }}>{CORREO}</div>
+        <Sticker u={u} l={l} k={4.1} giro={-1.5} icono="mail" fondo="#1f9d55" size={40} texto>{CORREO}</Sticker>
       </div>
     </div>
     </>
