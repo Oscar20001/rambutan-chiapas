@@ -128,6 +128,7 @@ export const Root: React.FC = () => (
     <Composition id="IzapaVidaH" component={IzapaVida} fps={FPS} width={1920} height={1080} durationInFrames={DURA_IZAPA * FPS} />
     <Composition id="Vitrina" component={Vitrina} fps={FPS} width={1080} height={1920} durationInFrames={DURA_VITRINA * 5 * FPS} />
     <Composition id="CierreAlfaV" component={CierreAlfa} fps={24} width={1080} height={1920} durationInFrames={14 * 24} />
+    <Composition id="CierreAlfaC" component={CierreAlfa} fps={24} width={1080} height={1080} durationInFrames={14 * 24} />
     <Composition id="CierreAlfaH" component={CierreAlfa} fps={24} width={1920} height={1080} durationInFrames={14 * 24} />
     <Composition id="Viaje" component={Viaje} fps={60} width={1080} height={1920} durationInFrames={DURACION_VIAJE * 60} />
   </>

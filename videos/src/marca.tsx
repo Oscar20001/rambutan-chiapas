@@ -90,7 +90,9 @@ const EspiralAurea: React.FC<{ w: number; h: number; o: number }> = ({ w, h, o }
 
 // Cierre común: logo, marca, llamada a la acción, teléfono y correo. Responsivo a los tres formatos.
 export const CierreSerie: React.FC<{ t: number; desde: number; fondo?: string; minimo?: boolean; velo?: number }> = ({ t, desde, fondo = 'radial-gradient(circle at 50% 40%, #1f4a2a, #0a1a0f 75%)', minimo = false, velo = 0.86 }) => {
-  const { u, tipo, w, h } = useFormato();
+  const { u: u0, tipo, w, h } = useFormato();
+  // en cuadrado no cabe la columna completa a tamaño vertical
+  const u = tipo === 'cuadrado' ? u0 * 0.72 : u0;
   if (t < desde) return null;
   const l = t - desde;
   const a = avance(l, 0, 0.5);
