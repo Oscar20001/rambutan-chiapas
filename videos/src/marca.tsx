@@ -142,11 +142,12 @@ export const CierreSerie: React.FC<{ t: number; desde: number; fondo?: string; m
         </div>
         {minimo && <div style={{ ...it(1.5), fontFamily: TITULO, fontSize: 52 * u, letterSpacing: 3 * u, color: '#1a0f04', background: '#ffd84d', padding: `${6 * u}px ${30 * u}px 0`, borderRadius: 12 * u }}>DESDE 5 TONELADAS</div>}
         <div style={{ ...it(2), fontFamily: TEXTO, fontSize: 36 * u, opacity: 0.9 }}>Rambután de Tuxtla Chico, Chiapas</div>
-        <div style={{ ...it(3), fontFamily: TITULO, fontSize: 40 * u, letterSpacing: 4 * u, opacity: 0.85 }}>LLAMA O ENVÍA WHATSAPP</div>
+        <div style={{ ...it(3), fontFamily: TITULO, fontSize: 40 * u, letterSpacing: 4 * u, opacity: 0.85 }}>WHATSAPP Y LLAMADAS · LOS DOS NÚMEROS</div>
         <Sticker u={u} l={l} k={3.4} giro={-2.5} icono="wa" fondo="#25d366" size={84} late>{TEL}</Sticker>
         <Sticker u={u} l={l} k={3.7} giro={2} icono="tel" fondo="#e0352b" size={60}>{TEL2}</Sticker>
         <div style={{ ...it(3.9), fontFamily: TEXTO, fontSize: 32 * u, opacity: 0.9 }}>{AVISO_ID}</div>
         <Sticker u={u} l={l} k={4.1} giro={-1.5} icono="mail" fondo="#1f9d55" size={40} texto>{CORREO}</Sticker>
+        <div style={{ ...it(4.4), fontFamily: TEXTO, fontSize: 34 * u, opacity: 0.9 }}>oscar20001.github.io/rambutan-chiapas</div>
       </div>
     </div>
     </>
