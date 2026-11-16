@@ -89,7 +89,7 @@ const EspiralAurea: React.FC<{ w: number; h: number; o: number }> = ({ w, h, o }
 };
 
 // Cierre común: logo, marca, llamada a la acción, teléfono y correo. Responsivo a los tres formatos.
-export const CierreSerie: React.FC<{ t: number; desde: number; fondo?: string }> = ({ t, desde, fondo = 'radial-gradient(circle at 50% 40%, #1f4a2a, #0a1a0f 75%)' }) => {
+export const CierreSerie: React.FC<{ t: number; desde: number; fondo?: string; minimo?: boolean; velo?: number }> = ({ t, desde, fondo = 'radial-gradient(circle at 50% 40%, #1f4a2a, #0a1a0f 75%)', minimo = false, velo = 0.86 }) => {
   const { u, tipo, w, h } = useFormato();
   if (t < desde) return null;
   const l = t - desde;
@@ -101,7 +101,7 @@ export const CierreSerie: React.FC<{ t: number; desde: number; fondo?: string }>
   const hor = tipo === 'horizontal';
   return (
     <>
-    <div style={{ position: 'absolute', inset: 0, background: fondo, opacity: a * 0.86 }} />
+    <div style={{ position: 'absolute', inset: 0, background: fondo, opacity: a * velo }} />
     <div style={{ position: 'absolute', inset: 0, opacity: a, display: 'flex', flexDirection: hor ? 'row' : 'column', alignItems: 'center', justifyContent: 'center', gap: (hor ? 90 : 26) * u, color: '#fff8e6', textAlign: hor ? 'left' : 'center' }}>
       <EspiralAurea w={w} h={h} o={0.07 * a} />
       <div style={{ ...it(0), display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 14 * u }}>
@@ -115,6 +115,7 @@ export const CierreSerie: React.FC<{ t: number; desde: number; fondo?: string }>
           <br />
           TE VENDEMOS POR TONELADA
         </div>
+        {minimo && <div style={{ ...it(1.5), fontFamily: TITULO, fontSize: 52 * u, letterSpacing: 3 * u, color: '#1a0f04', background: '#ffd84d', padding: `${6 * u}px ${30 * u}px 0`, borderRadius: 12 * u }}>DESDE 5 TONELADAS</div>}
         <div style={{ ...it(2), fontFamily: TEXTO, fontSize: 36 * u, opacity: 0.9 }}>Rambután de Tuxtla Chico, Chiapas</div>
         <div style={{ ...it(3), fontFamily: TITULO, fontSize: 40 * u, letterSpacing: 4 * u, opacity: 0.85 }}>LLAMA O ENVÍA WHATSAPP</div>
         <div style={{ ...it(3.4), fontFamily: TITULO, fontSize: 104 * u, letterSpacing: 3 * u, color: '#25d366', background: 'rgba(5,30,15,.85)', padding: `${8 * u}px ${44 * u}px 0`, borderRadius: 80 * u, boxShadow: `0 0 ${(40 + 30 * Math.max(0, Math.sin(l * 3))) * u}px rgba(37,211,102,${0.35 + 0.25 * Math.max(0, Math.sin(l * 3))})`, transform: `scale(${1 + 0.035 * Math.max(0, Math.sin(l * 3))})` }}>{TEL}</div>

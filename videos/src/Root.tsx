@@ -30,6 +30,7 @@ const SECRETO_COMP = SECRETOS.map((_, i) => Secreto(i));
 import { Vitrina, DURA_VITRINA } from './Modelos';
 import { IzapaVida, DURA_IZAPA } from './Antiguos';
 import tacana from './guiones/tacana.json';
+import { CierreAlfa } from './CierreAlfa';
 
 const FPS = 30;
 const COLA = 1.6; // segundos que se queda la tarjeta final después de la última línea
@@ -126,6 +127,8 @@ export const Root: React.FC = () => (
     <Composition id="IzapaVidaV" component={IzapaVida} fps={FPS} width={1080} height={1920} durationInFrames={DURA_IZAPA * FPS} />
     <Composition id="IzapaVidaH" component={IzapaVida} fps={FPS} width={1920} height={1080} durationInFrames={DURA_IZAPA * FPS} />
     <Composition id="Vitrina" component={Vitrina} fps={FPS} width={1080} height={1920} durationInFrames={DURA_VITRINA * 5 * FPS} />
+    <Composition id="CierreAlfaV" component={CierreAlfa} fps={24} width={1080} height={1920} durationInFrames={14 * 24} />
+    <Composition id="CierreAlfaH" component={CierreAlfa} fps={24} width={1920} height={1080} durationInFrames={14 * 24} />
     <Composition id="Viaje" component={Viaje} fps={60} width={1080} height={1920} durationInFrames={DURACION_VIAJE * 60} />
   </>
 );
