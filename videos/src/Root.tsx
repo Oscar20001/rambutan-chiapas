@@ -6,6 +6,7 @@ import { Compradores } from './Compradores';
 import { Huerta } from './Huerta';
 import { DURACION as DURACION_VIAJE, Viaje } from './Viaje';
 import { AnuncioCamion, AnuncioProducto } from './Anuncio3D';
+import { ANUNCIOS, AnuncioNorte, AnuncioToneladas } from './Anuncios';
 import { DURACION_ABRE, RambutanAbre } from './RambutanAbre';
 import { Alto, DURACION_ALTO } from './Alto';
 import { VueloPrueba } from './VueloPrueba';
@@ -84,6 +85,8 @@ export const Root: React.FC = () => (
     <Composition id="RambutanAbre" component={RambutanAbre} fps={FPS} width={1080} height={1920} durationInFrames={Math.round(DURACION_ABRE * FPS)} />
     <Composition id="Alto" component={Alto} fps={FPS} width={1080} height={1920} durationInFrames={Math.round(DURACION_ALTO * FPS)} />
     <Composition id="VueloPrueba" component={VueloPrueba} fps={FPS} width={1080} height={1920} durationInFrames={150} />
+    <Composition id="AnuncioToneladas" component={AnuncioToneladas} fps={30} width={1080} height={1920} durationInFrames={ANUNCIOS.toneladas * 30} />
+    <Composition id="AnuncioNorte" component={AnuncioNorte} fps={30} width={1080} height={1920} durationInFrames={ANUNCIOS.norte * 30} />
     <Composition id="Viaje" component={Viaje} fps={60} width={1080} height={1920} durationInFrames={DURACION_VIAJE * 60} />
   </>
 );
